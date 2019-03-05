@@ -36,3 +36,14 @@ class TestValueConversions:
         result = converter.convert_value(sut)
         assert isinstance(result, str)
         assert result == "world"
+
+    def test_convert_bool(self):
+        from CoreFoundation import kCFBooleanTrue, kCFBooleanFalse
+
+        result1 = converter.convert_value(kCFBooleanTrue)
+        result2 = converter.convert_value(kCFBooleanFalse)
+
+        assert isinstance(result1, bool)
+        assert isinstance(result2, bool)
+        assert result1 is True
+        assert result2 is False
