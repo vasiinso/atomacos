@@ -1,10 +1,11 @@
 from atomacos import converter
-from atomacos.errors import AXErrorUnsupported, set_error
+from atomacos.errors import AXErrorUnsupported, raise_ax_error
 from ApplicationServices import (
     AXUIElementCreateApplication,
     AXUIElementCreateSystemWide,
     AXUIElementCopyAttributeValue,
     AXUIElementCopyAttributeNames,
+    AXUIElementCopyActionNames,
     kAXErrorSuccess,
 )
 
@@ -26,12 +27,26 @@ class AXUIElement:
         return self._get_ax_attributes() + super(AXUIElement, self).__dir__()
 
     def _get_ax_attributes(self):
+        """
+        Get a list of attributes available on the AXUIElement
+        """
         err, attr = AXUIElementCopyAttributeNames(self.ref, None)
 
         if err != kAXErrorSuccess:
-            set_error(err, "Error retrieving attribute list")
+            raise_ax_error(err, "Error retrieving attribute list")
         else:
             return list(attr)
+
+    def _get_ax_actions(self):
+        """
+        Get a list of actions available on the AXUIElement
+        """
+        err, actions = AXUIElementCopyActionNames(self.ref, None)
+
+        if err != kAXErrorSuccess:
+            raise_ax_error(err, "Error retrieving action names")
+        else:
+            return list(actions)
 
     @classmethod
     def from_pid(cls, pid):

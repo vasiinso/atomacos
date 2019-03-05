@@ -30,7 +30,7 @@ class AXErrorNotImplemented(AXError):
     pass
 
 
-def set_error(code, message):
+def raise_ax_error(code, message):
     """
     Raises an error with given message based on given error code.
     Defaults to AXErrorUnsupported for unknown codes.

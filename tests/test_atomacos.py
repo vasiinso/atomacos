@@ -11,13 +11,13 @@ class TestErrors:
 
     def test_set_known_code(self):
         with pytest.raises(errors.AXErrorAPIDisabled):
-            errors.set_error(-25211, "test")
+            errors.raise_ax_error(-25211, "test")
         with pytest.raises(errors.AXErrorInvalidUIElement):
-            errors.set_error(-25202, "test")
+            errors.raise_ax_error(-25202, "test")
         with pytest.raises(errors.AXErrorCannotComplete):
-            errors.set_error(-25204, "test")
+            errors.raise_ax_error(-25204, "test")
         with pytest.raises(errors.AXErrorNotImplemented):
-            errors.set_error(-25208, "test")
+            errors.raise_ax_error(-25208, "test")
 
 
 class TestValueConversions:
@@ -109,6 +109,10 @@ class TestAXUIElement:
         assert "AXRole" in sut
         assert "AXWindows" in sut
         assert "AXChildren" in sut
+
+    def test_get_ax_actions(self, frontmost_app):
+        sut = frontmost_app._get_ax_actions()
+        assert isinstance(sut, list)
 
     def test_basic_get_attr(self, frontmost_app):
         assert isinstance(frontmost_app.AXTitle, str)
