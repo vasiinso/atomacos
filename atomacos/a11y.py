@@ -14,6 +14,7 @@ from ApplicationServices import (
     AXUIElementIsAttributeSettable,
     AXUIElementSetAttributeValue,
     kAXErrorSuccess,
+    CFEqual,
 )
 
 
@@ -120,3 +121,17 @@ class AXUIElement:
             raise AXErrorUnsupported("Error getting a11y object")
 
         return cls(ref=app_ref)
+
+    def __eq__(self, other):
+        if not isinstance(other, type(self)):
+            return False
+        if self.ref is None and other.ref is None:
+            return True
+
+        if self.ref is None or other.ref is None:
+            return False
+
+        return CFEqual(self.ref, other.ref)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)

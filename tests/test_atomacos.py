@@ -126,3 +126,15 @@ class TestAXUIElement:
         pid = support.get_frontmost_pid()
         app_ref = a11y.AXUIElement.from_pid(pid)
         assert app_ref.pid == pid
+
+    def test_eq(self):
+        pid = support.get_frontmost_pid()
+        app_ref1 = a11y.AXUIElement.from_pid(pid)
+        app_ref2 = a11y.AXUIElement.from_pid(pid)
+        assert app_ref1 == app_ref2
+
+    def test_ne(self):
+        pid = support.get_frontmost_pid()
+        app_ref1 = a11y.AXUIElement.from_pid(pid)
+        app_ref2 = a11y.AXUIElement.systemwide()
+        assert app_ref1 != app_ref2
