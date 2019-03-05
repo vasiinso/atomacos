@@ -1,0 +1,34 @@
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "atomacos"
+author = "Davee Nguyen"
+author-email = "davee@daveenguyen.com"
+home-page = "https://github.com/davee_nguyen/atomacos"
+classifiers = ["License :: Other/Proprietary License"]
+requires = [
+    "pyobjc-core",
+    "pyobjc-framework-Cocoa",
+    "pyobjc-framework-Quartz",
+    "pyobjc-framework-ApplicationServices",
+    "pyobjc-framework-CoreText",
+    "future",
+]
+
+[tool.flit.metadata.requires-extra]
+dev = [
+    "black",
+    "pre-commit",
+    "tox",
+    "bump2version"
+]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+doc = ["sphinx", "m2r"]
+
+[tool.black]
+line-length = 79
