@@ -116,8 +116,16 @@ class TestAXUIElement:
         assert "AXChildren" in sut
 
     def test_get_ax_actions(self, frontmost_app):
-        sut = frontmost_app.ax_actions
+        zoom_button = frontmost_app.AXMainWindow.AXZoomButton
+        sut = zoom_button.ax_actions
         assert isinstance(sut, list)
+        assert "Press" in sut
+        assert "ZoomWindow" in sut
+
+    def test_perform_ax_action(self, frontmost_app):
+        zoom_button = frontmost_app.AXMainWindow.AXZoomButton
+        zoom_button.ZoomWindow()
+        zoom_button.ZoomWindow()
 
     def test_basic_get_attr(self, frontmost_app):
         assert isinstance(frontmost_app.AXTitle, str)

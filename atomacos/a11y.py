@@ -13,6 +13,7 @@ from ApplicationServices import (
     AXUIElementGetPid,
     AXUIElementIsAttributeSettable,
     AXUIElementSetAttributeValue,
+    AXUIElementPerformAction,
     kAXErrorSuccess,
     CFEqual,
     NSWorkspace,
@@ -27,6 +28,14 @@ class AXUIElement:
     def __getattr__(self, item):
         if item in self.ax_attributes:
             return self._get_ax_attribute(item)
+        elif item in self.ax_actions:
+
+            def perform_ax_action():
+                self._perform_ax_actions(item)
+
+            return perform_ax_action
+        else:
+            raise AttributeError("%s has no attribute '%s'" % (self, item))
 
     def __setattr__(self, key, value):
         super(AXUIElement, self).__setattr__(key, value)
@@ -97,7 +106,14 @@ class AXUIElement:
         if err != kAXErrorSuccess:
             raise_ax_error(err, "Error retrieving action names")
         else:
-            return list(actions)
+            return list(action[2:] for action in actions)
+
+    def _perform_ax_actions(self, name):
+        real_action_name = "AX" + name
+        err = AXUIElementPerformAction(self.ref, real_action_name)
+
+        if err != kAXErrorSuccess:
+            raise_ax_error(err, "Error performing requested action")
 
     @property
     def pid(self):
