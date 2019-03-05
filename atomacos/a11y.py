@@ -47,7 +47,7 @@ class AXUIElement:
             err, attrValue = AXUIElementCopyAttributeValue(
                 self.ref, item, None
             )
-            return converter.convert_value(attrValue)
+            return converter.convert_value(attrValue, self.__class__)
         else:
             raise AttributeError("has no AX Attribute %s" % item)
 

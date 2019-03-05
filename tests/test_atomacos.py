@@ -138,3 +138,11 @@ class TestAXUIElement:
         app_ref1 = a11y.AXUIElement.from_pid(pid)
         app_ref2 = a11y.AXUIElement.systemwide()
         assert app_ref1 != app_ref2
+
+    def test_list_returns_pyobj(self, frontmost_app):
+        window = frontmost_app.AXWindows[0]
+        assert isinstance(window, a11y.AXUIElement)
+
+    def test_get_child_uielement(self, frontmost_app):
+        window = frontmost_app.AXWindows[0]
+        assert isinstance(window, a11y.AXUIElement)
