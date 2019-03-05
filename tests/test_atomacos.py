@@ -111,7 +111,7 @@ class TestAXUIElement:
         assert "AXChildren" in sut
 
     def test_get_ax_actions(self, frontmost_app):
-        sut = frontmost_app._get_ax_actions()
+        sut = frontmost_app.ax_actions()
         assert isinstance(sut, list)
 
     def test_basic_get_attr(self, frontmost_app):

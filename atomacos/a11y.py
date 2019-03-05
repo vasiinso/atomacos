@@ -1,11 +1,17 @@
 from atomacos import converter
-from atomacos.errors import AXErrorUnsupported, raise_ax_error
+from atomacos.errors import (
+    AXErrorUnsupported,
+    raise_ax_error,
+    AXErrorIllegalArgument,
+)
 from ApplicationServices import (
     AXUIElementCreateApplication,
     AXUIElementCreateSystemWide,
     AXUIElementCopyAttributeValue,
     AXUIElementCopyAttributeNames,
     AXUIElementCopyActionNames,
+    AXUIElementIsAttributeSettable,
+    AXUIElementSetAttributeValue,
     kAXErrorSuccess,
 )
 
@@ -15,7 +21,27 @@ class AXUIElement:
         self.ref = ref
 
     def __getattr__(self, item):
-        if item in self._get_ax_attributes():
+        if item in self.ax_attributes():
+            return self._get_ax_attribute(item)
+
+    def __setattr__(self, key, value):
+        super(AXUIElement, self).__setattr__(key, value)
+        try:
+            if key in self.ax_attributes():
+                self._set_ax_attribute(key, value)
+        except AXErrorIllegalArgument:
+            pass
+
+    def __dir__(self):
+        return (
+            self.ax_attributes()
+            + self.ax_actions()
+            + super(AXUIElement, self).__dir__()
+        )
+
+    def _get_ax_attribute(self, item):
+        """Get the value of the the specified attribute"""
+        if item in self.ax_attributes():
             err, attrValue = AXUIElementCopyAttributeValue(
                 self.ref, item, None
             )
@@ -23,10 +49,29 @@ class AXUIElement:
         else:
             raise AttributeError("has no AX Attribute %s" % item)
 
-    def __dir__(self):
-        return self._get_ax_attributes() + super(AXUIElement, self).__dir__()
+    def _set_ax_attribute(self, name, value):
+        """
+        Set the specified attribute to the specified value
+        """
+        self._get_ax_attribute(name)
 
-    def _get_ax_attributes(self):
+        err, to_set = AXUIElementCopyAttributeValue(self.ref, name, None)
+        if err != kAXErrorSuccess:
+            raise_ax_error(err, "Error retrieving attribute to set")
+
+        err, settable = AXUIElementIsAttributeSettable(self.ref, name, None)
+        if err != kAXErrorSuccess:
+            raise_ax_error(err, "Error querying attribute")
+
+        if not settable:
+            raise AXErrorUnsupported("Attribute is not settable")
+
+        err = AXUIElementSetAttributeValue(self.ref, name, value)
+
+        if err != kAXErrorSuccess:
+            raise_ax_error(err, "Error setting attribute value")
+
+    def ax_attributes(self):
         """
         Get a list of attributes available on the AXUIElement
         """
@@ -37,7 +82,7 @@ class AXUIElement:
         else:
             return list(attr)
 
-    def _get_ax_actions(self):
+    def ax_actions(self):
         """
         Get a list of actions available on the AXUIElement
         """

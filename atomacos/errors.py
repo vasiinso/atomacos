@@ -3,6 +3,7 @@ from ApplicationServices import (
     kAXErrorInvalidUIElement,
     kAXErrorCannotComplete,
     kAXErrorNotImplemented,
+    kAXErrorIllegalArgument,
 )
 
 
@@ -30,6 +31,10 @@ class AXErrorNotImplemented(AXError):
     pass
 
 
+class AXErrorIllegalArgument(AXError):
+    pass
+
+
 def raise_ax_error(code, message):
     """
     Raises an error with given message based on given error code.
@@ -40,6 +45,7 @@ def raise_ax_error(code, message):
         kAXErrorInvalidUIElement: AXErrorInvalidUIElement,
         kAXErrorCannotComplete: AXErrorCannotComplete,
         kAXErrorNotImplemented: AXErrorNotImplemented,
+        kAXErrorIllegalArgument: AXErrorIllegalArgument,
     }
 
     ErrorFromCode = CODE_TO_AXERROR.get(code, AXErrorUnsupported)
