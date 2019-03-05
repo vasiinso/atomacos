@@ -159,10 +159,10 @@ class TestAXUIElement:
         assert isinstance(size[1], float)
 
     def test_convert_ax_point(self, front_title_ui):
-        position = front_title_ui.AXPosition
-        assert isinstance(position, tuple)
-        assert isinstance(position[0], float)
-        assert isinstance(position[1], float)
+        point = front_title_ui.AXPosition
+        assert isinstance(point, tuple)
+        assert isinstance(point[0], float)
+        assert isinstance(point[1], float)
 
     def test_convert_ax_range(self, front_title_ui):
         range = front_title_ui.AXVisibleCharacterRange
