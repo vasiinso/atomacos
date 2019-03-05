@@ -83,6 +83,13 @@ class TestHelpers:
         assert isinstance(support.axenabled(), bool)
 
 
+@pytest.fixture
+def frontmost_app():
+    pid = support.get_frontmost_pid()
+    app_ref = a11y.AXUIElement.from_pid(pid)
+    return app_ref
+
+
 class TestAXUIElement:
     def test_init(self):
         a11y.AXUIElement()
@@ -95,3 +102,18 @@ class TestAXUIElement:
     def test_app_ref_from_system_object(self):
         app_ref = a11y.AXUIElement.systemwide()
         assert "System Wide" in str(app_ref.ref)
+
+    def test_get_ax_attributes(self, frontmost_app):
+        sut = frontmost_app._get_ax_attributes()
+        assert isinstance(sut, list)
+        assert "AXRole" in sut
+        assert "AXWindows" in sut
+        assert "AXChildren" in sut
+
+    def test_basic_get_attr(self, frontmost_app):
+        assert isinstance(frontmost_app.AXTitle, str)
+        assert isinstance(frontmost_app.AXWindows, list)
+
+    def test_dir_has_ref(self, frontmost_app):
+        assert "ref" in dir(frontmost_app)
+        assert "AXTitle" in dir(frontmost_app)
