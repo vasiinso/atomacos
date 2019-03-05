@@ -3,6 +3,7 @@ from ApplicationServices import (
     AXUIElementGetTypeID,
     AXValueGetType,
     kAXValueCGSizeType,
+    kAXValueCGPointType,
     NSSizeFromString,
 )
 import re
@@ -14,6 +15,8 @@ def convert_value(value, cls=None):
     if CFGetTypeID(value) == CFArrayGetTypeID():
         return convert_list(value, cls)
     if AXValueGetType(value) == kAXValueCGSizeType:
+        return convert_size(value)
+    if AXValueGetType(value) == kAXValueCGPointType:
         return convert_size(value)
     else:
         return value

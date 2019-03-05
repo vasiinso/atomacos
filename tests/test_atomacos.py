@@ -152,3 +152,9 @@ class TestAXUIElement:
         assert isinstance(size, tuple)
         assert isinstance(size[0], float)
         assert isinstance(size[1], float)
+
+    def test_convert_ax_point(self, frontmost_app):
+        position = frontmost_app.AXWindows[0].AXTitleUIElement.AXPosition
+        assert isinstance(position, tuple)
+        assert isinstance(position[0], float)
+        assert isinstance(position[1], float)
