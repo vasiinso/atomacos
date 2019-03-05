@@ -4,6 +4,7 @@ from ApplicationServices import (
     AXValueGetType,
     kAXValueCGSizeType,
     kAXValueCGPointType,
+    kAXValueCFRangeType,
     NSSizeFromString,
 )
 import re
@@ -17,6 +18,8 @@ def convert_value(value, cls=None):
     if AXValueGetType(value) == kAXValueCGSizeType:
         return convert_size(value)
     if AXValueGetType(value) == kAXValueCGPointType:
+        return convert_size(value)
+    if AXValueGetType(value) == kAXValueCFRangeType:
         return convert_size(value)
     else:
         return value

@@ -158,3 +158,10 @@ class TestAXUIElement:
         assert isinstance(position, tuple)
         assert isinstance(position[0], float)
         assert isinstance(position[1], float)
+
+    def test_convert_ax_range(self, frontmost_app):
+        title_ui = frontmost_app.AXWindows[0].AXTitleUIElement
+        range = title_ui.AXVisibleCharacterRange
+        assert isinstance(range, tuple)
+        assert isinstance(range[0], float)
+        assert isinstance(range[1], float)
