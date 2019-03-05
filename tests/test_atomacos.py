@@ -146,3 +146,9 @@ class TestAXUIElement:
     def test_get_child_uielement(self, frontmost_app):
         window = frontmost_app.AXWindows[0]
         assert isinstance(window, a11y.AXUIElement)
+
+    def test_convert_ax_size(self, frontmost_app):
+        size = frontmost_app.AXWindows[0].AXTitleUIElement.AXSize
+        assert isinstance(size, tuple)
+        assert isinstance(size[0], float)
+        assert isinstance(size[1], float)
