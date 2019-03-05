@@ -1,4 +1,4 @@
-from atomacos import errors, converter
+from atomacos import errors, converter, support
 import pytest
 
 
@@ -71,3 +71,10 @@ class TestValueConversions:
         result = converter.convert_value(num)
         assert result == 1.5
         assert isinstance(result, float)
+
+
+class TestHelpers:
+    def test_get_frontmost_pid(self):
+        pid = support.get_frontmost_pid()
+        assert isinstance(pid, int)
+        assert pid > 0
