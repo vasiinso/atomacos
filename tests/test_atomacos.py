@@ -2,6 +2,23 @@ from atomacos import errors, converter, a11y
 import pytest
 
 
+@pytest.fixture
+def frontmost_app():
+    pid = a11y.get_frontmost_pid()
+    app_ref = a11y.AXUIElement.from_pid(pid)
+    return app_ref
+
+
+@pytest.fixture
+def front_title_ui(frontmost_app):
+    return frontmost_app.AXWindows[0].AXTitleUIElement
+
+
+@pytest.fixture
+def axconverter():
+    return converter.Converter(a11y.AXUIElement)
+
+
 class TestErrors:
     def test_error_message_in_exception(self):
         try:
@@ -21,54 +38,54 @@ class TestErrors:
 
 
 class TestToPythonConversion:
-    def test_convert_string(self):
+    def test_convert_string(self, axconverter):
         from CoreFoundation import (
             CFStringCreateWithCString,
             kCFStringEncodingASCII,
         )
 
         sut = CFStringCreateWithCString(None, b"hello", kCFStringEncodingASCII)
-        result = converter.convert_value(sut)
+        result = axconverter.convert_value(sut)
         assert isinstance(result, str)
         assert result == "hello"
 
         sut = CFStringCreateWithCString(None, b"world", kCFStringEncodingASCII)
-        result = converter.convert_value(sut)
+        result = axconverter.convert_value(sut)
         assert isinstance(result, str)
         assert result == "world"
 
-    def test_convert_boolean(self):
+    def test_convert_boolean(self, axconverter):
         from CoreFoundation import kCFBooleanTrue, kCFBooleanFalse
 
-        result1 = converter.convert_value(kCFBooleanTrue)
-        result2 = converter.convert_value(kCFBooleanFalse)
+        result1 = axconverter.convert_value(kCFBooleanTrue)
+        result2 = axconverter.convert_value(kCFBooleanFalse)
 
         assert isinstance(result1, bool)
         assert isinstance(result2, bool)
         assert result1 is True
         assert result2 is False
 
-    def test_convert_array(self):
+    def test_convert_array(self, axconverter):
         from CoreFoundation import CFArrayCreate, kCFTypeArrayCallBacks
 
         array = CFArrayCreate(None, [1, 2, 3, 4], 4, kCFTypeArrayCallBacks)
-        result = converter.convert_value(array)
+        result = axconverter.convert_value(array)
         assert isinstance(result, list)
         assert result == [1, 2, 3, 4]
 
-    def test_convert_number_int(self):
+    def test_convert_number_int(self, axconverter):
         from CoreFoundation import CFNumberCreate, kCFNumberIntType
 
         num = CFNumberCreate(None, kCFNumberIntType, 1.5)
-        result = converter.convert_value(num)
+        result = axconverter.convert_value(num)
         assert result == 1
         assert isinstance(result, int)
 
-    def test_convert_number_double(self):
+    def test_convert_number_double(self, axconverter):
         from CoreFoundation import CFNumberCreate, kCFNumberDoubleType
 
         num = CFNumberCreate(None, kCFNumberDoubleType, 1.5)
-        result = converter.convert_value(num)
+        result = axconverter.convert_value(num)
         assert result == 1.5
         assert isinstance(result, float)
 
@@ -81,18 +98,6 @@ class TestHelpers:
 
     def test_axenabled(self):
         assert isinstance(a11y.axenabled(), bool)
-
-
-@pytest.fixture
-def frontmost_app():
-    pid = a11y.get_frontmost_pid()
-    app_ref = a11y.AXUIElement.from_pid(pid)
-    return app_ref
-
-
-@pytest.fixture
-def front_title_ui(frontmost_app):
-    return frontmost_app.AXWindows[0].AXTitleUIElement
 
 
 class TestAXUIElement:

@@ -24,6 +24,7 @@ from ApplicationServices import (
 class AXUIElement:
     def __init__(self, ref=None):
         self.ref = ref
+        self.converter = converter.Converter(self.__class__)
 
     def __getattr__(self, item):
         if item in self.ax_attributes:
@@ -58,7 +59,7 @@ class AXUIElement:
             err, attrValue = AXUIElementCopyAttributeValue(
                 self.ref, item, None
             )
-            return converter.convert_value(attrValue, self.__class__)
+            return self.converter.convert_value(attrValue)
         else:
             raise AttributeError("has no AX Attribute %s" % item)
 
@@ -124,6 +125,9 @@ class AXUIElement:
 
     @classmethod
     def from_pid(cls, pid):
+        """
+        Get an AXUIElement reference to the application by specified PID.
+        """
         app_ref = AXUIElementCreateApplication(pid)
 
         if app_ref is None:
@@ -133,6 +137,7 @@ class AXUIElement:
 
     @classmethod
     def systemwide(cls):
+        """Get an AXUIElement reference for the system accessibility object."""
         app_ref = AXUIElementCreateSystemWide()
 
         if app_ref is None:
@@ -156,14 +161,12 @@ class AXUIElement:
 
 
 def get_frontmost_pid():
+    """Return the PID of the application in the foreground."""
     frontmost_app = NSWorkspace.sharedWorkspace().frontmostApplication()
     pid = frontmost_app.processIdentifier()
     return pid
 
 
 def axenabled():
-    """
-    Return the status of accessibility on the system.
-    :return: bool
-    """
+    """Return the status of accessibility on the system."""
     return AXIsProcessTrusted()

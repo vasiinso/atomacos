@@ -14,48 +14,47 @@ from ApplicationServices import (
 import re
 
 
-def convert_value(value, cls=None):
-    if CFGetTypeID(value) == AXUIElementGetTypeID():
-        return convert_app_ref(cls, value)
-    if CFGetTypeID(value) == CFArrayGetTypeID():
-        return convert_list(value, cls)
-    if AXValueGetType(value) == kAXValueCGSizeType:
-        return convert_size(value)
-    if AXValueGetType(value) == kAXValueCGPointType:
-        return convert_point(value)
-    if AXValueGetType(value) == kAXValueCFRangeType:
-        return convert_range(value)
-    else:
-        return value
+class Converter:
+    def __init__(self, axuielementclass=None):
+        self.app_ref_class = axuielementclass
 
+    def convert_value(self, value):
+        if CFGetTypeID(value) == AXUIElementGetTypeID():
+            return self.convert_app_ref(value)
+        if CFGetTypeID(value) == CFArrayGetTypeID():
+            return self.convert_list(value)
+        if AXValueGetType(value) == kAXValueCGSizeType:
+            return self.convert_size(value)
+        if AXValueGetType(value) == kAXValueCGPointType:
+            return self.convert_point(value)
+        if AXValueGetType(value) == kAXValueCFRangeType:
+            return self.convert_range(value)
+        else:
+            return value
 
-def convert_list(value, cls=None):
-    return [convert_value(item, cls) for item in value]
+    def convert_list(self, value):
+        return [self.convert_value(item) for item in value]
 
+    def convert_app_ref(self, value):
+        return self.app_ref_class(value)
 
-def convert_app_ref(cls, value):
-    return cls(value)
+    def convert_size(self, value):
+        repr_searched = re.search("{.*}", str(value)).group()
+        CGSize = namedtuple("CGSize", ["width", "height"])
+        size = NSSizeFromString(repr_searched)
 
+        return CGSize(size.width, size.height)
 
-def convert_size(value):
-    repr_searched = re.search("{.*}", str(value)).group()
-    CGSize = namedtuple("CGSize", ["width", "height"])
-    size = NSSizeFromString(repr_searched)
+    def convert_point(self, value):
+        repr_searched = re.search("{.*}", str(value)).group()
+        CGPoint = namedtuple("CGPoint", ["x", "y"])
+        point = NSPointFromString(repr_searched)
 
-    return CGSize(size.width, size.height)
+        return CGPoint(point.x, point.y)
 
+    def convert_range(self, value):
+        repr_searched = re.search("{.*}", str(value)).group()
+        CFRange = namedtuple("CFRange", ["location", "length"])
+        range = NSRangeFromString(repr_searched)
 
-def convert_point(value):
-    repr_searched = re.search("{.*}", str(value)).group()
-    CGPoint = namedtuple("CGPoint", ["x", "y"])
-    point = NSPointFromString(repr_searched)
-
-    return CGPoint(point.x, point.y)
-
-
-def convert_range(value):
-    repr_searched = re.search("{.*}", str(value)).group()
-    CFRange = namedtuple("CFRange", ["location", "length"])
-    range = NSRangeFromString(repr_searched)
-
-    return CFRange(range.location, range.length)
+        return CFRange(range.location, range.length)
