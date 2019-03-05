@@ -15,6 +15,8 @@ from ApplicationServices import (
     AXUIElementSetAttributeValue,
     kAXErrorSuccess,
     CFEqual,
+    NSWorkspace,
+    AXIsProcessTrusted,
 )
 
 
@@ -135,3 +137,17 @@ class AXUIElement:
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+
+def get_frontmost_pid():
+    frontmost_app = NSWorkspace.sharedWorkspace().frontmostApplication()
+    pid = frontmost_app.processIdentifier()
+    return pid
+
+
+def axenabled():
+    """
+    Return the status of accessibility on the system.
+    :return: bool
+    """
+    return AXIsProcessTrusted()

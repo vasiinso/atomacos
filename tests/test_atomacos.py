@@ -1,4 +1,4 @@
-from atomacos import errors, converter, support, a11y
+from atomacos import errors, converter, a11y
 import pytest
 
 
@@ -20,7 +20,7 @@ class TestErrors:
             errors.raise_ax_error(-25208, "test")
 
 
-class TestValueConversions:
+class TestToPythonConversion:
     def test_convert_string(self):
         from CoreFoundation import (
             CFStringCreateWithCString,
@@ -37,7 +37,7 @@ class TestValueConversions:
         assert isinstance(result, str)
         assert result == "world"
 
-    def test_convert_bool(self):
+    def test_convert_boolean(self):
         from CoreFoundation import kCFBooleanTrue, kCFBooleanFalse
 
         result1 = converter.convert_value(kCFBooleanTrue)
@@ -56,7 +56,7 @@ class TestValueConversions:
         assert isinstance(result, list)
         assert result == [1, 2, 3, 4]
 
-    def test_convert_num_int(self):
+    def test_convert_number_int(self):
         from CoreFoundation import CFNumberCreate, kCFNumberIntType
 
         num = CFNumberCreate(None, kCFNumberIntType, 1.5)
@@ -64,7 +64,7 @@ class TestValueConversions:
         assert result == 1
         assert isinstance(result, int)
 
-    def test_convert_num_double(self):
+    def test_convert_number_double(self):
         from CoreFoundation import CFNumberCreate, kCFNumberDoubleType
 
         num = CFNumberCreate(None, kCFNumberDoubleType, 1.5)
@@ -75,17 +75,17 @@ class TestValueConversions:
 
 class TestHelpers:
     def test_get_frontmost_pid(self):
-        pid = support.get_frontmost_pid()
+        pid = a11y.get_frontmost_pid()
         assert isinstance(pid, int)
         assert pid > 0
 
     def test_axenabled(self):
-        assert isinstance(support.axenabled(), bool)
+        assert isinstance(a11y.axenabled(), bool)
 
 
 @pytest.fixture
 def frontmost_app():
-    pid = support.get_frontmost_pid()
+    pid = a11y.get_frontmost_pid()
     app_ref = a11y.AXUIElement.from_pid(pid)
     return app_ref
 
@@ -100,7 +100,7 @@ class TestAXUIElement:
         a11y.AXUIElement()
 
     def test_app_ref_from_pid(self):
-        pid = support.get_frontmost_pid()
+        pid = a11y.get_frontmost_pid()
         app_ref = a11y.AXUIElement.from_pid(pid)
         assert "Application" in str(app_ref.ref)
 
@@ -128,18 +128,18 @@ class TestAXUIElement:
         assert "AXTitle" in dir(frontmost_app)
 
     def test_get_pid(self):
-        pid = support.get_frontmost_pid()
+        pid = a11y.get_frontmost_pid()
         app_ref = a11y.AXUIElement.from_pid(pid)
         assert app_ref.pid == pid
 
     def test_eq(self):
-        pid = support.get_frontmost_pid()
+        pid = a11y.get_frontmost_pid()
         app_ref1 = a11y.AXUIElement.from_pid(pid)
         app_ref2 = a11y.AXUIElement.from_pid(pid)
         assert app_ref1 == app_ref2
 
     def test_ne(self):
-        pid = support.get_frontmost_pid()
+        pid = a11y.get_frontmost_pid()
         app_ref1 = a11y.AXUIElement.from_pid(pid)
         app_ref2 = a11y.AXUIElement.systemwide()
         assert app_ref1 != app_ref2
@@ -158,11 +158,21 @@ class TestAXUIElement:
         assert isinstance(size[0], float)
         assert isinstance(size[1], float)
 
+    def test_size_namedtuple(self, front_title_ui):
+        size = front_title_ui.AXSize
+        assert isinstance(size.width, float)
+        assert isinstance(size.height, float)
+
     def test_convert_ax_point(self, front_title_ui):
         point = front_title_ui.AXPosition
         assert isinstance(point, tuple)
         assert isinstance(point[0], float)
         assert isinstance(point[1], float)
+
+    def test_point_namedtuple(self, front_title_ui):
+        point = front_title_ui.AXPosition
+        assert isinstance(point.x, float)
+        assert isinstance(point.y, float)
 
     def test_convert_ax_range(self, front_title_ui):
         range = front_title_ui.AXVisibleCharacterRange
@@ -170,13 +180,7 @@ class TestAXUIElement:
         assert isinstance(range[0], int)
         assert isinstance(range[1], int)
 
-    def test_tuples_are_namedtuples(self, front_title_ui):
-        size = front_title_ui.AXSize
-        position = front_title_ui.AXPosition
+    def test_range_namedtuple(self, front_title_ui):
         range = front_title_ui.AXVisibleCharacterRange
-        assert isinstance(size.width, float)
-        assert isinstance(size.height, float)
-        assert isinstance(position.x, float)
-        assert isinstance(position.y, float)
         assert isinstance(range.location, int)
         assert isinstance(range.length, int)
