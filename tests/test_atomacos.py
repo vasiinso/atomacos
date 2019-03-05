@@ -90,6 +90,11 @@ def frontmost_app():
     return app_ref
 
 
+@pytest.fixture
+def front_title_ui(frontmost_app):
+    return frontmost_app.AXWindows[0].AXTitleUIElement
+
+
 class TestAXUIElement:
     def test_init(self):
         a11y.AXUIElement()
@@ -147,21 +152,20 @@ class TestAXUIElement:
         window = frontmost_app.AXWindows[0]
         assert isinstance(window, a11y.AXUIElement)
 
-    def test_convert_ax_size(self, frontmost_app):
-        size = frontmost_app.AXWindows[0].AXTitleUIElement.AXSize
+    def test_convert_ax_size(self, front_title_ui):
+        size = front_title_ui.AXSize
         assert isinstance(size, tuple)
         assert isinstance(size[0], float)
         assert isinstance(size[1], float)
 
-    def test_convert_ax_point(self, frontmost_app):
-        position = frontmost_app.AXWindows[0].AXTitleUIElement.AXPosition
+    def test_convert_ax_point(self, front_title_ui):
+        position = front_title_ui.AXPosition
         assert isinstance(position, tuple)
         assert isinstance(position[0], float)
         assert isinstance(position[1], float)
 
-    def test_convert_ax_range(self, frontmost_app):
-        title_ui = frontmost_app.AXWindows[0].AXTitleUIElement
-        range = title_ui.AXVisibleCharacterRange
+    def test_convert_ax_range(self, front_title_ui):
+        range = front_title_ui.AXVisibleCharacterRange
         assert isinstance(range, tuple)
         assert isinstance(range[0], float)
         assert isinstance(range[1], float)
