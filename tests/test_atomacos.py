@@ -47,3 +47,11 @@ class TestValueConversions:
         assert isinstance(result2, bool)
         assert result1 is True
         assert result2 is False
+
+    def test_convert_array(self):
+        from CoreFoundation import CFArrayCreate, kCFTypeArrayCallBacks
+
+        array = CFArrayCreate(None, [1, 2, 3, 4], 4, kCFTypeArrayCallBacks)
+        result = converter.convert_value(array)
+        assert isinstance(result, list)
+        assert result == [1, 2, 3, 4]
