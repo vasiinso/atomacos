@@ -122,6 +122,7 @@ class TestAXUIElement:
         assert "Press" in sut
         assert "ZoomWindow" in sut
 
+    @pytest.mark.slow
     def test_perform_ax_action(self, frontmost_app):
         zoom_button = frontmost_app.AXMainWindow.AXZoomButton
         zoom_button.ZoomWindow()
