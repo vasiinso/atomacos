@@ -55,3 +55,11 @@ class TestValueConversions:
         result = converter.convert_value(array)
         assert isinstance(result, list)
         assert result == [1, 2, 3, 4]
+
+    def test_convert_num_int(self):
+        from CoreFoundation import CFNumberCreate, kCFNumberIntType
+
+        num = CFNumberCreate(None, kCFNumberIntType, 1.5)
+        result = converter.convert_value(num)
+        assert result == 1
+        assert isinstance(result, int)
