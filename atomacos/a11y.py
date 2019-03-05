@@ -10,6 +10,7 @@ from ApplicationServices import (
     AXUIElementCopyAttributeValue,
     AXUIElementCopyAttributeNames,
     AXUIElementCopyActionNames,
+    AXUIElementGetPid,
     AXUIElementIsAttributeSettable,
     AXUIElementSetAttributeValue,
     kAXErrorSuccess,
@@ -92,6 +93,13 @@ class AXUIElement:
             raise_ax_error(err, "Error retrieving action names")
         else:
             return list(actions)
+
+    @property
+    def pid(self):
+        error_code, pid = AXUIElementGetPid(self.ref, None)
+        if error_code != kAXErrorSuccess:
+            raise_ax_error(error_code, "Error retrieving PID")
+        return pid
 
     @classmethod
     def from_pid(cls, pid):

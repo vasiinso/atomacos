@@ -121,3 +121,8 @@ class TestAXUIElement:
     def test_dir_has_ref(self, frontmost_app):
         assert "ref" in dir(frontmost_app)
         assert "AXTitle" in dir(frontmost_app)
+
+    def test_get_pid(self):
+        pid = support.get_frontmost_pid()
+        app_ref = a11y.AXUIElement.from_pid(pid)
+        assert app_ref.pid == pid
