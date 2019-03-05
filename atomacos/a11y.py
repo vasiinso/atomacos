@@ -22,27 +22,27 @@ class AXUIElement:
         self.ref = ref
 
     def __getattr__(self, item):
-        if item in self.ax_attributes():
+        if item in self.ax_attributes:
             return self._get_ax_attribute(item)
 
     def __setattr__(self, key, value):
         super(AXUIElement, self).__setattr__(key, value)
         try:
-            if key in self.ax_attributes():
+            if key in self.ax_attributes:
                 self._set_ax_attribute(key, value)
         except AXErrorIllegalArgument:
             pass
 
     def __dir__(self):
         return (
-            self.ax_attributes()
-            + self.ax_actions()
+            self.ax_attributes
+            + self.ax_actions
             + super(AXUIElement, self).__dir__()
         )
 
     def _get_ax_attribute(self, item):
         """Get the value of the the specified attribute"""
-        if item in self.ax_attributes():
+        if item in self.ax_attributes:
             err, attrValue = AXUIElementCopyAttributeValue(
                 self.ref, item, None
             )
@@ -72,6 +72,7 @@ class AXUIElement:
         if err != kAXErrorSuccess:
             raise_ax_error(err, "Error setting attribute value")
 
+    @property
     def ax_attributes(self):
         """
         Get a list of attributes available on the AXUIElement
@@ -83,6 +84,7 @@ class AXUIElement:
         else:
             return list(attr)
 
+    @property
     def ax_actions(self):
         """
         Get a list of actions available on the AXUIElement

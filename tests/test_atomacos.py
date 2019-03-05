@@ -104,14 +104,14 @@ class TestAXUIElement:
         assert "System Wide" in str(app_ref.ref)
 
     def test_get_ax_attributes(self, frontmost_app):
-        sut = frontmost_app._get_ax_attributes()
+        sut = frontmost_app.ax_attributes
         assert isinstance(sut, list)
         assert "AXRole" in sut
         assert "AXWindows" in sut
         assert "AXChildren" in sut
 
     def test_get_ax_actions(self, frontmost_app):
-        sut = frontmost_app.ax_actions()
+        sut = frontmost_app.ax_actions
         assert isinstance(sut, list)
 
     def test_basic_get_attr(self, frontmost_app):
