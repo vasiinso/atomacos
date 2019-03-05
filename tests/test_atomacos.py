@@ -1,4 +1,4 @@
-from atomacos import errors, converter, support
+from atomacos import errors, converter, support, a11y
 import pytest
 
 
@@ -78,3 +78,20 @@ class TestHelpers:
         pid = support.get_frontmost_pid()
         assert isinstance(pid, int)
         assert pid > 0
+
+    def test_axenabled(self):
+        assert isinstance(support.axenabled(), bool)
+
+
+class TestAXUIElement:
+    def test_init(self):
+        a11y.AXUIElement()
+
+    def test_app_ref_from_pid(self):
+        pid = support.get_frontmost_pid()
+        app_ref = a11y.AXUIElement.from_pid(pid)
+        assert "Application" in str(app_ref.ref)
+
+    def test_app_ref_from_system_object(self):
+        app_ref = a11y.AXUIElement.systemwide()
+        assert "System Wide" in str(app_ref.ref)
