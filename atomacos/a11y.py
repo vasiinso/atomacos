@@ -10,6 +10,7 @@ from ApplicationServices import (
     AXUIElementCopyAttributeValue,
     AXUIElementCopyAttributeNames,
     AXUIElementCopyActionNames,
+    AXUIElementCopyElementAtPosition,
     AXUIElementGetPid,
     AXUIElementIsAttributeSettable,
     AXUIElementSetAttributeValue,
@@ -146,6 +147,7 @@ class AXUIElement:
         return cls(ref=app_ref)
 
     def __eq__(self, other):
+        print(str(other), str(self))
         if not isinstance(other, type(self)):
             return False
         if self.ref is None and other.ref is None:
@@ -158,6 +160,21 @@ class AXUIElement:
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    def get_element_at_position(self, x, y):
+        if self.ref is None:
+            raise AXErrorUnsupported(
+                "Operation not supported on null element references"
+            )
+
+        err, res = AXUIElementCopyElementAtPosition(self.ref, x, y, None)
+        if err != kAXErrorSuccess:
+            try:
+                raise_ax_error(err, "Unable to get element at position")
+            except AXErrorIllegalArgument:
+                raise ValueError("Arguments must be two floats.")
+
+        return self.__class__(res)
 
 
 def get_frontmost_pid():

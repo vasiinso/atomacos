@@ -198,3 +198,11 @@ class TestAXUIElement:
         range = front_title_ui.AXVisibleCharacterRange
         assert isinstance(range.location, int)
         assert isinstance(range.length, int)
+
+    def test_element_at_current_position(self, front_title_ui):
+        system_ref = a11y.AXUIElement.systemwide()
+        position = front_title_ui.AXPosition
+        element_at_position = system_ref.get_element_at_position(
+            position.x, position.y
+        )
+        assert element_at_position == front_title_ui
