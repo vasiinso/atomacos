@@ -63,3 +63,11 @@ class TestValueConversions:
         result = converter.convert_value(num)
         assert result == 1
         assert isinstance(result, int)
+
+    def test_convert_num_double(self):
+        from CoreFoundation import CFNumberCreate, kCFNumberDoubleType
+
+        num = CFNumberCreate(None, kCFNumberDoubleType, 1.5)
+        result = converter.convert_value(num)
+        assert result == 1.5
+        assert isinstance(result, float)
