@@ -167,5 +167,16 @@ class TestAXUIElement:
     def test_convert_ax_range(self, front_title_ui):
         range = front_title_ui.AXVisibleCharacterRange
         assert isinstance(range, tuple)
-        assert isinstance(range[0], float)
-        assert isinstance(range[1], float)
+        assert isinstance(range[0], int)
+        assert isinstance(range[1], int)
+
+    def test_tuples_are_namedtuples(self, front_title_ui):
+        size = front_title_ui.AXSize
+        position = front_title_ui.AXPosition
+        range = front_title_ui.AXVisibleCharacterRange
+        assert isinstance(size.width, float)
+        assert isinstance(size.height, float)
+        assert isinstance(position.x, float)
+        assert isinstance(position.y, float)
+        assert isinstance(range.location, int)
+        assert isinstance(range.length, int)
