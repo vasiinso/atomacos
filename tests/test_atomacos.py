@@ -1,4 +1,4 @@
-from atomacos import errors, converter, a11y
+from atomacos import errors, converter, a11y, notification
 import pytest
 
 
@@ -128,6 +128,7 @@ class TestAXUIElement:
         assert "ZoomWindow" in sut
 
     @pytest.mark.slow
+    @pytest.mark.skip
     def test_perform_ax_action(self, frontmost_app):
         zoom_button = frontmost_app.AXMainWindow.AXZoomButton
         zoom_button.ZoomWindow()
@@ -206,3 +207,21 @@ class TestAXUIElement:
             position.x, position.y
         )
         assert element_at_position == front_title_ui
+
+
+class TestObserver:
+    def test_observer_init(self, front_title_ui):
+        notification.Observer(front_title_ui)
+
+    @pytest.mark.slow
+    @pytest.mark.skip
+    def test_observer_set_notification(self, monkeypatch, frontmost_app):
+        from ApplicationServices import kAXWindowCreatedNotification
+
+        safari = a11y.AXUIElement.from_pid(36082)
+        observer = notification.Observer(safari)
+        observer.set_notification(
+            timeout=10,
+            notification_name=kAXWindowCreatedNotification,
+            callbackFn=lambda *_, **__: None,
+        )
