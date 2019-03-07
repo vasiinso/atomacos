@@ -617,7 +617,8 @@ class BaseAXUIElement(_a11y.AXUIElement):
                 else:
                     callbackKwargs = kwargs
         else:
-            callbackArgs = (retelem, )
+            if retelem:
+                callbackArgs = (retelem, )
             # Pass the kwargs to the default callback
             callbackKwargs = kwargs
 
