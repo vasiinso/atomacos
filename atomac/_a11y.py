@@ -125,8 +125,34 @@ class AXUIElement(object):
 
         self.observerRes = None
 
+        @objc.callbackFor(AXObserverCreate)
+        def _observer_callback(observer, element, notification, refcon):
+            cb_fn = self.callbackFn
+            cb_args = self.callbackArgs
+            cb_kwargs = self.callbackKwargs
+            if cb_fn is not None:
+                retElem = self.with_ref(element)
+                if retElem is None:
+                    raise RuntimeError('Could not create new AX UI Element.')
+
+                cb_args = (retElem,) + cb_args
+                callbackRes = cb_fn(cb_args, cb_kwargs)
+
+                if callbackRes is None:
+                    raise RuntimeError('Python callback failed.')
+
+                if callbackRes in (-1, 1):
+                    AppHelper.stopEventLoop()
+
+                temp = self.observerRes
+                self.observerRes = callbackRes
+            else:
+                AppHelper.stopEventLoop()
+                temp = self.observerRes
+                self.observerRes = True
+
         pid = self._getPid()
-        err, observer = AXObserverCreate(pid, observerCallback, None)
+        err, observer = AXObserverCreate(pid, _observer_callback, None)
         if err != kAXErrorSuccess:
             _setError(err, 'Could not create observer for notification')
 
@@ -350,32 +376,3 @@ def getSystemObject(cls):
         raise ErrorUnsupported('Error getting a11y object')
 
     return cls.with_ref(app_ref)
-
-
-# callbacks
-# Callback methods for notifications
-def observerCallback(cls, element, contextData):
-    axObj = contextData
-    cb_fn = contextData.callbackFn
-    cb_args = contextData.callbackArgs
-    cb_kwargs = contextData.callbackKwargs
-    if cb_fn is not None:
-        retElem = cls.with_ref(element)
-        if retElem is None:
-            raise RuntimeError('Could not create new AX UI Element.')
-
-        cb_args = (retElem,) + cb_args
-        callbackRes = cb_fn(cb_args, cb_kwargs)
-
-        if callbackRes is None:
-            raise RuntimeError('Python callback failed.')
-
-        if callbackRes in (-1, 1):
-            AppHelper.stopEventLoop()
-
-        temp = axObj.observerRes
-        axObj.observerRes = callbackRes
-    else:
-        AppHelper.stopEventLoop()
-        temp = axObj.observerRes
-        axObj.observerRes = True
