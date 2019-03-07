@@ -130,13 +130,14 @@ class AXUIElement(object):
             cb_fn = self.callbackFn
             cb_args = self.callbackArgs
             cb_kwargs = self.callbackKwargs
+
             if cb_fn is not None:
                 retElem = self.with_ref(element)
                 if retElem is None:
                     raise RuntimeError('Could not create new AX UI Element.')
 
                 cb_args = (retElem,) + cb_args
-                callbackRes = cb_fn(cb_args, cb_kwargs)
+                callbackRes = cb_fn(*cb_args, **cb_kwargs)
 
                 if callbackRes is None:
                     raise RuntimeError('Python callback failed.')
@@ -159,7 +160,7 @@ class AXUIElement(object):
         err = AXObserverAddNotification(
             observer, self.ref,
             notificationStr,
-            self
+            id(self.ref)
         )
 
         if err != kAXErrorSuccess:
@@ -175,11 +176,8 @@ class AXUIElement(object):
         # Set the signal handlers prior to running the run loop
         oldSigIntHandler = MachSignals.signal(signal.SIGINT, _sigHandler)
         # If an error occurs (return value is SIG_ERR), continue as it's not fatal
-        AppHelper.runConsoleEventLoop(
-            mode=kCFRunLoopDefaultMode,
-            installInterrupt=False,
-            maxTimeout=timeout,
-        )
+        AppHelper.callLater(timeout, AppHelper.stopEventLoop)
+        AppHelper.runConsoleEventLoop()
         MachSignals.signal(signal.SIGINT, oldSigIntHandler)
         err = AXObserverRemoveNotification(observer, self.ref, notificationStr)
         if err != kAXErrorSuccess:
