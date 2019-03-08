@@ -1,8 +1,19 @@
+import fnmatch
+
+import AppKit
+from AppKit import NSURL
+
+from PyObjCTools import AppHelper
+
+
 from atomacos import converter
 from atomacos.errors import (
     AXErrorUnsupported,
     raise_ax_error,
     AXErrorIllegalArgument,
+    AXErrorCannotComplete,
+    AXErrorAPIDisabled,
+    AXErrorNotImplemented,
 )
 from ApplicationServices import (
     AXUIElementCreateApplication,
@@ -15,6 +26,7 @@ from ApplicationServices import (
     AXUIElementIsAttributeSettable,
     AXUIElementSetAttributeValue,
     AXUIElementPerformAction,
+    AXUIElementSetMessagingTimeout,
     kAXErrorSuccess,
     CFEqual,
     NSWorkspace,
@@ -108,7 +120,8 @@ class AXUIElement:
         if err != kAXErrorSuccess:
             raise_ax_error(err, "Error retrieving action names")
         else:
-            return list(action[2:] for action in actions)
+            # return list(action[2:] for action in actions)
+            return list(actions)
 
     def _perform_ax_actions(self, name):
         real_action_name = "AX" + name
@@ -146,6 +159,83 @@ class AXUIElement:
 
         return cls(ref=app_ref)
 
+    @classmethod
+    def from_bundle_id(cls, bundle_id):
+        """
+        Get the top level element for the application with the specified
+        bundle ID, such as com.vmware.fusion.
+        """
+        ra = AppKit.NSRunningApplication
+        # return value (apps) is always an array. if there is a match it will
+        # have an item, otherwise it won't.
+        apps = ra.runningApplicationsWithBundleIdentifier_(bundle_id)
+        if len(apps) == 0:
+            raise ValueError(
+                (
+                    "Specified bundle ID not found in "
+                    "running apps: %s" % bundle_id
+                )
+            )
+        pid = apps[0].processIdentifier()
+        return cls.from_pid(pid)
+
+    @classmethod
+    def from_localized_name(cls, name):
+        """Get the top level element for the application with the specified
+        localized name, such as VMware Fusion.
+
+        Wildcards are also allowed.
+        """
+        # Refresh the runningApplications list
+        apps = get_running_apps()
+        for app in apps:
+            if fnmatch.fnmatch(app.localizedName(), name):
+                pid = app.processIdentifier()
+                return cls.from_pid(pid)
+        raise ValueError("Specified application not found in running apps.")
+
+    @classmethod
+    def frontmost(cls):
+        """Get the current frontmost application.
+
+        Raise a ValueError exception if no GUI applications are found.
+        """
+        # Refresh the runningApplications list
+        apps = get_running_apps()
+        for app in apps:
+            pid = app.processIdentifier()
+            ref = cls.from_pid(pid)
+            try:
+                if ref.AXFrontmost:
+                    return ref
+            except (
+                AXErrorUnsupported,
+                AXErrorCannotComplete,
+                AXErrorAPIDisabled,
+                AXErrorNotImplemented,
+            ):
+                # Some applications do not have an explicit GUI
+                # and so will not have an AXFrontmost attribute
+                # Trying to read attributes from Google Chrome Helper returns
+                # ErrorAPIDisabled for some reason - opened radar bug 12837995
+                pass
+        raise ValueError("No GUI application found.")
+
+    @classmethod
+    def with_window(cls):
+        """Get a random app that has windows.
+
+        Raise a ValueError exception if no GUI applications are found.
+        """
+        # Refresh the runningApplications list
+        apps = get_running_apps()
+        for app in apps:
+            pid = app.processIdentifier()
+            ref = cls.from_pid(pid)
+            if hasattr(ref, "windows") and len(ref.windows()) > 0:
+                return ref
+        raise ValueError("No GUI application found.")
+
     def __eq__(self, other):
         print(str(other), str(self))
         if not isinstance(other, type(self)):
@@ -176,6 +266,75 @@ class AXUIElement:
 
         return self.__class__(res)
 
+    @staticmethod
+    def launch_app_by_bundle_id(bundle_id):
+        """Launch the application with the specified bundle ID"""
+        # NSWorkspaceLaunchAllowingClassicStartup does nothing on any
+        # modern system that doesn't have the classic environment installed.
+        # Encountered a bug when passing 0 for no options on 10.6 PyObjC.
+        ws = AppKit.NSWorkspace.sharedWorkspace()
+        # Sorry about the length of the following line
+        r = ws.launchAppWithBundleIdentifier_options_additionalEventParamDescriptor_launchIdentifier_(  # noqa: B950
+            bundle_id,
+            AppKit.NSWorkspaceLaunchAllowingClassicStartup,
+            AppKit.NSAppleEventDescriptor.nullDescriptor(),
+            None,
+        )
+        # On 10.6, this returns a tuple - first element bool result, second is
+        # a number. Let's use the bool result.
+        if not r[0]:
+            raise RuntimeError("Error launching specified application.")
+
+    @staticmethod
+    def launch_app_by_bundle_path(bundle_path, arguments=None):
+        """Launch app with a given bundle path.
+
+        Return True if succeed.
+        """
+        if arguments is None:
+            arguments = []
+
+        bundleUrl = NSURL.fileURLWithPath_(bundle_path)
+        workspace = AppKit.NSWorkspace.sharedWorkspace()
+        configuration = {
+            AppKit.NSWorkspaceLaunchConfigurationArguments: arguments
+        }
+
+        return workspace.launchApplicationAtURL_options_configuration_error_(
+            bundleUrl,
+            AppKit.NSWorkspaceLaunchAllowingClassicStartup,
+            configuration,
+            None,
+        )
+
+    @staticmethod
+    def terminate_app_by_bundle_id(bundle_id):
+        """Terminate app with a given bundle ID.
+        Requires 10.6.
+
+        Return True if succeed.
+        """
+        ra = AppKit.NSRunningApplication
+        appList = ra.runningApplicationsWithBundleIdentifier_(bundle_id)
+        if appList:
+            app = appList[0]
+            return app and app.terminate()
+        return False
+
+    def set_timeout(self, timeout):
+        if self.ref is None:
+            raise AXErrorUnsupported(
+                "Operation not supported on null element references"
+            )
+
+        err = AXUIElementSetMessagingTimeout(self.ref, timeout)
+        try:
+            raise_ax_error(err, "The element reference is invalid")
+        except AXErrorIllegalArgument:
+            raise ValueError(
+                "Accessibility timeout values must be non-negative"
+            )
+
 
 def get_frontmost_pid():
     """Return the PID of the application in the foreground."""
@@ -187,3 +346,13 @@ def get_frontmost_pid():
 def axenabled():
     """Return the status of accessibility on the system."""
     return AXIsProcessTrusted()
+
+
+def get_running_apps():
+    """Get a list of the running applications."""
+    AppHelper.callLater(1, AppHelper.stopEventLoop)
+    AppHelper.runConsoleEventLoop()
+    # Get a list of running applications
+    ws = AppKit.NSWorkspace.sharedWorkspace()
+    apps = ws.runningApplications()
+    return apps
