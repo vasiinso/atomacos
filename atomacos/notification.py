@@ -1,4 +1,3 @@
-import functools
 import logging
 import signal
 
@@ -49,21 +48,27 @@ class Observer:
         if isinstance(callbackKwargs, dict):
             self.callbackKwargs = callbackKwargs
 
-        self.callback = functools.partial(
-            callbackFn, callbackArgs, callbackKwargs
-        )
         self.callback_result = None
         self.timedout = True
 
         @objc.callbackFor(AXObserverCreate)
         def _observer_callback(observer, element, notification, refcon):
-            logger.debug("observer: %s" % observer)
-            logger.debug("element: %s" % element)
-            logger.debug("notification: %s" % notification)
-            logger.debug("refcon: %s" % refcon)
-            self.callback_result = self.callback()
-            self.timedout = False
-            AppHelper.stopEventLoop()
+            if self.callbackFn is not None:
+                ret_element = self.ref.__class__(element)
+                if ret_element is None:
+                    raise RuntimeError("Could not create new AX UI Element.")
+                callback_args = (ret_element,) + self.callbackArgs
+                self.callback_result = self.callbackFn(
+                    *callback_args, **self.callbackKwargs
+                )
+                if self.callback_result is None:
+                    raise RuntimeError("Python callback failed.")
+                if self.callback_result in (-1, 1):
+                    self.timedout = False
+                    AppHelper.stopEventLoop()
+            else:
+                self.timedout = False
+                AppHelper.stopEventLoop()
 
         err, observer = AXObserverCreate(
             self.ref.pid, _observer_callback, None
