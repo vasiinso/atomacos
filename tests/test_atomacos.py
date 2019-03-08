@@ -100,6 +100,9 @@ class TestHelpers:
         assert isinstance(a11y.axenabled(), bool)
 
 
+@pytest.mark.skipif(
+    not a11y.axenabled(), reason="Accessibility Permission Needed"
+)
 class TestAXUIElement:
     def test_init(self):
         a11y.AXUIElement()
@@ -209,12 +212,14 @@ class TestAXUIElement:
         assert element_at_position == front_title_ui
 
 
+@pytest.mark.skipif(
+    not a11y.axenabled(), reason="Accessibility Permission Needed"
+)
 class TestObserver:
     def test_observer_init(self, front_title_ui):
         notification.Observer(front_title_ui)
 
     @pytest.mark.slow
-    @pytest.mark.skip
     def test_observer_set_notification(self, monkeypatch, frontmost_app):
         from ApplicationServices import kAXWindowCreatedNotification
 
