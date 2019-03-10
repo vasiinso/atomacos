@@ -2,9 +2,9 @@
 
 # This file is part of ATOMac.
 
-#@author: Nagappan Alagappan <nagappan@gmail.com>
-#@copyright: Copyright (c) 2009-12 Nagappan Alagappan
-#http://ldtp.freedesktop.org
+# @author: Nagappan Alagappan <nagappan@gmail.com>
+# @copyright: Copyright (c) 2009-12 Nagappan Alagappan
+# http://ldtp.freedesktop.org
 
 # ATOMac is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by the Free
@@ -26,11 +26,14 @@ import fnmatch
 from utils import Utils
 from server_exception import LdtpServerException
 
+
 class PageTabList(Utils):
     def _get_tab_children(self, window_name, object_name):
         object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle:
-            raise LdtpServerException(u"Unable to find object %s" % object_name)
+            raise LdtpServerException(
+                u"Unable to find object %s" % object_name
+            )
         return object_handle.AXChildren
 
     def _get_tab_handle(self, window_name, object_name, tab_name):
@@ -39,25 +42,28 @@ class PageTabList(Utils):
         for current_tab in children:
             role, label = self._ldtpize_accessible(current_tab)
             tmp_tab_name = fnmatch.translate(tab_name)
-            if re.match(tmp_tab_name, label) or \
-                    re.match(tmp_tab_name, u"%s%s" % (role, label)):
+            if re.match(tmp_tab_name, label) or re.match(
+                tmp_tab_name, u"%s%s" % (role, label)
+            ):
                 tab_handle = current_tab
                 break
         if not tab_handle:
             raise LdtpServerException(u"Unable to find tab %s" % tab_name)
         if not tab_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
         return tab_handle
 
     def selecttab(self, window_name, object_name, tab_name):
         """
         Select tab based on name.
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
         @param tab_name: tab to select
         @type data: string
@@ -72,12 +78,12 @@ class PageTabList(Utils):
     def selecttabindex(self, window_name, object_name, tab_index):
         """
         Select tab based on index.
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
         @param tab_index: tab to select
         @type data: integer
@@ -91,19 +97,21 @@ class PageTabList(Utils):
             raise LdtpServerException(u"Invalid tab index %s" % tab_index)
         tab_handle = children[tab_index]
         if not tab_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
         tab_handle.Press()
         return 1
 
     def verifytabname(self, window_name, object_name, tab_name):
         """
         Verify tab name.
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
         @param tab_name: tab to select
         @type data: string
@@ -112,7 +120,9 @@ class PageTabList(Utils):
         @rtype: integer
         """
         try:
-            tab_handle = self._get_tab_handle(window_name, object_name, tab_name)
+            tab_handle = self._get_tab_handle(
+                window_name, object_name, tab_name
+            )
             if tab_handle.AXValue:
                 return 1
         except LdtpServerException:
@@ -122,12 +132,12 @@ class PageTabList(Utils):
     def gettabcount(self, window_name, object_name):
         """
         Get tab count.
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
 
         @return: tab count on success.
@@ -139,12 +149,12 @@ class PageTabList(Utils):
     def gettabname(self, window_name, object_name, tab_index):
         """
         Get tab name
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
         @param tab_index: Index of tab (zero based index)
         @type object_name: int
@@ -158,5 +168,7 @@ class PageTabList(Utils):
             raise LdtpServerException(u"Invalid tab index %s" % tab_index)
         tab_handle = children[tab_index]
         if not tab_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
         return tab_handle.AXTitle

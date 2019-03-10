@@ -34,30 +34,40 @@ from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
 
 # Restrict to a particular path.
 class RequestHandler(SimpleXMLRPCRequestHandler):
-    rpc_paths = ('/RPC2',)
+    rpc_paths = ("/RPC2",)
     encode_threshold = None
 
+
 class LDTPServer(SimpleXMLRPCServer.SimpleXMLRPCServer):
-   '''Class to override some behavior in SimpleXMLRPCServer'''
-   def server_bind(self, *args, **kwargs):
-       '''Server Bind. Forces reuse of port.'''
-       self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-       # Can't use super() here since SimpleXMLRPCServer is an old-style class
-       SimpleXMLRPCServer.SimpleXMLRPCServer.server_bind(self, *args, **kwargs)
+    """Class to override some behavior in SimpleXMLRPCServer"""
+
+    def server_bind(self, *args, **kwargs):
+        """Server Bind. Forces reuse of port."""
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        # Can't use super() here since SimpleXMLRPCServer is an old-style class
+        SimpleXMLRPCServer.SimpleXMLRPCServer.server_bind(
+            self, *args, **kwargs
+        )
+
 
 def notifyclient(parentpid):
     time.sleep(0.1)
     os.kill(int(parentpid), signal.SIGUSR1)
 
-def main(port = 4118, parentpid=None):
+
+def main(port=4118, parentpid=None):
     """Main entry point. Parse command line options and start up a server."""
     if os.environ.has_key("LDTP_DEBUG"):
-        _ldtp_debug=True
+        _ldtp_debug = True
     else:
-        _ldtp_debug=False
-    _ldtp_debug_file = os.environ.get('LDTP_DEBUG_FILE', None)
-    server = LDTPServer(('', port), allow_none=True, logRequests=_ldtp_debug,
-                        requestHandler=RequestHandler)
+        _ldtp_debug = False
+    _ldtp_debug_file = os.environ.get("LDTP_DEBUG_FILE", None)
+    server = LDTPServer(
+        ("", port),
+        allow_none=True,
+        logRequests=_ldtp_debug,
+        requestHandler=RequestHandler,
+    )
     server.register_introspection_functions()
     server.register_multicall_functions()
     ldtp_inst = core.Core()
@@ -74,6 +84,7 @@ def main(port = 4118, parentpid=None):
         if _ldtp_debug_file:
             with open(_ldtp_debug_file, "a") as fp:
                 fp.write(traceback.format_exc())
+
 
 def __main__():
     main()

@@ -3,9 +3,9 @@
 
 # This file is part of ATOMac.
 
-#@author: Nagappan Alagappan <nagappan@gmail.com>
-#@copyright: Copyright (c) 2009-12 Nagappan Alagappan
-#http://ldtp.freedesktop.org
+# @author: Nagappan Alagappan <nagappan@gmail.com>
+# @copyright: Copyright (c) 2009-12 Nagappan Alagappan
+# http://ldtp.freedesktop.org
 
 # ATOMac is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by the Free
@@ -44,10 +44,11 @@ try:
 except ImportError:
     pass
 
+
 class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
     def __init__(self):
         super(Core, self).__init__()
-        self._process_stats={}
+        self._process_stats = {}
 
     def __del__(self):
         for key in self._process_stats.keys():
@@ -55,6 +56,7 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
             self._process_stats[key].stop()
 
     """Core LDTP class"""
+
     def appundertest(self, app_name):
         """
         Application under test
@@ -74,7 +76,7 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @return: return 1 on success
         @rtype: int
         """
-        self._app_under_test=app_name
+        self._app_under_test = app_name
         return 1
 
     def getapplist(self):
@@ -84,16 +86,16 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @return: list of appliction name of string type on success.
         @rtype: list
         """
-        app_list=[]
+        app_list = []
         # Update apps list, before parsing the list
         self._update_apps()
         for gui in self._running_apps:
-            name=gui.localizedName()
+            name = gui.localizedName()
             # default type was objc.pyobjc_unicode
             # convert to Unicode, else exception is thrown
             # TypeError: "cannot marshal <type 'objc.pyobjc_unicode'> objects"
             try:
-                name=unicode(name)
+                name = unicode(name)
             except UnicodeEncodeError:
                 pass
             app_list.append(name)
@@ -127,7 +129,7 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         """
 
         if not self._callback_event:
-            return ''
+            return ""
         return self._callback_event.pop()
 
     def getlastlog(self):
@@ -139,7 +141,7 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         """
 
         if not self._custom_logger.log_events:
-            return ''
+            return ""
 
         return self._custom_logger.log_events.pop()
 
@@ -162,7 +164,9 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
             # If an instance already exist, then stop it
             self._process_stats[process_name].stop()
         # Create an instance of process stat
-        self._process_stats[process_name]=ProcessStats(process_name, interval)
+        self._process_stats[process_name] = ProcessStats(
+            process_name, interval
+        )
         # start monitoring the process
         self._process_stats[process_name].start()
         return 1
@@ -195,8 +199,8 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @rtype: list
         """
         # Create an instance of process stat
-        _stat_inst=ProcessStats(process_name)
-        _stat_list=[]
+        _stat_inst = ProcessStats(process_name)
+        _stat_list = []
         for p in _stat_inst.get_cpu_memory_stat():
             try:
                 _stat_list.append(p.get_cpu_percent())
@@ -217,8 +221,8 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @rtype: list
         """
         # Create an instance of process stat
-        _stat_inst=ProcessStats(process_name)
-        _stat_list=[]
+        _stat_inst = ProcessStats(process_name)
+        _stat_list = []
         for p in _stat_inst.get_cpu_memory_stat():
             # Memory percent returned with 17 decimal values
             # ex: 0.16908645629882812, round it to 2 decimal values
@@ -241,15 +245,19 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @rtype: list
         """
         try:
-            window_handle, name, app=self._get_window_handle(window_name, True)
-            object_list=self._get_appmap(window_handle, name, True)
+            window_handle, name, app = self._get_window_handle(
+                window_name, True
+            )
+            object_list = self._get_appmap(window_handle, name, True)
         except atomac._a11y.ErrorInvalidUIElement:
             # During the test, when the window closed and reopened
             # ErrorInvalidUIElement exception will be thrown
-            self._windows={}
+            self._windows = {}
             # Call the method again, after updating apps
-            window_handle, name, app=self._get_window_handle(window_name, True)
-            object_list=self._get_appmap(window_handle, name, True)
+            window_handle, name, app = self._get_window_handle(
+                window_name, True
+            )
+            object_list = self._get_appmap(window_handle, name, True)
         return object_list.keys()
 
     def getobjectinfo(self, window_name, object_name):
@@ -267,15 +275,17 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @rtype: list
         """
         try:
-            obj_info=self._get_object_map(window_name, object_name,
-                                          wait_for_object=False)
+            obj_info = self._get_object_map(
+                window_name, object_name, wait_for_object=False
+            )
         except atomac._a11y.ErrorInvalidUIElement:
             # During the test, when the window closed and reopened
             # ErrorInvalidUIElement exception will be thrown
-            self._windows={}
+            self._windows = {}
             # Call the method again, after updating apps
-            obj_info=self._get_object_map(window_name, object_name,
-                                          wait_for_object=False)
+            obj_info = self._get_object_map(
+                window_name, object_name, wait_for_object=False
+            )
         props = []
         if obj_info:
             for obj_prop in obj_info.keys():
@@ -302,15 +312,17 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @rtype: string
         """
         try:
-            obj_info=self._get_object_map(window_name, object_name,
-                                          wait_for_object=False)
+            obj_info = self._get_object_map(
+                window_name, object_name, wait_for_object=False
+            )
         except atomac._a11y.ErrorInvalidUIElement:
             # During the test, when the window closed and reopened
             # ErrorInvalidUIElement exception will be thrown
-            self._windows={}
+            self._windows = {}
             # Call the method again, after updating apps
-            obj_info=self._get_object_map(window_name, object_name,
-                                          wait_for_object=False)
+            obj_info = self._get_object_map(
+                window_name, object_name, wait_for_object=False
+            )
         if obj_info and prop != "obj" and prop in obj_info:
             if prop == "class":
                 # ldtp_class_type are compatible with Linux and Windows class name
@@ -319,10 +331,11 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
                 return ldtp_class_type.get(obj_info[prop], obj_info[prop])
             else:
                 return obj_info[prop]
-        raise LdtpServerException('Unknown property "%s" in %s' % \
-                                      (prop, object_name))
+        raise LdtpServerException(
+            'Unknown property "%s" in %s' % (prop, object_name)
+        )
 
-    def getchild(self, window_name, child_name = '', role = '', parent = ''):
+    def getchild(self, window_name, child_name="", role="", parent=""):
         """
         Gets the list of object available in the window, which matches
         component name or role name or both.
@@ -341,29 +354,34 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         """
         matches = []
         if role:
-            role = re.sub(' ', '_', role)
-        self._windows={}
+            role = re.sub(" ", "_", role)
+        self._windows = {}
         if parent and (child_name or role):
-            _window_handle, _window_name = \
-                self._get_window_handle(window_name)[0:2]
+            _window_handle, _window_name = self._get_window_handle(
+                window_name
+            )[0:2]
             if not _window_handle:
-                raise LdtpServerException('Unable to find window "%s"' % \
-                                              window_name)
+                raise LdtpServerException(
+                    'Unable to find window "%s"' % window_name
+                )
             appmap = self._get_appmap(_window_handle, _window_name)
             obj = self._get_object_map(window_name, parent)
+
             def _get_all_children_under_obj(obj, child_list):
-                if role and obj['class'] == role:
-                    child_list.append(obj['label'])
-                elif child_name and self._match_name_to_appmap(child_name, obj):
-                    child_list.append(obj['label'])
+                if role and obj["class"] == role:
+                    child_list.append(obj["label"])
+                elif child_name and self._match_name_to_appmap(
+                    child_name, obj
+                ):
+                    child_list.append(obj["label"])
                 if obj:
-                    children = obj['children']
+                    children = obj["children"]
                 if not children:
                     return child_list
                 for child in children.split():
-                    return _get_all_children_under_obj( \
-                        appmap[child],
-                        child_list)
+                    return _get_all_children_under_obj(
+                        appmap[child], child_list
+                    )
 
             matches = _get_all_children_under_obj(obj, [])
             if not matches:
@@ -373,52 +391,73 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
                     _role = 'role "%s" ' % role
                 if parent:
                     _parent = 'parent "%s"' % parent
-                exception = 'Could not find a child %s%s%s' % (_name, _role, _parent)
+                exception = "Could not find a child %s%s%s" % (
+                    _name,
+                    _role,
+                    _parent,
+                )
                 raise LdtpServerException(exception)
 
             return matches
 
-        _window_handle, _window_name = \
-            self._get_window_handle(window_name)[0:2]
+        _window_handle, _window_name = self._get_window_handle(window_name)[
+            0:2
+        ]
         if not _window_handle:
-            raise LdtpServerException('Unable to find window "%s"' % \
-                                          window_name)
+            raise LdtpServerException(
+                'Unable to find window "%s"' % window_name
+            )
         appmap = self._get_appmap(_window_handle, _window_name)
         for name in appmap.keys():
             obj = appmap[name]
             # When only role arg is passed
-            if role and not child_name and obj['class'] == role:
+            if role and not child_name and obj["class"] == role:
                 matches.append(name)
             # When parent and child_name arg is passed
-            if parent and child_name and not role and \
-                    self._match_name_to_appmap(parent, obj):
+            if (
+                parent
+                and child_name
+                and not role
+                and self._match_name_to_appmap(parent, obj)
+            ):
                 matches.append(name)
             # When only child_name arg is passed
-            if child_name and not role and \
-                    self._match_name_to_appmap(child_name, obj):
+            if (
+                child_name
+                and not role
+                and self._match_name_to_appmap(child_name, obj)
+            ):
                 return name
                 matches.append(name)
             # When role and child_name args are passed
-            if role and child_name and obj['class'] == role and \
-                    self._match_name_to_appmap(child_name, obj):
+            if (
+                role
+                and child_name
+                and obj["class"] == role
+                and self._match_name_to_appmap(child_name, obj)
+            ):
                 matches.append(name)
 
         if not matches:
-            _name = ''
-            _role = ''
-            _parent = ''
+            _name = ""
+            _role = ""
+            _parent = ""
             if child_name:
                 _name = 'name "%s" ' % child_name
             if role:
                 _role = 'role "%s" ' % role
             if parent:
                 _parent = 'parent "%s"' % parent
-            exception = 'Could not find a child %s%s%s' % (_name, _role, _parent)
+            exception = "Could not find a child %s%s%s" % (
+                _name,
+                _role,
+                _parent,
+            )
             raise LdtpServerException(exception)
 
         return matches
 
-    def launchapp(self, cmd, args = [], delay = 0, env = 1, lang = "C"):
+    def launchapp(self, cmd, args=[], delay=0, env=1, lang="C"):
         """
         Launch application.
 
@@ -515,7 +554,7 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @return: 1 on success.
         @rtype: integer
         """
-        window_handle=self._get_window_handle(window_name)
+        window_handle = self._get_window_handle(window_name)
         self._grabfocus(window_handle)
         return 1
 
@@ -533,19 +572,23 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @return: 1 on success.
         @rtype: integer
         """
-        object_handle=self._get_object_handle(window_name, object_name)
+        object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
-        size=self._getobjectsize(object_handle)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
+        size = self._getobjectsize(object_handle)
         self._grabfocus(object_handle)
-        self.wait(0.5) 
-        
+        self.wait(0.5)
+
         # If object doesn't support Press, trying clicking with the object
         # coordinates, where size=(x, y, width, height)
         # click on center of the widget
         # Noticed this issue on clicking AXImage
         # click('Instruments*', 'Automation')
-        self.generatemouseevent(size[0] + size[2]/2, size[1] + size[3]/2, "b1c")
+        self.generatemouseevent(
+            size[0] + size[2] / 2, size[1] + size[3] / 2, "b1c"
+        )
         return 1
 
     def getallstates(self, window_name, object_name):
@@ -562,7 +605,7 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @return: list of string on success.
         @rtype: list
         """
-        object_handle=self._get_object_handle(window_name, object_name)
+        object_handle = self._get_object_handle(window_name, object_name)
         _obj_states = []
         if object_handle.AXEnabled:
             _obj_states.append("enabled")
@@ -574,14 +617,16 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
                     _obj_states.append("focusable")
             except:
                 pass
-        if re.match("AXCheckBox", object_handle.AXRole, re.M | re.U | re.L) or \
-                re.match("AXRadioButton", object_handle.AXRole,
-                         re.M | re.U | re.L):
+        if re.match(
+            "AXCheckBox", object_handle.AXRole, re.M | re.U | re.L
+        ) or re.match(
+            "AXRadioButton", object_handle.AXRole, re.M | re.U | re.L
+        ):
             if object_handle.AXValue:
                 _obj_states.append("checked")
         return _obj_states
 
-    def hasstate(self, window_name, object_name, state, guiTimeOut = 0):
+    def hasstate(self, window_name, object_name, state, guiTimeOut=0):
         """
         has state
 
@@ -601,7 +646,7 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @rtype: integer
         """
         try:
-            object_handle=self._get_object_handle(window_name, object_name)
+            object_handle = self._get_object_handle(window_name, object_name)
             if state == "enabled":
                 return int(object_handle.AXEnabled)
             elif state == "focused":
@@ -609,10 +654,11 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
             elif state == "focusable":
                 return int(object_handle.AXFocused)
             elif state == "checked":
-                if re.match("AXCheckBox", object_handle.AXRole,
-                            re.M | re.U | re.L) or \
-                            re.match("AXRadioButton", object_handle.AXRole,
-                                     re.M | re.U | re.L):
+                if re.match(
+                    "AXCheckBox", object_handle.AXRole, re.M | re.U | re.L
+                ) or re.match(
+                    "AXRadioButton", object_handle.AXRole, re.M | re.U | re.L
+                ):
                     if object_handle.AXValue:
                         return 1
         except:
@@ -634,9 +680,9 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @rtype: list
         """
         if not object_name:
-            handle, name, app=self._get_window_handle(window_name)
+            handle, name, app = self._get_window_handle(window_name)
         else:
-            handle=self._get_object_handle(window_name, object_name)
+            handle = self._get_object_handle(window_name, object_name)
         return self._getobjectsize(handle)
 
     def getwindowsize(self, window_name):
@@ -666,9 +712,9 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @rtype: integer
         """
         if not object_name:
-            handle, name, app=self._get_window_handle(window_name)
+            handle, name, app = self._get_window_handle(window_name)
         else:
-            handle=self._get_object_handle(window_name, object_name)
+            handle = self._get_object_handle(window_name, object_name)
         return self._grabfocus(handle)
 
     def guiexist(self, window_name, object_name=None):
@@ -686,13 +732,16 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @rtype: integer
         """
         try:
-            self._windows={}
+            self._windows = {}
             if not object_name:
-                handle, name, app=self._get_window_handle(window_name, False)
+                handle, name, app = self._get_window_handle(window_name, False)
             else:
-                handle=self._get_object_handle(window_name, object_name,
-                                               wait_for_object=False,
-                                               force_remap=True)
+                handle = self._get_object_handle(
+                    window_name,
+                    object_name,
+                    wait_for_object=False,
+                    force_remap=True,
+                )
             # If window and/or object exist, exception will not be thrown
             # blindly return 1
             return 1
@@ -701,7 +750,7 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         return 0
 
     def guitimeout(self, timeout):
-      """
+        """
       Change GUI timeout period, default 30 seconds.
 
       @param timeout: timeout in seconds
@@ -710,11 +759,11 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
       @return: 1 on success.
       @rtype: integer
       """
-      self._window_timeout=timeout
-      return 1
+        self._window_timeout = timeout
+        return 1
 
     def objtimeout(self, timeout):
-      """
+        """
       Change object timeout period, default 5 seconds.
 
       @param timeout: timeout in seconds
@@ -723,11 +772,12 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
       @return: 1 on success.
       @rtype: integer
       """
-      self._obj_timeout=timeout
-      return 1
+        self._obj_timeout = timeout
+        return 1
 
-    def waittillguiexist(self, window_name, object_name = '',
-                         guiTimeOut = 30, state = ''):
+    def waittillguiexist(
+        self, window_name, object_name="", guiTimeOut=30, state=""
+    ):
         """
         Wait till a window or component exists.
 
@@ -755,7 +805,7 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         # Object and/or window doesn't appear within the timeout period
         return 0
 
-    def waittillguinotexist(self, window_name, object_name = '', guiTimeOut = 30):
+    def waittillguinotexist(self, window_name, object_name="", guiTimeOut=30):
         """
         Wait till a window does not exist.
 
@@ -796,7 +846,7 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @rtype: integer
         """
         try:
-            object_handle=self._get_object_handle(window_name, object_name)
+            object_handle = self._get_object_handle(window_name, object_name)
             return 1
         except LdtpServerException:
             return 0
@@ -816,7 +866,7 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @rtype: integer
         """
         try:
-            object_handle=self._get_object_handle(window_name, object_name)
+            object_handle = self._get_object_handle(window_name, object_name)
             if object_handle.AXEnabled:
                 return 1
         except LdtpServerException:
@@ -838,16 +888,18 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @rtype: integer
         """
         # FIXME: Check for object type
-        object_handle=self._get_object_handle(window_name, object_name)
+        object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
         if object_handle.AXValue == 1:
             # Already checked
             return 1
         # AXPress doesn't work with Instruments
         # So did the following work around
         self._grabfocus(object_handle)
-        x, y, width, height=self._getobjectsize(object_handle)
+        x, y, width, height = self._getobjectsize(object_handle)
         # Mouse left click on the object
         # Note: x + width/2, y + height / 2 doesn't work
         self.generatemouseevent(x + width / 2, y + height / 2, "b1c")
@@ -867,16 +919,18 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @return: 1 on success.
         @rtype: integer
         """
-        object_handle=self._get_object_handle(window_name, object_name)
+        object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
         if object_handle.AXValue == 0:
             # Already unchecked
             return 1
         # AXPress doesn't work with Instruments
         # So did the following work around
         self._grabfocus(object_handle)
-        x, y, width, height=self._getobjectsize(object_handle)
+        x, y, width, height = self._getobjectsize(object_handle)
         # Mouse left click on the object
         # Note: x + width/2, y + height / 2 doesn't work
         self.generatemouseevent(x + width / 2, y + height / 2, "b1c")
@@ -897,8 +951,9 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @rtype: integer
         """
         try:
-            object_handle=self._get_object_handle(window_name, object_name,
-                                                  wait_for_object=False)
+            object_handle = self._get_object_handle(
+                window_name, object_name, wait_for_object=False
+            )
             if object_handle.AXValue == 1:
                 return 1
         except LdtpServerException:
@@ -920,8 +975,9 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         @rtype: integer
         """
         try:
-            object_handle=self._get_object_handle(window_name, object_name,
-                                                  wait_for_object=False)
+            object_handle = self._get_object_handle(
+                window_name, object_name, wait_for_object=False
+            )
             if object_handle.AXValue == 0:
                 return 1
         except LdtpServerException:
@@ -947,55 +1003,55 @@ class Core(ComboBox, Menu, Mouse, PageTabList, Text, Table, Value, Generic):
         # In Mac noticed (in accessibility inspector) only menu had access keys
         # so, get the menu_handle of given object and
         # return the access key
-        menu_handle=self._get_menu_handle(window_name, object_name)
-        key=menu_handle.AXMenuItemCmdChar
-        modifiers=menu_handle.AXMenuItemCmdModifiers
-        glpyh=menu_handle.AXMenuItemCmdGlyph
-        virtual_key=menu_handle.AXMenuItemCmdVirtualKey
-        modifiers_type=""
+        menu_handle = self._get_menu_handle(window_name, object_name)
+        key = menu_handle.AXMenuItemCmdChar
+        modifiers = menu_handle.AXMenuItemCmdModifiers
+        glpyh = menu_handle.AXMenuItemCmdGlyph
+        virtual_key = menu_handle.AXMenuItemCmdVirtualKey
+        modifiers_type = ""
         if modifiers == 0:
-            modifiers_type="<command>"
+            modifiers_type = "<command>"
         elif modifiers == 1:
-            modifiers_type="<shift><command>"
+            modifiers_type = "<shift><command>"
         elif modifiers == 2:
-            modifiers_type="<option><command>"
+            modifiers_type = "<option><command>"
         elif modifiers == 3:
-            modifiers_type="<option><shift><command>"
+            modifiers_type = "<option><shift><command>"
         elif modifiers == 4:
-            modifiers_type="<ctrl><command>"
+            modifiers_type = "<ctrl><command>"
         elif modifiers == 6:
-            modifiers_type="<ctrl><option><command>"
+            modifiers_type = "<ctrl><option><command>"
         # Scroll up
-        if virtual_key==115 and glpyh==102:
-            modifiers="<option>"
-            key="<cursor_left>"
+        if virtual_key == 115 and glpyh == 102:
+            modifiers = "<option>"
+            key = "<cursor_left>"
         # Scroll down
-        elif virtual_key==119 and glpyh==105:
-            modifiers="<option>"
-            key="<right>"
+        elif virtual_key == 119 and glpyh == 105:
+            modifiers = "<option>"
+            key = "<right>"
         # Page up
-        elif virtual_key==116 and glpyh==98:
-            modifiers="<option>"
-            key="<up>"
+        elif virtual_key == 116 and glpyh == 98:
+            modifiers = "<option>"
+            key = "<up>"
         # Page down
-        elif virtual_key==121 and glpyh==107:
-            modifiers="<option>"
-            key="<down>"
+        elif virtual_key == 121 and glpyh == 107:
+            modifiers = "<option>"
+            key = "<down>"
         # Line up
-        elif virtual_key==126 and glpyh==104:
-            key="<up>"
+        elif virtual_key == 126 and glpyh == 104:
+            key = "<up>"
         # Line down
-        elif virtual_key==125 and glpyh==106:
-            key="<down>"
+        elif virtual_key == 125 and glpyh == 106:
+            key = "<down>"
         # Noticed in  Google Chrome navigating next tab
-        elif virtual_key==124 and glpyh==101:
-            key="<right>"
+        elif virtual_key == 124 and glpyh == 101:
+            key = "<right>"
         # Noticed in  Google Chrome navigating previous tab
-        elif virtual_key==123 and glpyh==100:
-            key="<left>"
+        elif virtual_key == 123 and glpyh == 100:
+            key = "<left>"
         # List application in a window to Force Quit
-        elif virtual_key==53 and glpyh==27:
-            key="<escape>"
+        elif virtual_key == 53 and glpyh == 27:
+            key = "<escape>"
         # FIXME:
         # * Instruments Menu View->Run Browser
         # modifiers==12 virtual_key==48 glpyh==2

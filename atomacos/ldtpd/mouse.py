@@ -1,14 +1,14 @@
- # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 # Copyright (c) 2012 VMware, Inc. All Rights Reserved.
 
 # This file is part of ATOMac.
 
-#@author: Nagappan Alagappan <nagappan@gmail.com>
-#@copyright: Copyright (c) 2009-14 Nagappan Alagappan
-#@author: Sigbjørn Vik <sigbjorn@opera.com>
-#@Copyright (C) 2013-14 Opera Software ASA (generatemouseevent API).
-#http://ldtp.freedesktop.org
+# @author: Nagappan Alagappan <nagappan@gmail.com>
+# @copyright: Copyright (c) 2009-14 Nagappan Alagappan
+# @author: Sigbjørn Vik <sigbjorn@opera.com>
+# @Copyright (C) 2013-14 Opera Software ASA (generatemouseevent API).
+# http://ldtp.freedesktop.org
 
 # ATOMac is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by the Free
@@ -25,13 +25,15 @@
 """Mouse class."""
 
 import time
-from Quartz import CGEventCreateMouseEvent,\
-                  CGEventPost,\
-                  kCGHIDEventTap,\
-                  CGEventSetIntegerValueField,\
-                  kCGMouseEventClickState,\
-                  CGEventGetLocation,\
-                  CGEventCreate
+from Quartz import (
+    CGEventCreateMouseEvent,
+    CGEventPost,
+    kCGHIDEventTap,
+    CGEventSetIntegerValueField,
+    kCGMouseEventClickState,
+    CGEventGetLocation,
+    CGEventCreate,
+)
 from Quartz import kCGEventMouseMoved as move
 from Quartz import kCGEventLeftMouseDown as press_left
 from Quartz import kCGEventLeftMouseUp as release_left
@@ -59,20 +61,32 @@ drag_default_button = 100
 # Global value to remember if any button should be down during moves
 drag_button_remembered = None
 
-mouse_click_override = {'single_click': single_click, 'double_click': double_click,
-                        'triple_click': triple_click, 'move': move,
-                        'press_left': press_left, 'release_left': release_left,
-                        'drag_left': drag_left, 'press_right': press_right,
-                        'release_right': release_right, 'drag_right': drag_right,
-                        'press_other': press_other, 'release_other': release_other,
-                        'drag_other': drag_other, 'left': left, 'right': right,
-                        'centre': centre, 'drag_default_button': drag_default_button}
+mouse_click_override = {
+    "single_click": single_click,
+    "double_click": double_click,
+    "triple_click": triple_click,
+    "move": move,
+    "press_left": press_left,
+    "release_left": release_left,
+    "drag_left": drag_left,
+    "press_right": press_right,
+    "release_right": release_right,
+    "drag_right": drag_right,
+    "press_other": press_other,
+    "release_other": release_other,
+    "drag_other": drag_other,
+    "left": left,
+    "right": right,
+    "centre": centre,
+    "drag_default_button": drag_default_button,
+}
+
 
 class Mouse(Utils):
     def mouseleftclick(self, window_name, object_name):
         """
         Mouse left click on an object.
-        
+
         @param window_name: Window name to look for, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
@@ -85,7 +99,9 @@ class Mouse(Utils):
         """
         object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
         self._grabfocus(object_handle)
         x, y, width, height = self._getobjectsize(object_handle)
         # Mouse left click on the object
@@ -95,7 +111,7 @@ class Mouse(Utils):
     def mouserightclick(self, window_name, object_name):
         """
         Mouse right click on an object.
-        
+
         @param window_name: Window name to look for, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
@@ -108,18 +124,21 @@ class Mouse(Utils):
         """
         object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
         self._grabfocus(object_handle)
         x, y, width, height = self._getobjectsize(object_handle)
         # Mouse right click on the object
         object_handle.clickMouseButtonRight((x + width / 2, y + height / 2))
         return 1
 
-    def generatemouseevent(self, x, y, eventType="b1c",
-                           drag_button_override='drag_default_button'):
+    def generatemouseevent(
+        self, x, y, eventType="b1c", drag_button_override="drag_default_button"
+    ):
         """
         Generate mouse event on x, y co-ordinates.
-        
+
         @param x: X co-ordinate
         @type x: int
         @param y: Y co-ordinate
@@ -138,14 +157,16 @@ class Mouse(Utils):
         @rtype: integer
         """
         if drag_button_override not in mouse_click_override:
-            raise ValueError('Unsupported drag_button_override type: %s' % \
-                             drag_button_override)
+            raise ValueError(
+                "Unsupported drag_button_override type: %s"
+                % drag_button_override
+            )
         global drag_button_remembered
         point = (x, y)
         button = centre  # Only matters for "other" buttons
         click_type = None
         if eventType == "abs" or eventType == "rel":
-            if drag_button_override is not 'drag_default_button':
+            if drag_button_override is not "drag_default_button":
                 events = [mouse_click_override[drag_button_override]]
             elif drag_button_remembered:
                 events = [drag_button_remembered]
@@ -189,13 +210,16 @@ class Mouse(Utils):
             events = [press_right, release_right]
             click_type = double_click
         else:
-            raise LdtpServerException(u"Mouse event '%s' not implemented" % eventType)
+            raise LdtpServerException(
+                u"Mouse event '%s' not implemented" % eventType
+            )
 
         for event in events:
             CG_event = CGEventCreateMouseEvent(None, event, point, button)
             if click_type:
                 CGEventSetIntegerValueField(
-                    CG_event, kCGMouseEventClickState, click_type)
+                    CG_event, kCGMouseEventClickState, click_type
+                )
             CGEventPost(kCGHIDEventTap, CG_event)
             # Give the event time to happen
             time.sleep(0.01)
@@ -204,7 +228,7 @@ class Mouse(Utils):
     def mousemove(self, window_name, object_name):
         """
         Mouse move on an object.
-        
+
         @param window_name: Window name to look for, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
@@ -220,7 +244,7 @@ class Mouse(Utils):
     def doubleclick(self, window_name, object_name):
         """
         Double click on the object
-        
+
         @param window_name: Window name to look for, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
@@ -233,16 +257,18 @@ class Mouse(Utils):
         """
         object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
         self._grabfocus(object_handle)
         x, y, width, height = self._getobjectsize(object_handle)
-        window=self._get_front_most_window()
+        window = self._get_front_most_window()
         # Mouse double click on the object
-        #object_handle.doubleClick()
+        # object_handle.doubleClick()
         window.doubleClickMouse((x + width / 2, y + height / 2))
         return 1
 
-    def simulatemousemove(self, source_x, source_y, dest_x, dest_y, delay = 0.0):
+    def simulatemousemove(self, source_x, source_y, dest_x, dest_y, delay=0.0):
         """
         @param source_x: Source X
         @type source_x: integer

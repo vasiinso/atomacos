@@ -17,13 +17,14 @@
 
 # noinspection PyUnresolvedReferences
 from future import standard_library
+
 standard_library.install_aliases()
 
-from . import _a11y
+from atomac import _a11y
 from .AXClasses import NativeUIElement
 from .Clipboard import Clipboard
 from .Prefs import Prefs
-from .version import __version__
+from atomac.version import __version__
 
 # Exceptions
 Error = _a11y.Error

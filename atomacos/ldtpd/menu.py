@@ -2,9 +2,9 @@
 
 # This file is part of ATOMac.
 
-#@author: Nagappan Alagappan <nagappan@gmail.com>
-#@copyright: Copyright (c) 2009-12 Nagappan Alagappan
-#http://ldtp.freedesktop.org
+# @author: Nagappan Alagappan <nagappan@gmail.com>
+# @copyright: Copyright (c) 2009-12 Nagappan Alagappan
+# http://ldtp.freedesktop.org
 
 # ATOMac is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by the Free
@@ -26,21 +26,26 @@ import atomac
 from utils import Utils
 from server_exception import LdtpServerException
 
+
 class Menu(Utils):
-    def _get_menu_handle(self, window_name, object_name,
-                               wait_for_window=True):
-        menu_list=re.split(";", object_name)
+    def _get_menu_handle(self, window_name, object_name, wait_for_window=True):
+        menu_list = re.split(";", object_name)
         # Call base class get_menu_handle
         try:
-            menu_handle=Utils._get_menu_handle(self, window_name,
-                                               menu_list[0], wait_for_window)
-        except (atomac._a11y.ErrorCannotComplete, atomac._a11y.ErrorInvalidUIElement):
+            menu_handle = Utils._get_menu_handle(
+                self, window_name, menu_list[0], wait_for_window
+            )
+        except (
+            atomac._a11y.ErrorCannotComplete,
+            atomac._a11y.ErrorInvalidUIElement,
+        ):
             # During the test, when the window closed and reopened
             # ErrorCannotComplete exception will be thrown
-            self._windows={}
+            self._windows = {}
             # Call the method again, after updating apps
-            menu_handle=Utils._get_menu_handle(self, window_name,
-                                               menu_list[0], wait_for_window)
+            menu_handle = Utils._get_menu_handle(
+                self, window_name, menu_list[0], wait_for_window
+            )
         if len(menu_list) <= 1:
             # If only first level menu is given, return the handle
             return menu_handle
@@ -60,9 +65,11 @@ class Menu(Utils):
         @return: 1 on success.
         @rtype: integer
         """
-        menu_handle=self._get_menu_handle(window_name, object_name)
+        menu_handle = self._get_menu_handle(window_name, object_name)
         if not menu_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
         menu_handle.Press()
         return 1
 
@@ -83,8 +90,9 @@ class Menu(Utils):
         @rtype: integer
         """
         try:
-            menu_handle=self._get_menu_handle(window_name, object_name,
-                                              False)
+            menu_handle = self._get_menu_handle(
+                window_name, object_name, False
+            )
             return 1
         except LdtpServerException:
             return 0
@@ -104,8 +112,9 @@ class Menu(Utils):
         @rtype: integer
         """
         try:
-            menu_handle=self._get_menu_handle(window_name, object_name,
-                                              False)
+            menu_handle = self._get_menu_handle(
+                window_name, object_name, False
+            )
             if menu_handle.AXEnabled:
                 return 1
         except LdtpServerException:
@@ -115,7 +124,7 @@ class Menu(Utils):
     def listsubmenus(self, window_name, object_name):
         """
         List children of menu item
-        
+
         @param window_name: Window name to look for, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
@@ -126,24 +135,25 @@ class Menu(Utils):
         @return: menu item in list on success.
         @rtype: list
         """
-        menu_handle=self._get_menu_handle(window_name, object_name)
-        role, label=self._ldtpize_accessible(menu_handle)
-        menu_clicked=False
+        menu_handle = self._get_menu_handle(window_name, object_name)
+        role, label = self._ldtpize_accessible(menu_handle)
+        menu_clicked = False
         try:
             if not menu_handle.AXChildren:
-                menu_clicked=True
+                menu_clicked = True
                 try:
                     menu_handle.Press()
                     self.wait(1)
                 except atomac._a11y.ErrorCannotComplete:
                     pass
                 if not menu_handle.AXChildren:
-                    raise LdtpServerException(u"Unable to find children under menu %s" % \
-                                                  label)
-            children=menu_handle.AXChildren[0]
-            sub_menus=[]
+                    raise LdtpServerException(
+                        u"Unable to find children under menu %s" % label
+                    )
+            children = menu_handle.AXChildren[0]
+            sub_menus = []
             for current_menu in children.AXChildren:
-                role, label=self._ldtpize_accessible(current_menu)
+                role, label = self._ldtpize_accessible(current_menu)
                 if not label:
                     # All splitters have empty label
                     continue
@@ -168,8 +178,9 @@ class Menu(Utils):
         @rtype: integer
         """
         try:
-            menu_handle=self._get_menu_handle(window_name, object_name,
-                                                      False)
+            menu_handle = self._get_menu_handle(
+                window_name, object_name, False
+            )
             try:
                 if menu_handle.AXMenuItemMarkChar:
                     # Checked
@@ -195,8 +206,9 @@ class Menu(Utils):
         @rtype: integer
         """
         try:
-            menu_handle=self._get_menu_handle(window_name, object_name,
-                                              False)
+            menu_handle = self._get_menu_handle(
+                window_name, object_name, False
+            )
             try:
                 if not menu_handle.AXMenuItemMarkChar:
                     # Unchecked
@@ -221,9 +233,11 @@ class Menu(Utils):
         @return: 1 on success.
         @rtype: integer
         """
-        menu_handle=self._get_menu_handle(window_name, object_name)
+        menu_handle = self._get_menu_handle(window_name, object_name)
         if not menu_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
         try:
             if menu_handle.AXMenuItemMarkChar:
                 # Already checked
@@ -247,9 +261,11 @@ class Menu(Utils):
         @return: 1 on success.
         @rtype: integer
         """
-        menu_handle=self._get_menu_handle(window_name, object_name)
+        menu_handle = self._get_menu_handle(window_name, object_name)
         if not menu_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
         try:
             if not menu_handle.AXMenuItemMarkChar:
                 # Already unchecked

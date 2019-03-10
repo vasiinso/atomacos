@@ -2,9 +2,9 @@
 
 # This file is part of ATOMac.
 
-#@author: Nagappan Alagappan <nagappan@gmail.com>
-#@copyright: Copyright (c) 2009-12 Nagappan Alagappan
-#http://ldtp.freedesktop.org
+# @author: Nagappan Alagappan <nagappan@gmail.com>
+# @copyright: Copyright (c) 2009-12 Nagappan Alagappan
+# http://ldtp.freedesktop.org
 
 # ATOMac is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by the Free
@@ -28,12 +28,13 @@ from utils import Utils
 from keypress_actions import KeyComboAction, KeyPressAction, KeyReleaseAction
 from server_exception import LdtpServerException
 
+
 class Text(Utils):
     def generatekeyevent(self, data):
         """
         Generates key event to the system, this simulates the best user like
         interaction via keyboard.
-        
+
         @param data: data to type.
         @type data: string
 
@@ -54,9 +55,9 @@ class Text(Utils):
         @rtype: integer
         """
         try:
-            window=self._get_front_most_window()
-        except (IndexError, ):
-            window=self._get_any_window()
+            window = self._get_front_most_window()
+        except (IndexError,):
+            window = self._get_any_window()
         key_press_action = KeyPressAction(window, data)
         return 1
 
@@ -71,21 +72,21 @@ class Text(Utils):
         @rtype: integer
         """
         try:
-            window=self._get_front_most_window()
-        except (IndexError, ):
-            window=self._get_any_window()
+            window = self._get_front_most_window()
+        except (IndexError,):
+            window = self._get_any_window()
         key_release_action = KeyReleaseAction(window, data)
         return 1
 
-    def enterstring(self, window_name, object_name='', data=''):
+    def enterstring(self, window_name, object_name="", data=""):
         """
         Type string sequence.
-        
+
         @param window_name: Window name to focus on, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to focus on, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
         @param data: data to type.
         @type data: string
@@ -96,9 +97,11 @@ class Text(Utils):
         if not object_name and not data:
             return self.generatekeyevent(window_name)
         else:
-            object_handle=self._get_object_handle(window_name, object_name)
+            object_handle = self._get_object_handle(window_name, object_name)
             if not object_handle.AXEnabled:
-                raise LdtpServerException(u"Object %s state disabled" % object_name)
+                raise LdtpServerException(
+                    u"Object %s state disabled" % object_name
+                )
             self._grabfocus(object_handle)
             object_handle.sendKeys(data)
             return 1
@@ -106,12 +109,12 @@ class Text(Utils):
     def settextvalue(self, window_name, object_name, data):
         """
         Type string sequence.
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
         @param data: data to type.
         @type data: string
@@ -119,21 +122,25 @@ class Text(Utils):
         @return: 1 on success.
         @rtype: integer
         """
-        object_handle=self._get_object_handle(window_name, object_name)
+        object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
-        object_handle.AXValue=data
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
+        object_handle.AXValue = data
         return 1
 
-    def gettextvalue(self, window_name, object_name, startPosition=0, endPosition=0):
+    def gettextvalue(
+        self, window_name, object_name, startPosition=0, endPosition=0
+    ):
         """
         Get text value
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
         @param startPosition: Starting position of text to fetch
         @type: startPosition: int
@@ -143,20 +150,22 @@ class Text(Utils):
         @return: text on success.
         @rtype: string
         """
-        object_handle=self._get_object_handle(window_name, object_name)
+        object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
         return object_handle.AXValue
 
     def inserttext(self, window_name, object_name, position, data):
         """
         Insert string sequence in given position.
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
         @param position: position where text has to be entered.
         @type data: int
@@ -166,28 +175,31 @@ class Text(Utils):
         @return: 1 on success.
         @rtype: integer
         """
-        object_handle=self._get_object_handle(window_name, object_name)
+        object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
-        existing_data=object_handle.AXValue
-        size=len(existing_data)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
+        existing_data = object_handle.AXValue
+        size = len(existing_data)
         if position < 0:
-            position=0
+            position = 0
         if position > size:
-            position=size
-        object_handle.AXValue=existing_data[:position] + data + \
-            existing_data[position:]
+            position = size
+        object_handle.AXValue = (
+            existing_data[:position] + data + existing_data[position:]
+        )
         return 1
 
     def verifypartialmatch(self, window_name, object_name, partial_text):
         """
         Verify partial text
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
         @param partial_text: Partial text to match
         @type object_name: string
@@ -196,9 +208,10 @@ class Text(Utils):
         @rtype: integer
         """
         try:
-            if re.search(fnmatch.translate(partial_text),
-                         self.gettextvalue(window_name,
-                                           object_name)):
+            if re.search(
+                fnmatch.translate(partial_text),
+                self.gettextvalue(window_name, object_name),
+            ):
                 return 1
         except:
             pass
@@ -207,12 +220,12 @@ class Text(Utils):
     def verifysettext(self, window_name, object_name, text):
         """
         Verify text is set correctly
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
         @param text: text to match
         @type object_name: string
@@ -221,28 +234,31 @@ class Text(Utils):
         @rtype: integer
         """
         try:
-            return int(re.match(fnmatch.translate(text),
-                                self.gettextvalue(window_name,
-                                                  object_name)))
+            return int(
+                re.match(
+                    fnmatch.translate(text),
+                    self.gettextvalue(window_name, object_name),
+                )
+            )
         except:
             return 0
 
     def istextstateenabled(self, window_name, object_name):
         """
         Verifies text state enabled or not
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
 
         @return: 1 on success 0 on failure.
         @rtype: integer
         """
         try:
-            object_handle=self._get_object_handle(window_name, object_name)
+            object_handle = self._get_object_handle(window_name, object_name)
             if object_handle.AXEnabled:
                 return 1
         except LdtpServerException:
@@ -252,31 +268,33 @@ class Text(Utils):
     def getcharcount(self, window_name, object_name):
         """
         Get character count
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
 
         @return: 1 on success.
         @rtype: integer
         """
-        object_handle=self._get_object_handle(window_name, object_name)
+        object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
         return object_handle.AXNumberOfCharacters
 
     def appendtext(self, window_name, object_name, data):
         """
         Append string sequence.
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
         @param data: data to type.
         @type data: string
@@ -284,40 +302,44 @@ class Text(Utils):
         @return: 1 on success.
         @rtype: integer
         """
-        object_handle=self._get_object_handle(window_name, object_name)
+        object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
         object_handle.AXValue += data
         return 1
 
     def getcursorposition(self, window_name, object_name):
         """
         Get cursor position
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
 
         @return: Cursor position on success.
         @rtype: integer
         """
-        object_handle=self._get_object_handle(window_name, object_name)
+        object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
         return object_handle.AXSelectedTextRange.loc
 
     def setcursorposition(self, window_name, object_name, cursor_position):
         """
         Set cursor position
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
         @param cursor_position: Cursor position to be set
         @type object_name: string
@@ -325,21 +347,25 @@ class Text(Utils):
         @return: 1 on success.
         @rtype: integer
         """
-        object_handle=self._get_object_handle(window_name, object_name)
+        object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
-        object_handle.AXSelectedTextRange.loc=cursor_position
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
+        object_handle.AXSelectedTextRange.loc = cursor_position
         return 1
 
-    def cuttext(self, window_name, object_name, start_position, end_position=-1):
+    def cuttext(
+        self, window_name, object_name, start_position, end_position=-1
+    ):
         """
         cut text from start position to end position
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
         @param start_position: Start position
         @type object_name: integer
@@ -350,28 +376,32 @@ class Text(Utils):
         @return: 1 on success.
         @rtype: integer
         """
-        object_handle=self._get_object_handle(window_name, object_name)
+        object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
-        size=object_handle.AXNumberOfCharacters
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
+        size = object_handle.AXNumberOfCharacters
         if end_position == -1 or end_position > size:
-            end_position=size
+            end_position = size
         if start_position < 0:
-            start_position=0
-        data=object_handle.AXValue
+            start_position = 0
+        data = object_handle.AXValue
         Clipboard.copy(data[start_position:end_position])
-        object_handle.AXValue=data[:start_position] + data[end_position:]
+        object_handle.AXValue = data[:start_position] + data[end_position:]
         return 1
 
-    def copytext(self, window_name, object_name, start_position, end_position=-1):
+    def copytext(
+        self, window_name, object_name, start_position, end_position=-1
+    ):
         """
         copy text from start position to end position
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
         @param start_position: Start position
         @type object_name: integer
@@ -382,28 +412,31 @@ class Text(Utils):
         @return: 1 on success.
         @rtype: integer
         """
-        object_handle=self._get_object_handle(window_name, object_name)
+        object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
-        size=object_handle.AXNumberOfCharacters
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
+        size = object_handle.AXNumberOfCharacters
         if end_position == -1 or end_position > size:
-            end_position=size
+            end_position = size
         if start_position < 0:
-            start_position=0
-        data=object_handle.AXValue
+            start_position = 0
+        data = object_handle.AXValue
         Clipboard.copy(data[start_position:end_position])
         return 1
 
-
-    def deletetext(self, window_name, object_name, start_position, end_position=-1):
+    def deletetext(
+        self, window_name, object_name, start_position, end_position=-1
+    ):
         """
         delete text from start position to end position
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
         @param start_position: Start position
         @type object_name: integer
@@ -414,27 +447,29 @@ class Text(Utils):
         @return: 1 on success.
         @rtype: integer
         """
-        object_handle=self._get_object_handle(window_name, object_name)
+        object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
-        size=object_handle.AXNumberOfCharacters
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
+        size = object_handle.AXNumberOfCharacters
         if end_position == -1 or end_position > size:
-            end_position=size
+            end_position = size
         if start_position < 0:
-            start_position=0
-        data=object_handle.AXValue
-        object_handle.AXValue=data[:start_position] + data[end_position:]
+            start_position = 0
+        data = object_handle.AXValue
+        object_handle.AXValue = data[:start_position] + data[end_position:]
         return 1
 
     def pastetext(self, window_name, object_name, position=0):
         """
         paste text from start position to end position
-        
+
         @param window_name: Window name to type in, either full name,
         LDTP's name convention, or a Unix glob.
         @type window_name: string
         @param object_name: Object name to type in, either full name,
-        LDTP's name convention, or a Unix glob. 
+        LDTP's name convention, or a Unix glob.
         @type object_name: string
         @param position: Position to paste the text, default 0
         @type object_name: integer
@@ -442,15 +477,17 @@ class Text(Utils):
         @return: 1 on success.
         @rtype: integer
         """
-        object_handle=self._get_object_handle(window_name, object_name)
+        object_handle = self._get_object_handle(window_name, object_name)
         if not object_handle.AXEnabled:
-            raise LdtpServerException(u"Object %s state disabled" % object_name)
-        size=object_handle.AXNumberOfCharacters
+            raise LdtpServerException(
+                u"Object %s state disabled" % object_name
+            )
+        size = object_handle.AXNumberOfCharacters
         if position > size:
-            position=size
+            position = size
         if position < 0:
-            position=0
-        clipboard=Clipboard.paste()
-        data=object_handle.AXValue
-        object_handle.AXValue=data[:position] + clipboard + data[position:]
+            position = 0
+        clipboard = Clipboard.paste()
+        data = object_handle.AXValue
+        object_handle.AXValue = data[:position] + clipboard + data[position:]
         return 1
