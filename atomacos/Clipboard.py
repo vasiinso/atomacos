@@ -107,13 +107,13 @@ class Clipboard(object):
         """
         pp = pprint.PrettyPrinter()
 
-        copy_data = 'Data to copy (put in pasteboard): %s'
+        copy_data = "Data to copy (put in pasteboard): %s"
         logging.debug(copy_data % pp.pformat(data))
 
         # Clear the pasteboard first:
         cleared = cls.clearAll()
         if not cleared:
-            logging.warning('Clipboard could not clear properly')
+            logging.warning("Clipboard could not clear properly")
             return False
 
         # Prepare to write the data
@@ -137,7 +137,7 @@ class Clipboard(object):
         Returns: True on success; caller should expect to catch exceptions,
                  probably from AppKit (ValueError)
         """
-        log_msg = 'Request to clear contents of pasteboard: general'
+        log_msg = "Request to clear contents of pasteboard: general"
         logging.debug(log_msg)
         pb = AppKit.NSPasteboard.generalPasteboard()
         pb.clearContents()
@@ -152,7 +152,7 @@ class Clipboard(object):
         Returns: True on success; caller should catch exceptions raised,
                  e.g. from AppKit (ValueError)
         """
-        log_msg = 'Request to clear properties of pasteboard: general'
+        log_msg = "Request to clear properties of pasteboard: general"
         logging.debug(log_msg)
         pb = AppKit.NSPasteboard.generalPasteboard()
         pb.clearProperties()
@@ -186,20 +186,21 @@ class Clipboard(object):
         if not isinstance(datatype, types.ListType):
             datatype = [datatype]
         pp = pprint.PrettyPrinter()
-        logging.debug('Desired datatypes: %s' % pp.pformat(datatype))
+        logging.debug("Desired datatypes: %s" % pp.pformat(datatype))
         opt_dict = {}
-        logging.debug('Results filter is: %s' % pp.pformat(opt_dict))
+        logging.debug("Results filter is: %s" % pp.pformat(opt_dict))
 
         try:
-            log_msg = 'Request to verify pasteboard is empty'
+            log_msg = "Request to verify pasteboard is empty"
             logging.debug(log_msg)
             pb = AppKit.NSPasteboard.generalPasteboard()
             # canReadObjectForClasses_options_() seems to return an int (> 0 if
             # True)
             # Need to negate to get the sense we want (True if can not read the
             # data type from the pasteboard)
-            its_empty = not bool(pb.canReadObjectForClasses_options_(datatype,
-                                                                     opt_dict))
+            its_empty = not bool(
+                pb.canReadObjectForClasses_options_(datatype, opt_dict)
+            )
         except ValueError as error:
             logging.exception(error)
             raise

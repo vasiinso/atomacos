@@ -17,7 +17,14 @@
 
 import Quartz
 
-from .AXKeyCodeConstants import *
+from atomacos.AXKeyCodeConstants import (
+    COMMAND,
+    SHIFT,
+    OPTION,
+    CONTROL,
+    DEFAULT_KEYBOARD,
+    specialKeys,
+)
 
 
 # Based on the flags provided in the Quartz documentation it does not seem

@@ -17,11 +17,11 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
 # St, Fifth Floor, Boston, MA 02110-1301 USA.
 from future import standard_library
-standard_library.install_aliases()
-
 from AppKit import NSWorkspace, NSUserDefaults, NSDictionary
 from collections import UserDict
 from os import path
+
+standard_library.install_aliases()
 
 __all__ = ["Prefs"]
 
@@ -39,7 +39,9 @@ class Prefs(UserDict):
     p['CoolStuff'] = newCoolStuff
     """
 
-    def __init__(self, bundleID, bundlePath=None, defaultsPlistName='Defaults'):
+    def __init__(
+        self, bundleID, bundlePath=None, defaultsPlistName="Defaults"
+    ):
         """
         bundleId: the application bundle identifier
         bundlePath: the full bundle path (useful to test a Debug build)
@@ -60,11 +62,15 @@ class Prefs(UserDict):
         else:
             self.data = NSDictionary.dictionary()
 
-    def __defaults(self, plistName='Defaults'):
+    def __defaults(self, plistName="Defaults"):
         if self.__bundlePath is None:
-            self.__bundlePath = NSWorkspace.sharedWorkspace().absolutePathForAppBundleWithIdentifier_(self.__bundleID)
+            self.__bundlePath = NSWorkspace.sharedWorkspace().absolutePathForAppBundleWithIdentifier_(  # noqa:: B950
+                self.__bundleID
+            )
         if self.__bundlePath:
-            plistPath = path.join(self.__bundlePath, "Contents/Resources/%s.plist" % plistName)
+            plistPath = path.join(
+                self.__bundlePath, "Contents/Resources/%s.plist" % plistName
+            )
             plist = NSDictionary.dictionaryWithContentsOfFile_(plistPath)
             if plist:
                 return plist
@@ -75,7 +81,7 @@ class Prefs(UserDict):
 
     def __getitem__(self, key):
         result = self.data.get(key, None)
-        if result is None or result == '':
+        if result is None or result == "":
             if self.defaults:
                 result = self.defaults.get(key, None)
         return result
