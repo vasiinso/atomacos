@@ -19,6 +19,8 @@ class Converter:
         self.app_ref_class = axuielementclass
 
     def convert_value(self, value):
+        if value is None:
+            return value
         if CFGetTypeID(value) == AXUIElementGetTypeID():
             return self.convert_app_ref(value)
         if CFGetTypeID(value) == CFArrayGetTypeID():
@@ -36,7 +38,7 @@ class Converter:
         return [self.convert_value(item) for item in value]
 
     def convert_app_ref(self, value):
-        return self.app_ref_class(value)
+        return self.app_ref_class(ref=value)
 
     def convert_size(self, value):
         repr_searched = re.search("{.*}", str(value)).group()
