@@ -784,7 +784,7 @@ class BaseAXUIElement(a11y.AXUIElement):
         if name.startswith("AX"):
             return self._setAttribute(name, value)
         else:
-            a11y.AXUIElement.__setattr__(self, name, value)
+            super(BaseAXUIElement, self).__setattr__(name, value)
 
 
 class NativeUIElement(BaseAXUIElement):
@@ -794,11 +794,11 @@ class NativeUIElement(BaseAXUIElement):
 
     def getAttributes(self):
         """Get a list of the attributes available on the element."""
-        return self._getAttributes()
+        return self.ax_attributes
 
     def getActions(self):
         """Return a list of the actions available on the element."""
-        return self._getActions()
+        return self.ax_actions
 
     def setString(self, attribute, string):
         """Set the specified attribute to the specified string."""
