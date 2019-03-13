@@ -779,13 +779,6 @@ class BaseAXUIElement(a11y.AXUIElement):
         else:
             return super(BaseAXUIElement, self).__getattr__(name)
 
-    def __setattr__(self, name, value):
-        """Set attributes on the object."""
-        if name.startswith("AX"):
-            return self._setAttribute(name, value)
-        else:
-            super(BaseAXUIElement, self).__setattr__(name, value)
-
 
 class NativeUIElement(BaseAXUIElement):
     """NativeUIElement class - expose the accessibility API in the simplest,
