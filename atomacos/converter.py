@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from CoreFoundation import CFGetTypeID, CFArrayGetTypeID
+from CoreFoundation import CFGetTypeID, CFArrayGetTypeID, CFStringGetTypeID
 from ApplicationServices import (
     AXUIElementGetTypeID,
     AXValueGetType,
@@ -21,6 +21,11 @@ class Converter:
     def convert_value(self, value):
         if value is None:
             return value
+        if CFGetTypeID(value) == CFStringGetTypeID():
+            try:
+                return str(value)
+            except UnicodeError:
+                return value.encode("utf-8")
         if CFGetTypeID(value) == AXUIElementGetTypeID():
             return self.convert_app_ref(value)
         if CFGetTypeID(value) == CFArrayGetTypeID():
