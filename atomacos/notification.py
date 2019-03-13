@@ -60,14 +60,16 @@ class Observer:
                 if ret_element is None:
                     raise RuntimeError("Could not create new AX UI Element.")
                 callback_args = (ret_element,) + self.callbackArgs
-                self.callback_result = self.callbackFn(
+                callback_result = self.callbackFn(
                     *callback_args, **self.callbackKwargs
                 )
-                if self.callback_result is None:
+                if callback_result is None:
                     raise RuntimeError("Python callback failed.")
-                if self.callback_result in (-1, 1):
+                if callback_result in (-1, 1):
                     self.timedout = False
                     AppHelper.stopEventLoop()
+
+                self.callback_result = callback_result
             else:
                 self.timedout = False
                 AppHelper.stopEventLoop()
