@@ -38,6 +38,10 @@ class BaseAXUIElement(a11y.AXUIElement):
     4. waitFor utility based upon AX notifications.
     """
 
+    def __init__(self, ref=None):
+        super(BaseAXUIElement, self).__init__(ref=ref)
+        self.eventList = deque()
+
     @classmethod
     def _getRunningApps(cls):
         """Get a list of the running applications."""
@@ -166,9 +170,6 @@ class BaseAXUIElement(a11y.AXUIElement):
 
         Each event in queue is a tuple (event call, args to event call).
         """
-        if not hasattr(self, "eventList"):
-            self.eventList = deque([(event, args)])
-            return
         self.eventList.append((event, args))
 
     def _addKeyToQueue(self, keychr, modFlags=0, globally=False):
