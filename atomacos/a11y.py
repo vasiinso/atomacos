@@ -35,7 +35,7 @@ from ApplicationServices import (
 )
 
 
-class AXUIElement:
+class AXUIElement(object):
     def __init__(self, ref=None):
         self.ref = ref
         self.converter = converter.Converter(self.__class__)
