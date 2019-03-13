@@ -769,7 +769,7 @@ class BaseAXUIElement(a11y.AXUIElement):
         """
         if name.startswith("AX"):
             try:
-                attr = self._getAttribute(name)
+                attr = super(BaseAXUIElement, self).__getattr__(name)
                 return attr
             except AttributeError:
                 pass
