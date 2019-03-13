@@ -47,6 +47,8 @@ class Observer:
 
         if isinstance(callbackKwargs, dict):
             self.callbackKwargs = callbackKwargs
+        else:
+            self.callbackKwargs = dict()
 
         self.callback_result = None
         self.timedout = True

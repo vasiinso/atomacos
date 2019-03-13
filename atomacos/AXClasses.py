@@ -23,9 +23,9 @@ import AppKit
 import Quartz
 
 from atomacos import a11y, errors
-from . import AXKeyboard
-from . import AXCallbacks
-from . import AXKeyCodeConstants
+from atomacos import AXKeyboard
+from atomacos import AXCallbacks
+from atomacos import AXKeyCodeConstants
 
 
 class BaseAXUIElement(a11y.AXUIElement):
@@ -797,7 +797,7 @@ class BaseAXUIElement(a11y.AXUIElement):
             return performSpecifiedAction
         else:
             raise AttributeError(
-                "Object %s has no attribute %s" % (self, name)
+                "Object %s has no attribute %s" % (self.__class__, name)
             )
 
     def __setattr__(self, name, value):
