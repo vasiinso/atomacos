@@ -18,8 +18,12 @@
 # St, Fifth Floor, Boston, MA 02110-1301 USA.
 from future import standard_library
 from AppKit import NSWorkspace, NSUserDefaults, NSDictionary
-from collections import UserDict
 from os import path
+
+try:
+    from collections import UserDict
+except ImportError:
+    from UserDict import UserDict
 
 standard_library.install_aliases()
 
