@@ -767,38 +767,17 @@ class BaseAXUIElement(a11y.AXUIElement):
         2. See if the attribute is an action which can be invoked on the
            UIElement. If so, return a function that will invoke the attribute.
         """
-        if name.startswith("AX"):
-            try:
-                attr = super(BaseAXUIElement, self).__getattr__(name)
-                return attr
-            except AttributeError:
-                pass
-
-        # Populate the list of callable actions:
-        actions = []
-        try:
-            actions = self._getActions()
-        except Exception:
-            pass
-
-        if name.startswith("AX") and (name[2:] in actions):
-            errStr = (
-                "Actions on an object should be called without AX " "prepended"
-            )
-            raise AttributeError(errStr)
-
-        if name in actions:
+        if "AX" + name in self.ax_actions:
+            action = super(BaseAXUIElement, self).__getattr__("AX" + name)
 
             def performSpecifiedAction():
                 # activate the app before performing the specified action
                 self._activate()
-                return self._performAction(name)
+                return action()
 
             return performSpecifiedAction
         else:
-            raise AttributeError(
-                "Object %s has no attribute %s" % (self.__class__, name)
-            )
+            return super(BaseAXUIElement, self).__getattr__(name)
 
     def __setattr__(self, name, value):
         """Set attributes on the object."""
@@ -806,29 +785,6 @@ class BaseAXUIElement(a11y.AXUIElement):
             return self._setAttribute(name, value)
         else:
             a11y.AXUIElement.__setattr__(self, name, value)
-
-    def __repr__(self):
-        """Build a descriptive string for UIElements."""
-        title = repr("")
-        role = "<No role!>"
-        c = repr(self.__class__).partition("<class '")[-1].rpartition("'>")[0]
-        try:
-            title = repr(self.AXTitle)
-        except Exception:
-            try:
-                title = repr(self.AXValue)
-            except Exception:
-                try:
-                    title = repr(self.AXRoleDescription)
-                except Exception:
-                    pass
-        try:
-            role = self.AXRole
-        except Exception:
-            pass
-        if len(title) > 20:
-            title = title[:20] + "...'"
-        return "<%s %s %s>" % (c, role, title)
 
 
 class NativeUIElement(BaseAXUIElement):

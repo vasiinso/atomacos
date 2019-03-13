@@ -14,6 +14,7 @@ from atomacos.errors import (
     AXErrorCannotComplete,
     AXErrorAPIDisabled,
     AXErrorNotImplemented,
+    AXError,
 )
 from ApplicationServices import (
     AXUIElementCreateApplication,
@@ -39,6 +40,29 @@ class AXUIElement:
         self.ref = ref
         self.converter = converter.Converter(self.__class__)
 
+    def __repr__(self):
+        """Build a descriptive string for UIElements."""
+        title = repr("")
+        role = "<No role!>"
+        c = repr(self.__class__).partition("<class '")[-1].rpartition("'>")[0]
+        try:
+            title = repr(self.AXTitle)
+        except Exception:
+            try:
+                title = repr(self.AXValue)
+            except Exception:
+                try:
+                    title = repr(self.AXRoleDescription)
+                except Exception:
+                    pass
+        try:
+            role = self.AXRole
+        except Exception:
+            pass
+        if len(title) > 20:
+            title = title[:20] + "...'"
+        return "<%s %s %s>" % (c, role, title)
+
     def __getattr__(self, item):
         if item in self.ax_attributes:
             return self._get_ax_attribute(item)
@@ -49,7 +73,7 @@ class AXUIElement:
 
             return perform_ax_action
         else:
-            raise AttributeError("%s has no attribute '%s'" % (self, item))
+            raise AXError("Object has no attribute '%s'" % (item))
 
     def __setattr__(self, key, value):
         super(AXUIElement, self).__setattr__(key, value)
