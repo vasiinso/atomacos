@@ -76,12 +76,14 @@ class AXUIElement:
             raise AXError("Object has no attribute '%s'" % (item))
 
     def __setattr__(self, key, value):
-        super(AXUIElement, self).__setattr__(key, value)
-        try:
-            if key in self.ax_attributes:
-                self._set_ax_attribute(key, value)
-        except AXErrorIllegalArgument:
-            pass
+        if key.startswith("AX"):
+            try:
+                if key in self.ax_attributes:
+                    self._set_ax_attribute(key, value)
+            except AXErrorIllegalArgument:
+                pass
+        else:
+            super(AXUIElement, self).__setattr__(key, value)
 
     def __dir__(self):
         return (
@@ -144,7 +146,6 @@ class AXUIElement:
         if err != kAXErrorSuccess:
             raise_ax_error(err, "Error retrieving action names")
         else:
-            # return list(action[2:] for action in actions)
             return list(actions)
 
     def _perform_ax_actions(self, name):
@@ -260,7 +261,6 @@ class AXUIElement:
         raise ValueError("No GUI application found.")
 
     def __eq__(self, other):
-        print(str(other), str(self))
         if not isinstance(other, type(self)):
             return False
         if self.ref is None and other.ref is None:
