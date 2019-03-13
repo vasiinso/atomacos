@@ -622,7 +622,8 @@ class BaseAXUIElement(a11y.AXUIElement):
         if children:
             for child in children:
                 yield child
-                yield from self._generateChildrenR(child)
+                for c in self._generateChildrenR(child):
+                    yield c
 
     def _match(self, **kwargs):
         """Method which indicates if the object matches specified criteria.
