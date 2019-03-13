@@ -124,8 +124,7 @@ class AXUIElement:
             return list(actions)
 
     def _perform_ax_actions(self, name):
-        real_action_name = "AX" + name
-        err = AXUIElementPerformAction(self.ref, real_action_name)
+        err = AXUIElementPerformAction(self.ref, name)
 
         if err != kAXErrorSuccess:
             raise_ax_error(err, "Error performing requested action")

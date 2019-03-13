@@ -127,15 +127,17 @@ class TestAXUIElement:
         zoom_button = frontmost_app.AXMainWindow.AXZoomButton
         sut = zoom_button.ax_actions
         assert isinstance(sut, list)
-        assert "Press" in sut
-        assert "ZoomWindow" in sut
+        assert "AXPress" in sut
+        assert "AXZoomWindow" in sut
 
     @pytest.mark.slow
-    @pytest.mark.skip
+    @pytest.mark.skipif(
+        not a11y.axenabled(), reason="Accessibility Permission Needed"
+    )
     def test_perform_ax_action(self, frontmost_app):
         zoom_button = frontmost_app.AXMainWindow.AXZoomButton
-        zoom_button.ZoomWindow()
-        zoom_button.ZoomWindow()
+        zoom_button.AXZoomWindow()
+        zoom_button.AXZoomWindow()
 
     def test_basic_get_attr(self, frontmost_app):
         assert isinstance(frontmost_app.AXTitle, str)
@@ -223,7 +225,9 @@ class TestObserver:
     def test_observer_set_notification(self, monkeypatch, frontmost_app):
         from ApplicationServices import kAXWindowCreatedNotification
 
-        safari = a11y.AXUIElement.from_pid(36082)
+        bid = "com.apple.Safari"
+        a11y.AXUIElement.launch_app_by_bundle_id(bid)
+        safari = a11y.AXUIElement.from_bundle_id(bid)
         observer = notification.Observer(safari)
         observer.set_notification(
             timeout=10,
