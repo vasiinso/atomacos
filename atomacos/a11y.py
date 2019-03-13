@@ -45,9 +45,10 @@ class AXUIElement:
         title = repr("")
         role = "<No role!>"
         c = repr(self.__class__).partition("<class '")[-1].rpartition("'>")[0]
+
         try:
             title = repr(self.AXTitle)
-        except Exception:
+        except AXError:
             try:
                 title = repr(self.AXValue)
             except Exception:
@@ -57,7 +58,7 @@ class AXUIElement:
                     pass
         try:
             role = self.AXRole
-        except Exception:
+        except AXError:
             pass
         if len(title) > 20:
             title = title[:20] + "...'"
