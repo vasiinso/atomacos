@@ -26,6 +26,7 @@ from atomacos import a11y, errors
 from atomacos import AXKeyboard
 from atomacos import AXCallbacks
 from atomacos import AXKeyCodeConstants
+from atomacos.notification import Observer
 
 
 class BaseAXUIElement(a11y.AXUIElement):
@@ -563,11 +564,12 @@ class BaseAXUIElement(a11y.AXUIElement):
                 else:
                     callbackKwargs = kwargs
         else:
-            callbackArgs = (retelem,)
+            if retelem:
+                callbackArgs = (retelem,)
             # Pass the kwargs to the default callback
             callbackKwargs = kwargs
 
-        return self._setNotification(
+        return Observer(self).set_notification(
             timeout, notification, callback, callbackArgs, callbackKwargs
         )
 
