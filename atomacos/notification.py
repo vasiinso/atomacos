@@ -24,6 +24,7 @@ except ImportError:
 from atomacos import errors
 
 logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
 
 
 def _sigHandler(sig):
