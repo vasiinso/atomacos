@@ -1,7 +1,7 @@
 # Atomacos - Automated Testing on macOS
-[![Build Status](https://img.shields.io/travis/daveenguyen/atomacos.svg?style=flat-square)](https://travis-ci.org/daveenguyen/atomacos)
 [![pypi](https://img.shields.io/pypi/v/atomacos.svg?style=flat-square)](https://pypi.org/project/atomacos/)
-
+[![Build Status](https://img.shields.io/travis/daveenguyen/atomacos.svg?style=flat-square)](https://travis-ci.org/daveenguyen/atomacos)
+[![codecov](https://img.shields.io/codecov/c/github/daveenguyen/atomacos.svg?style=flat-square)](https://codecov.io/gh/daveenguyen/atomacos/)
 
 This library is a fork of [atomac].
 It was created to provide a release with python 3 support because
