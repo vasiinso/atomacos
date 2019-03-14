@@ -29,6 +29,7 @@ after_script:
 - ".env/imgur.sh/imgur.sh .env/screen.png"
 deploy:
   provider: script
+  skip_cleanup: true
   script: bash scripts/deploy.sh $TRAVIS_TAG
   on:
     all_branches: true
