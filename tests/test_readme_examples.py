@@ -41,17 +41,23 @@ def test_search_by_axattributes(automator_app):
 
 @pytest.mark.skipif(not axenabled(), reason="Accessibility Permission Needed")
 def test_get_list_of_attributes(automator_app):
-    close = automator_app.findFirstR(AXRole="AXButton", AXTitle="Close")
+    window = automator_app.windows()[0]
+    sheet = window.sheets()[0]
+    close = sheet.findFirst(AXRole="AXButton", AXTitle="Close")
     assert len(close.getAttributes()) > 0
 
 
 @pytest.mark.skipif(not axenabled(), reason="Accessibility Permission Needed")
 def test_get_list_of_actions(automator_app):
-    close = automator_app.findFirstR(AXRole="AXButton", AXTitle="Close")
+    window = automator_app.windows()[0]
+    sheet = window.sheets()[0]
+    close = sheet.findFirst(AXRole="AXButton", AXTitle="Close")
     assert len(close.getActions()) > 0
 
 
 @pytest.mark.skipif(not axenabled(), reason="Accessibility Permission Needed")
 def test_perform_action(automator_app):
-    close = automator_app.findFirstR(AXRole="AXButton", AXTitle="Close")
+    window = automator_app.windows()[0]
+    sheet = window.sheets()[0]
+    close = sheet.findFirst(AXRole="AXButton", AXTitle="Close")
     close.Press()
