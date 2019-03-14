@@ -11,10 +11,12 @@ def app_by_bid(bid):
     if not any([bid in str(app) for app in running_apps]):
         atomacos.launchAppByBundleId(bid)
     app = atomacos.NativeUIElement.from_bundle_id(bid)
-    while len(app.windowsR()) == 0:
+    while not app.windowsR():
         time.sleep(1)
-        app.menuItem("File", "New*").Press()
-        time.sleep(1)
+        if not app.windowsR():
+            app.menuItem("File", "New*").Press()
+        else:
+            break
     return app
 
 
