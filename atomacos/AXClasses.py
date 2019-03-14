@@ -790,7 +790,7 @@ class NativeUIElement(BaseAXUIElement):
 
     def getActions(self):
         """Return a list of the actions available on the element."""
-        return self.ax_actions
+        return self._getActions()
 
     def setString(self, attribute, string):
         """Set the specified attribute to the specified string."""
