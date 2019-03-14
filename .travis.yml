@@ -28,8 +28,16 @@ after_script:
 - screencapture .env/screen.png
 - ".env/imgur.sh/imgur.sh .env/screen.png"
 deploy:
-  provider: script
-  skip_cleanup: true
-  script: bash scripts/deploy.sh $TRAVIS_TAG
-  on:
-    all_branches: true
+  - provider: script
+    skip_cleanup: true
+    script: bash scripts/deploy-pre.sh
+    on:
+      osx_image: xcode7.3
+      all_branches: true
+  - provider: script
+    skip_cleanup: true
+    script: bash scripts/deploy-prod.sh
+    on:
+      tags: true
+      osx_image: xcode7.3
+      branch: master
