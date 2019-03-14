@@ -238,6 +238,7 @@ class AXUIElement(object):
                 if ref.AXFrontmost:
                     return ref
             except (
+                AttributeError,
                 AXErrorUnsupported,
                 AXErrorCannotComplete,
                 AXErrorAPIDisabled,
