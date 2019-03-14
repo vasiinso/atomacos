@@ -1,0 +1,32 @@
+os: osx
+
+osx_image:
+  - xcode9.4 # 10.13 - default
+  - xcode8.3 # 10.12
+  - xcode7.3 # 10.11
+  - xcode6.4 # 10.10
+
+language: generic
+
+env:
+  - INSTALL_TYPE=macpython VERSION=3.7.2 VENV=venv
+
+before_install:
+  - sudo sqlite3 '/Library/Application Support/com.apple.TCC/Tcc.db' 'INSERT or REPLACE INTO "access" (service, client, client_type, allowed, prompt_count) VALUES("kTCCServiceAccessibility","/Users/travis/runner.rb",1,1,0)' || true
+  - mkdir .env
+  - git clone https://github.com/MacPython/terryfy.git .env/terryfy
+  - git clone https://github.com/tremby/imgur.sh .env/imgur.sh
+  - chmod +x .env/imgur.sh/imgur.sh
+  - source .env/terryfy/travis_tools.sh
+  - get_python_environment $INSTALL_TYPE $VERSION $VENV
+
+install:
+  - python -m pip install -U pip tox flit
+
+script:
+  - flit build
+  - tox --installpkg dist/*.whl
+
+after_script:
+  - screencapture .env/screen.png
+  - .env/imgur.sh/imgur.sh .env/screen.png
