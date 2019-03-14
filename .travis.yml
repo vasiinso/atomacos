@@ -27,7 +27,7 @@ after_failure:
 - screencapture .env/screen.png
 - ".env/imgur.sh/imgur.sh .env/screen.png"
 after_success:
-- tox -e docs --installpkg dist/*.whl
+- test $TRAVIS_BRANCH = "master" && test $TRAVIS_PULL_REQUEST = "false" && tox -e docs --installpkg dist/*.whl
 deploy:
   - provider: script
     skip_cleanup: true
