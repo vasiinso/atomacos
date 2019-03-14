@@ -116,15 +116,15 @@ class BaseAXUIElement(a11y.AXUIElement):
         """
         return a11y.AXUIElement.terminate_app_by_bundle_id(bundleID)
 
-    @staticmethod
-    def set_systemwide_timeout(timeout=0.0):
+    @classmethod
+    def set_systemwide_timeout(cls, timeout=0.0):
         """Set the system-wide accessibility timeout.
 
         Optional: timeout (non-negative float; defaults to 0)
                   A value of 0 will reset the timeout to the system default.
         Returns: None.
         """
-        return BaseAXUIElement.systemwide().setTimeout(timeout)
+        return cls.systemwide().setTimeout(timeout)
 
     def setTimeout(self, timeout=0.0):
         """Set the accessibiltiy API timeout on the given reference.
@@ -736,7 +736,7 @@ class BaseAXUIElement(a11y.AXUIElement):
     def _getBundleId(self):
         """Return the bundle ID of the application."""
         ra = AppKit.NSRunningApplication
-        app = ra.runningApplicationWithProcessIdentifier_(self._getPid())
+        app = ra.runningApplicationWithProcessIdentifier_(self.pid)
         return app.bundleIdentifier()
 
     def _getLocalizedName(self):
