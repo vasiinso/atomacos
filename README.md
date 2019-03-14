@@ -149,7 +149,7 @@ Any action can be triggered this way.
 - [Source] Code
 - Changes
     - [Commits] page has all changes to the project.
-    - [Releases] page will also outline changes
+    - [Release] page will also outline changes
 - Thanks [ATOMac] and [PyObjC]
 
 
