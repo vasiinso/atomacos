@@ -2,12 +2,12 @@
 requires = ["flit"]
 build-backend = "flit.buildapi"
 
+
 [tool.flit.metadata]
 module = "atomacos"
 author = "Davee Nguyen"
 author-email = "davee@daveenguyen.com"
-home-page = "https://github.com/davee_nguyen/atomacos"
-classifiers = ["License :: Other/Proprietary License"]
+home-page = "https://github.com/daveenguyen/atomacos"
 requires = [
     "pyobjc-core>=3.0.4",
     "pyobjc-framework-Cocoa>=3.0.4",
@@ -16,6 +16,29 @@ requires = [
     "pyobjc-framework-CoreText>=3.0.4",
     "future",
 ]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: MacOS X",
+    "Environment :: MacOS X :: Cocoa",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+    "Operating System :: MacOS",
+    "Operating System :: MacOS :: MacOS X",
+    "Programming Language :: Objective C",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.4",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: User Interfaces",
+]
+description-file="README.md"
 
 [tool.flit.metadata.requires-extra]
 dev = [
@@ -29,6 +52,7 @@ test = [
     "pytest-cov",
 ]
 doc = ["sphinx", "m2r"]
+
 
 [tool.black]
 line-length = 79
