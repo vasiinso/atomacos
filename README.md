@@ -1,4 +1,4 @@
-# Atomacos - Automated Testing on macOS
+# atomacos: Automated Testing on macOS
 [![pypi](https://img.shields.io/pypi/v/atomacos.svg?style=flat-square)](https://pypi.org/project/atomacos/)
 [![Build Status](https://img.shields.io/travis/daveenguyen/atomacos.svg?style=flat-square)](https://travis-ci.org/daveenguyen/atomacos)
 [![codecov](https://img.shields.io/codecov/c/github/daveenguyen/atomacos.svg?style=flat-square)](https://codecov.io/gh/daveenguyen/atomacos/)
@@ -7,13 +7,11 @@ This library is a fork of [atomac].
 It was created to provide a release with python 3 support because
 there has not been a release [since 2013](https://github.com/pyatom/pyatom/releases)
 
-
-## Introduction
 Atomacos is a library to enable GUI testing of macOS applications via the Apple Accessibility API.
 Atomacos has direct access to the API via [pyobjc]. It's fast and easy to use to write tests.
 
 
-## Getting started
+# Getting started
 Requirements
 - macOS
 - [pyobjc]
@@ -23,7 +21,7 @@ On travis, it's only on 10.11 because we are able to enable accessibility API.
 
 If you experience issues, please open a ticket in the [issue tracker][issues].
 
-### Enabling Systemwide Accessibility
+## Enabling Systemwide Accessibility
 Check the checkbox:
 `System Preferences > Universal Access > Enable access for assistive devices`
 `System Preferences > Security & Privacy > Privacy > Accessibility`
@@ -31,7 +29,7 @@ Check the checkbox:
 Failure to enable this will result in `AXErrorAPIDisabled` exceptions during some module usage.
 
 
-### Installing
+## Installing
 
 For release
 ```bash
@@ -44,7 +42,7 @@ $ pip install --pre atomacos
 ```
 
 
-## Usage
+# Usage Examples
 Once installed, you should be able to use it to launch an application:
 
 ```python
@@ -134,15 +132,6 @@ Performing an action is as natural as:
 
 Any action can be triggered this way.
 
-
-
-# Todo
-- LDTP
-    - Maybe extract into its own project and use atomacos at the backend.
-- Better mouse handling.
-    - For example, a method to smoothly drag from one UI Element to another.
-- Cleanup the search methods
-    - We could use currying to define all the search methods in AXClasses in a cleaner way.
 
 
 # Links
