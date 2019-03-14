@@ -27,7 +27,7 @@ after_failure:
 - screencapture .env/screen.png
 - ".env/imgur.sh/imgur.sh .env/screen.png"
 after_success:
-- tox -e docs
+- tox -e docs --installpkg dist/*.whl
 deploy:
   - provider: script
     skip_cleanup: true
@@ -39,3 +39,9 @@ deploy:
     script: bash scripts/deploy-prod.sh
     on:
       tags: true
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GHTDOCS
+    local_dir: .tox/docs_out
+    on:
+      branch: master
