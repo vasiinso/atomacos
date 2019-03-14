@@ -11,7 +11,15 @@ from ApplicationServices import (
     NSDefaultRunLoopMode,
 )
 from CoreFoundation import CFRunLoopGetCurrent, CFRunLoopAddSource
-from PyObjCTools import AppHelper, MachSignals
+from PyObjCTools import AppHelper
+
+try:
+    from PyObjCTools import MachSignals
+except ImportError:
+
+    class MachSignals:
+        signal = signal.signal
+
 
 from atomacos import errors
 

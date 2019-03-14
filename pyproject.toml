@@ -9,11 +9,11 @@ author-email = "davee@daveenguyen.com"
 home-page = "https://github.com/davee_nguyen/atomacos"
 classifiers = ["License :: Other/Proprietary License"]
 requires = [
-    "pyobjc-core",
-    "pyobjc-framework-Cocoa",
-    "pyobjc-framework-Quartz",
-    "pyobjc-framework-ApplicationServices",
-    "pyobjc-framework-CoreText",
+    "pyobjc-core>=3.0.4",
+    "pyobjc-framework-Cocoa>=3.0.4",
+    "pyobjc-framework-Quartz>=3.0.4",
+    "pyobjc-framework-ApplicationServices>=3.0.4",
+    "pyobjc-framework-CoreText>=3.0.4",
     "future",
 ]
 
