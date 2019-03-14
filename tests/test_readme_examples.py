@@ -4,6 +4,7 @@ from atomacos import NativeUIElement
 from atomacos.a11y import axenabled
 
 
+@pytest.mark.skipif(not axenabled(), reason="Accessibility Permission Needed")
 def test_basic_automator_app_ref(automator_app):
     assert isinstance(automator_app, NativeUIElement)
 
