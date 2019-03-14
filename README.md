@@ -1,9 +1,9 @@
 # atomacos: Automated Testing on macOS
-[![license](https://img.shields.io/github/license/daveenguyen/atomacos.svg?style=flat-square)][license]
-[![pypi](https://img.shields.io/pypi/v/atomacos.svg?style=flat-square)][pypi]
-[![Build Status](https://img.shields.io/travis/daveenguyen/atomacos/master.svg?style=flat-square)][travis]
-[![codecov](https://img.shields.io/codecov/c/github/daveenguyen/atomacos/master.svg?style=flat-square)][codecov]
-[![style](https://img.shields.io/badge/code%20style-black-black.svg?style=flat-square)][black]
+[![license](https://img.shields.io/github/license/daveenguyen/atomacos.svg?style=flat-square)](https://github.com/daveenguyen/atomacos/blob/master/LICENSE)
+[![pypi](https://img.shields.io/pypi/v/atomacos.svg?style=flat-square)](https://pypi.org/project/atomacos/)
+[![Build Status](https://img.shields.io/travis/daveenguyen/atomacos/master.svg?style=flat-square)](https://travis-ci.org/daveenguyen/atomacos)
+[![codecov](https://img.shields.io/codecov/c/github/daveenguyen/atomacos/master.svg?style=flat-square)](https://codecov.io/gh/daveenguyen/atomacos/)
+[![style](https://img.shields.io/badge/code%20style-black-black.svg?style=flat-square)](https://github.com/ambv/black)
 
 This library is a fork of [atomac].
 It was created to provide a release with python 3 support because
