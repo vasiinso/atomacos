@@ -779,8 +779,12 @@ class BaseAXUIElement(a11y.AXUIElement):
                 return action()
 
             return performSpecifiedAction
-        else:
+        elif name in self.ax_attributes:
             return super(BaseAXUIElement, self).__getattr__(name)
+        else:
+            raise errors.AXErrorUnsupported(
+                "'%s' object has no attribute '%s'" % (type(self), name)
+            )
 
 
 class NativeUIElement(BaseAXUIElement):

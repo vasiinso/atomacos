@@ -48,13 +48,13 @@ class AXUIElement(object):
 
         try:
             title = repr(self.AXTitle)
-        except AXError:
+        except AttributeError:
             try:
                 title = repr(self.AXValue)
-            except Exception:
+            except AttributeError:
                 try:
                     title = repr(self.AXRoleDescription)
-                except Exception:
+                except AttributeError:
                     pass
         try:
             role = self.AXRole
@@ -74,7 +74,9 @@ class AXUIElement(object):
 
             return perform_ax_action
         else:
-            raise AXError("Object has no attribute '%s'" % (item))
+            raise AttributeError(
+                "'%s' object has no attribute '%s'" % (type(self), item)
+            )
 
     def __setattr__(self, key, value):
         if key.startswith("AX"):
@@ -88,9 +90,7 @@ class AXUIElement(object):
 
     def __dir__(self):
         return (
-            self.ax_attributes
-            + self.ax_actions
-            + super(AXUIElement, self).__dir__()
+            self.ax_attributes + self.ax_actions + list(self.__dict__.keys())
         )
 
     def _get_ax_attribute(self, item):
@@ -307,7 +307,9 @@ class AXUIElement(object):
         # On 10.6, this returns a tuple - first element bool result, second is
         # a number. Let's use the bool result.
         if not r[0]:
-            raise RuntimeError("Error launching specified application.")
+            raise RuntimeError(
+                "Error launching specified application. %s" % str(r)
+            )
 
     @staticmethod
     def launch_app_by_bundle_path(bundle_path, arguments=None):
