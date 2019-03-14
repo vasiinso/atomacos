@@ -98,9 +98,12 @@ class BaseAXUIElement(a11y.AXUIElement):
     def setSystemWideTimeout(cls, timeout=0.0):
         """Set the system-wide accessibility timeout.
 
-        Optional: timeout (non-negative float; defaults to 0)
-                  A value of 0 will reset the timeout to the system default.
-        Returns: None.
+        Args:
+            timeout: non-negative float. 0 will reset to the system default.
+
+        Returns:
+            None
+
         """
         return cls.set_systemwide_timeout(timeout)
 
