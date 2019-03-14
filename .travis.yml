@@ -1,8 +1,6 @@
 os: osx
 
 osx_image:
-  - xcode9.4 # 10.13 - default
-  - xcode8.3 # 10.12
   - xcode7.3 # 10.11
   - xcode6.4 # 10.10
 
