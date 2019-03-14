@@ -1,22 +1,5 @@
-from atomacos import errors, converter, a11y, notification
+from atomacos import errors, a11y, notification
 import pytest
-
-
-@pytest.fixture
-def frontmost_app():
-    pid = a11y.get_frontmost_pid()
-    app_ref = a11y.AXUIElement.from_pid(pid)
-    return app_ref
-
-
-@pytest.fixture
-def front_title_ui(frontmost_app):
-    return frontmost_app.AXWindows[0].AXTitleUIElement
-
-
-@pytest.fixture
-def axconverter():
-    return converter.Converter(a11y.AXUIElement)
 
 
 class TestErrors:
@@ -124,20 +107,18 @@ class TestAXUIElement:
         assert "AXChildren" in sut
 
     def test_get_ax_actions(self, frontmost_app):
-        zoom_button = frontmost_app.AXMainWindow.AXZoomButton
-        sut = zoom_button.ax_actions
+        main_window = frontmost_app.AXMainWindow
+        sut = main_window.ax_actions
         assert isinstance(sut, list)
-        assert "AXPress" in sut
-        assert "AXZoomWindow" in sut
+        assert "AXRaise" in sut
 
     @pytest.mark.slow
     @pytest.mark.skipif(
         not a11y.axenabled(), reason="Accessibility Permission Needed"
     )
     def test_perform_ax_action(self, frontmost_app):
-        zoom_button = frontmost_app.AXMainWindow.AXZoomButton
-        zoom_button.AXZoomWindow()
-        zoom_button.AXZoomWindow()
+        main_window = frontmost_app.AXMainWindow
+        main_window.Raise()
 
     def test_basic_get_attr(self, frontmost_app):
         assert isinstance(frontmost_app.AXTitle, str)
@@ -206,10 +187,15 @@ class TestAXUIElement:
         assert isinstance(range.length, int)
 
     def test_element_at_current_position(self, front_title_ui):
-        system_ref = a11y.AXUIElement.systemwide()
+        system_ref = front_title_ui.systemwide()
         position = front_title_ui.AXPosition
+        size = front_title_ui.AXSize
+        center_x, center_y = (
+            position.x + size.width / 2.0,
+            position.y + size.height / 2.0,
+        )
         element_at_position = system_ref.get_element_at_position(
-            position.x, position.y
+            center_x, center_y
         )
         assert element_at_position == front_title_ui
 
@@ -222,15 +208,22 @@ class TestObserver:
         notification.Observer(front_title_ui)
 
     @pytest.mark.slow
-    def test_observer_set_notification(self, monkeypatch, frontmost_app):
+    def test_observer_set_notification(self, monkeypatch, finder_app):
+        import threading
         from ApplicationServices import kAXWindowCreatedNotification
 
-        bid = "com.apple.Safari"
-        a11y.AXUIElement.launch_app_by_bundle_id(bid)
-        safari = a11y.AXUIElement.from_bundle_id(bid)
-        observer = notification.Observer(safari)
-        observer.set_notification(
-            timeout=10,
+        def open_new_window():
+            finder_app.menuItem("File", "New Finder Window").Press()
+
+        new_window = threading.Thread(target=open_new_window)
+        new_window.daemon = True
+        new_window.start()
+
+        observer = notification.Observer(finder_app)
+        result = observer.set_notification(
+            timeout=3,
             notification_name=kAXWindowCreatedNotification,
-            callbackFn=lambda *_, **__: None,
+            callbackFn=lambda *_, **__: -1,
         )
+
+        assert result == -1

@@ -1,0 +1,39 @@
+os: osx
+osx_image:
+- xcode7.3
+language: generic
+env:
+  matrix:
+  - INSTALL_TYPE=macpython VERSION=3.7.2 VENV=venv
+  global:
+  - secure: JJrYOi06ZyptlzBoqzDrLwoBrAFazOiG/uWwRv788smg6I37ygA5mxs7qxjusWBN0s9unbt+AhN8Oy/qAoqVir9ScxmGYUVVNyBuShI3W7YM2p/KMmhRqeBt1tHeU8mRY9QaUB1pI/ddLFFuTXo4xCA9c+/WyydUSAfE6ijA0ZKwKsdwem+EcWuKLnms1B58ZptfP3x9OQEXmRoRK5sK4LaL1gx3QzRlV5W4MVogWBxx6QVMmVwA0PSTT+Ft40oIHDk8bPSYynF2gM60IFDFk6k1A6lmsmh8oXVJ3rgr1MyS/qSPRbP5+tRL+YR/ba8bYnuvVqiVq91U/9NzLmDP8ou3fmbXyiEG5rGCesasLM7uRC6gcWqxoewlh+OO5mmVQ4eCA0WpTltI6Li9CiB8wUQRGNt4cj6FvUAWf4FLFINp/fz4rmLPT0l503o1CIgFHmzfBPnYU3BIqUxvp5MOUOAbzjZ8YdlLTvDmrSjVNKG9ePfAegWmSK8ZYJ2kjaz++WdX89lzbKxOyg/3IL6vjSieXnSp6ajBaz80pHCCytYC4Y6lP1/bkUG1ZZGXp7YecavFn45rmeicNx+gMrsrx2wDNvPuHx75y0YChlYFob/GmuqhGndjk1xhjWE8T5f83KErkTiOORd7YN7dsunF5jO31g2ibUWBjc5XvSTEeCo=
+  - secure: FTxJmwfeDLIBMjMyR7VB8L3fynuwDTUdbyeLl4Bj2QP8OfBhWiCRxIvrZ+0nyaudkrRyAt49YrU7vEYsCAd8poj5s+OJvMrEUA6LOpEwDUkNWjc+cdQY1Fmikdb/yZY7GqScXheDMGhgB9Rce72nNu13+HVdgzhHMlpMhP8P5b1IbFijk4Oh8Pe3BtHW3NbtKh9e05agMDfuXkyLQnvqMMSDrTXlDY7KuMYzAIq44lSruN+WYAml06UibRz3GPs8GZ8tNFFXvHp3ekvGLYjE6uDXYh3OSHCIE3vGOI0J1Fn2yHyY/eaDflSC3J5P64xMRm6/SzB3vArUXnyUDttBwaxmqg8H4Ghm/jHkW7gZhPT/SqQMxurxSIgZIz0hWZAwgSovotPj72kpm5hpUXCfExERP08CjW0IHQ2S5GGECCJ7eQRJLEDi4XIKDnZG2jObwusGK5jwHyjaJRVaiVOy+IDh5lbeC/jA+vLAaNczu8CHdz56+XCc3GDDlF7KvRSXVz64uWgHMe6THJ6/DPLy4eBmK5yPmBrv9YEFls5aVwMnXSGjOx/5ahOcNIyHkFiwBG3UZdDU5U7ZU2gPi+Sb8IpAODZrtbrvXUO5vO92JB6jQ9rFjrdm/z4Q+ItlQS/iheXTb92eZAjss8DVfspCiMS4UNhbipJTTucIHw759LI=
+before_install:
+- sudo sqlite3 '/Library/Application Support/com.apple.TCC/Tcc.db' 'INSERT or REPLACE
+  INTO "access" (service, client, client_type, allowed, prompt_count) VALUES("kTCCServiceAccessibility","/Users/travis/runner.rb",1,1,0)'
+  || true
+- mkdir .env
+- git clone https://github.com/MacPython/terryfy.git .env/terryfy
+- git clone https://github.com/tremby/imgur.sh .env/imgur.sh
+- chmod +x .env/imgur.sh/imgur.sh
+- source .env/terryfy/travis_tools.sh
+- get_python_environment $INSTALL_TYPE $VERSION $VENV
+install:
+- python -m pip install -U pip tox flit
+script:
+- flit build
+- tox --installpkg dist/*.whl
+after_failure:
+- screencapture .env/screen.png
+- ".env/imgur.sh/imgur.sh .env/screen.png"
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: bash scripts/deploy-pre.sh
+    on:
+      branch: master
+  - provider: script
+    skip_cleanup: true
+    script: bash scripts/deploy-prod.sh
+    on:
+      tags: true

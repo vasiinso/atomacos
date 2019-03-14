@@ -1,5 +1,6 @@
 import fnmatch
 
+import logging
 import AppKit
 from AppKit import NSURL
 
@@ -14,7 +15,6 @@ from atomacos.errors import (
     AXErrorCannotComplete,
     AXErrorAPIDisabled,
     AXErrorNotImplemented,
-    AXError,
 )
 from ApplicationServices import (
     AXUIElementCreateApplication,
@@ -34,6 +34,8 @@ from ApplicationServices import (
     AXIsProcessTrusted,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class AXUIElement(object):
     def __init__(self, ref=None):
@@ -42,26 +44,24 @@ class AXUIElement(object):
 
     def __repr__(self):
         """Build a descriptive string for UIElements."""
-        title = repr("")
-        role = "<No role!>"
         c = repr(self.__class__).partition("<class '")[-1].rpartition("'>")[0]
 
-        try:
-            title = repr(self.AXTitle)
-        except AXError:
-            try:
-                title = repr(self.AXValue)
-            except Exception:
-                try:
-                    title = repr(self.AXRoleDescription)
-                except Exception:
-                    pass
-        try:
+        _attributes = self.ax_attributes
+        for element_describer in ("AXTitle", "AXValue", "AXRoleDescription"):
+            if element_describer in _attributes:
+                title = getattr(self, element_describer)
+                break
+        else:
+            title = ""
+
+        if "AXRole" in _attributes:
             role = self.AXRole
-        except AXError:
-            pass
+        else:
+            role = "<No role!>"
+
         if len(title) > 20:
             title = title[:20] + "...'"
+
         return "<%s %s %s>" % (c, role, title)
 
     def __getattr__(self, item):
@@ -74,7 +74,9 @@ class AXUIElement(object):
 
             return perform_ax_action
         else:
-            raise AXError("Object has no attribute '%s'" % (item))
+            raise AttributeError(
+                "'%s' object has no attribute '%s'" % (type(self), item)
+            )
 
     def __setattr__(self, key, value):
         if key.startswith("AX"):
@@ -88,9 +90,7 @@ class AXUIElement(object):
 
     def __dir__(self):
         return (
-            self.ax_attributes
-            + self.ax_actions
-            + super(AXUIElement, self).__dir__()
+            self.ax_attributes + self.ax_actions + list(self.__dict__.keys())
         )
 
     def _get_ax_attribute(self, item):
@@ -101,7 +101,9 @@ class AXUIElement(object):
             )
             return self.converter.convert_value(attrValue)
         else:
-            raise AttributeError("has no AX Attribute %s" % item)
+            raise AttributeError(
+                "'%s' object has no attribute '%s'" % (type(self), item)
+            )
 
     def _set_ax_attribute(self, name, value):
         """
@@ -133,7 +135,8 @@ class AXUIElement(object):
         err, attr = AXUIElementCopyAttributeNames(self.ref, None)
 
         if err != kAXErrorSuccess:
-            raise_ax_error(err, "Error retrieving attribute list")
+            logger.warning("Error retrieving attribute list. %s" % err)
+            return []
         else:
             return list(attr)
 
@@ -145,7 +148,8 @@ class AXUIElement(object):
         err, actions = AXUIElementCopyActionNames(self.ref, None)
 
         if err != kAXErrorSuccess:
-            raise_ax_error(err, "Error retrieving action names")
+            logger.warning("Error retrieving action names. %s" % err)
+            return []
         else:
             return list(actions)
 
@@ -307,7 +311,9 @@ class AXUIElement(object):
         # On 10.6, this returns a tuple - first element bool result, second is
         # a number. Let's use the bool result.
         if not r[0]:
-            raise RuntimeError("Error launching specified application.")
+            raise RuntimeError(
+                "Error launching specified application. %s" % str(r)
+            )
 
     @staticmethod
     def launch_app_by_bundle_path(bundle_path, arguments=None):

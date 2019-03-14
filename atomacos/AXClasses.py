@@ -617,15 +617,14 @@ class BaseAXUIElement(a11y.AXUIElement):
         """Generator which recursively yields all AXChildren of the object."""
         if target is None:
             target = self
-        try:
-            children = target.AXChildren
-        except errors.AXError:
-            return
-        if children:
-            for child in children:
+
+        if "AXChildren" in target.ax_attributes:
+            for child in target.AXChildren:
                 yield child
                 for c in self._generateChildrenR(child):
                     yield c
+        else:
+            return
 
     def _match(self, **kwargs):
         """Method which indicates if the object matches specified criteria.
@@ -640,7 +639,7 @@ class BaseAXUIElement(a11y.AXUIElement):
         for k in kwargs.keys():
             try:
                 val = getattr(self, k)
-            except errors.AXError:
+            except AttributeError:
                 return False
             # Not all values may be strings (e.g. size, position)
             if isinstance(val, str):
@@ -705,11 +704,8 @@ class BaseAXUIElement(a11y.AXUIElement):
         element.
         """
         app = self
-        while True:
-            try:
-                app = app.AXParent
-            except errors.AXErrorUnsupported:
-                break
+        while "AXParent" in app.ax_attributes:
+            app = app.AXParent
         return app
 
     def _menuItem(self, menuitem, *args):
