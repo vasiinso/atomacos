@@ -20,7 +20,7 @@ class TestErrors:
         with pytest.raises(errors.AXErrorNotImplemented):
             errors.raise_ax_error(-25208, "test")
         with pytest.raises(errors.AXErrorNoValue):
-            errors.raise_ax_error(-25205, "test")
+            errors.raise_ax_error(-25212, "test")
 
 
 class TestHelpers:
