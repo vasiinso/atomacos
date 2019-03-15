@@ -29,11 +29,11 @@ after_failure:
 after_success:
 - bash scripts/build-docs-prod.sh
 deploy:
-  - provider: script
-    skip_cleanup: true
-    script: bash scripts/deploy-pre.sh
-    on:
-      branch: master
+#  - provider: script
+#    skip_cleanup: true
+#    script: bash scripts/deploy-pre.sh
+#    on:
+#      branch: master
   - provider: script
     skip_cleanup: true
     script: bash scripts/deploy-prod.sh
