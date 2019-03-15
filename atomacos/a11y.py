@@ -354,12 +354,14 @@ class AXUIElement(object):
             )
 
         err = AXUIElementSetMessagingTimeout(self.ref, timeout)
-        try:
-            raise_ax_error(err, "The element reference is invalid")
-        except AXErrorIllegalArgument:
-            raise ValueError(
-                "Accessibility timeout values must be non-negative"
-            )
+
+        if err != kAXErrorSuccess:
+            try:
+                raise_ax_error(err, "The element reference is invalid")
+            except AXErrorIllegalArgument:
+                raise ValueError(
+                    "Accessibility timeout values must be non-negative"
+                )
 
 
 def get_frontmost_pid():
