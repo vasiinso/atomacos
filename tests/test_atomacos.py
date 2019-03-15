@@ -122,6 +122,11 @@ class TestAXUIElement:
         )
         assert element_at_position == front_title_ui
 
+    def test_set_string(self, finder_app):
+        search = finder_app.textFieldsR("*search*")[0]
+        search.setString("AXValue", "test")
+        assert search.AXValue == "test"
+
 
 @pytest.mark.skipif(
     not a11y.axenabled(), reason="Accessibility Permission Needed"
