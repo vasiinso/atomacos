@@ -1,17 +1,17 @@
+import re
 from collections import namedtuple
 
-from CoreFoundation import CFGetTypeID, CFArrayGetTypeID, CFStringGetTypeID
 from ApplicationServices import (
     AXUIElementGetTypeID,
     AXValueGetType,
-    kAXValueCGSizeType,
-    kAXValueCGPointType,
-    kAXValueCFRangeType,
-    NSSizeFromString,
     NSPointFromString,
     NSRangeFromString,
+    NSSizeFromString,
+    kAXValueCFRangeType,
+    kAXValueCGPointType,
+    kAXValueCGSizeType,
 )
-import re
+from CoreFoundation import CFArrayGetTypeID, CFGetTypeID, CFStringGetTypeID
 
 
 class Converter:

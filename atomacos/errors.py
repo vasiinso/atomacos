@@ -1,10 +1,10 @@
 from ApplicationServices import (
-    kAXErrorAPIDisabled,
-    kAXErrorInvalidUIElement,
-    kAXErrorCannotComplete,
-    kAXErrorNotImplemented,
-    kAXErrorIllegalArgument,
     kAXErrorActionUnsupported,
+    kAXErrorAPIDisabled,
+    kAXErrorCannotComplete,
+    kAXErrorIllegalArgument,
+    kAXErrorInvalidUIElement,
+    kAXErrorNotImplemented,
     kAXErrorNoValue,
 )
 

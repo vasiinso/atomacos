@@ -16,10 +16,10 @@
 # St, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import time
-import Quartz
 
+import Quartz
 from atomacos._base_ax_ui_element import BaseAXUIElement
-from atomacos.mixin import WaitForMixin, SearchMethodsMixin
+from atomacos.mixin import SearchMethodsMixin, WaitForMixin
 
 
 class NativeUIElement(WaitForMixin, SearchMethodsMixin, BaseAXUIElement):
@@ -247,9 +247,7 @@ class NativeUIElement(WaitForMixin, SearchMethodsMixin, BaseAXUIElement):
         # click
         # Otherwise to a host app only this second one will count as a double-
         # click
-        self._queueMouseButton(
-            coord, Quartz.kCGMouseButtonLeft, modFlags, clickCount=2
-        )
+        self._queueMouseButton(coord, Quartz.kCGMouseButtonLeft, modFlags, clickCount=2)
         self._postQueuedEvents()
 
     def doubleMouseButtonLeftWithMods(self, coord, modifiers):
@@ -260,9 +258,7 @@ class NativeUIElement(WaitForMixin, SearchMethodsMixin, BaseAXUIElement):
         """
         modFlags = self._pressModifiers(modifiers)
         self._queueMouseButton(coord, Quartz.kCGMouseButtonLeft, modFlags)
-        self._queueMouseButton(
-            coord, Quartz.kCGMouseButtonLeft, modFlags, clickCount=2
-        )
+        self._queueMouseButton(coord, Quartz.kCGMouseButtonLeft, modFlags, clickCount=2)
         self._releaseModifiers(modifiers)
         self._postQueuedEvents()
 
@@ -276,7 +272,5 @@ class NativeUIElement(WaitForMixin, SearchMethodsMixin, BaseAXUIElement):
         modFlags = 0
         for _ in range(2):
             self._queueMouseButton(coord, Quartz.kCGMouseButtonLeft, modFlags)
-        self._queueMouseButton(
-            coord, Quartz.kCGMouseButtonLeft, modFlags, clickCount=3
-        )
+        self._queueMouseButton(coord, Quartz.kCGMouseButtonLeft, modFlags, clickCount=3)
         self._postQueuedEvents()

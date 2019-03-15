@@ -2,8 +2,7 @@
 # flake8: noqa: F401
 __version__ = "0.3.0"
 
-from atomacos import a11y
-from atomacos import errors
+from atomacos import a11y, errors
 from atomacos.AXClasses import NativeUIElement
 from atomacos.Clipboard import Clipboard
 from atomacos.Prefs import Prefs

@@ -1,5 +1,4 @@
 import pytest
-
 from atomacos import NativeUIElement
 from atomacos.a11y import axenabled
 

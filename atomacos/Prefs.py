@@ -16,9 +16,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
 # St, Fifth Floor, Boston, MA 02110-1301 USA.
-from future import standard_library
-from AppKit import NSWorkspace, NSUserDefaults, NSDictionary
+
 from os import path
+
+from AppKit import NSDictionary, NSUserDefaults, NSWorkspace
+from future import standard_library
 
 try:
     from collections import UserDict
@@ -43,9 +45,7 @@ class Prefs(UserDict):
     p['CoolStuff'] = newCoolStuff
     """
 
-    def __init__(
-        self, bundleID, bundlePath=None, defaultsPlistName="Defaults"
-    ):
+    def __init__(self, bundleID, bundlePath=None, defaultsPlistName="Defaults"):
         """
         bundleId: the application bundle identifier
         bundlePath: the full bundle path (useful to test a Debug build)

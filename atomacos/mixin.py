@@ -50,15 +50,11 @@ class SearchMethodsMixin(object):
 
     def textFields(self, match=None):
         """Return a list of textfields with an optional match parameter."""
-        return self._convenienceMatch(
-            "AXTextField", "AXRoleDescription", match
-        )
+        return self._convenienceMatch("AXTextField", "AXRoleDescription", match)
 
     def textFieldsR(self, match=None):
         """Return a list of textfields with an optional match parameter."""
-        return self._convenienceMatchR(
-            "AXTextField", "AXRoleDescription", match
-        )
+        return self._convenienceMatchR("AXTextField", "AXRoleDescription", match)
 
     def buttons(self, match=None):
         """Return a list of buttons with an optional match parameter."""
@@ -165,9 +161,7 @@ class WaitForMixin(object):
         retelem = None
         args = (retelem,)
 
-        return self.waitFor(
-            timeout, notification, callback=callback, args=args
-        )
+        return self.waitFor(timeout, notification, callback=callback, args=args)
 
     def waitForWindowToAppear(self, winName, timeout=10):
         """Convenience method to wait for a window with the given name to
@@ -244,6 +238,4 @@ class WaitForMixin(object):
 
         Returns: Boolean
         """
-        return self.waitFor(
-            timeout, "AXFocusedWindowChanged", AXTitle=nextWinName
-        )
+        return self.waitFor(timeout, "AXFocusedWindowChanged", AXTitle=nextWinName)

@@ -16,16 +16,14 @@
 # St, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import Quartz
-
 from atomacos.AXKeyCodeConstants import (
     COMMAND,
-    SHIFT,
-    OPTION,
     CONTROL,
     DEFAULT_KEYBOARD,
+    OPTION,
+    SHIFT,
     specialKeys,
 )
-
 
 # Based on the flags provided in the Quartz documentation it does not seem
 # that we can distinguish between left and right modifier keys, even though

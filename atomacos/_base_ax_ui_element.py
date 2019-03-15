@@ -4,10 +4,7 @@ from collections import deque
 
 import AppKit
 import Quartz
-
-from atomacos import a11y, errors
-from atomacos import AXKeyboard
-from atomacos import AXKeyCodeConstants
+from atomacos import AXKeyboard, AXKeyCodeConstants, a11y, errors
 from atomacos.notification import Observer
 
 
@@ -103,9 +100,7 @@ class BaseAXUIElement(a11y.AXUIElement):
 
         Return True if succeed.
         """
-        return a11y.AXUIElement.launch_app_by_bundle_path(
-            bundlePath, arguments
-        )
+        return a11y.AXUIElement.launch_app_by_bundle_path(bundlePath, arguments)
 
     @staticmethod
     def terminateAppByBundleId(bundleID):
@@ -176,9 +171,7 @@ class BaseAXUIElement(a11y.AXUIElement):
             self.keyboard = AXKeyboard.loadKeyboard()
 
         if keychr in self.keyboard["upperSymbols"] and not modFlags:
-            self._sendKeyWithModifiers(
-                keychr, [AXKeyCodeConstants.SHIFT], globally
-            )
+            self._sendKeyWithModifiers(keychr, [AXKeyCodeConstants.SHIFT], globally)
             return
 
         if keychr.isupper() and not modFlags:
@@ -192,13 +185,9 @@ class BaseAXUIElement(a11y.AXUIElement):
             raise ValueError("Key %s not found in keyboard layout" % keychr)
 
         # Press the key
-        keyDown = Quartz.CGEventCreateKeyboardEvent(
-            None, self.keyboard[keychr], True
-        )
+        keyDown = Quartz.CGEventCreateKeyboardEvent(None, self.keyboard[keychr], True)
         # Release the key
-        keyUp = Quartz.CGEventCreateKeyboardEvent(
-            None, self.keyboard[keychr], False
-        )
+        keyUp = Quartz.CGEventCreateKeyboardEvent(None, self.keyboard[keychr], False)
         # Set modflags on keyDown (default None):
         Quartz.CGEventSetFlags(keyDown, modFlags)
         # Set modflags on keyUp:
@@ -206,9 +195,7 @@ class BaseAXUIElement(a11y.AXUIElement):
 
         # Post the event to the given app
         if not globally:
-            self._queueEvent(
-                Quartz.CGEventPostToPid, (self._getPid(), keyDown)
-            )
+            self._queueEvent(Quartz.CGEventPostToPid, (self._getPid(), keyDown))
             self._queueEvent(Quartz.CGEventPostToPid, (self._getPid(), keyUp))
         else:
             self._queueEvent(Quartz.CGEventPost, (0, keyDown))
@@ -273,9 +260,7 @@ class BaseAXUIElement(a11y.AXUIElement):
             if globally:
                 self._queueEvent(Quartz.CGEventPost, (0, modEvent))
             else:
-                self._queueEvent(
-                    Quartz.CGEventPostToPid, (self._getPid(), modEvent)
-                )
+                self._queueEvent(Quartz.CGEventPostToPid, (self._getPid(), modEvent))
 
             # Add the modifier flags
             modFlags += AXKeyboard.modKeyFlagConstants[nextMod]
@@ -301,9 +286,7 @@ class BaseAXUIElement(a11y.AXUIElement):
         """
         # Release them in reverse order from pressing them:
         modifiers.reverse()
-        modFlags = self._pressModifiers(
-            modifiers, pressed=False, globally=globally
-        )
+        modFlags = self._pressModifiers(modifiers, pressed=False, globally=globally)
         return modFlags
 
     def _releaseModifierKeys(self, modifiers):
@@ -379,12 +362,8 @@ class BaseAXUIElement(a11y.AXUIElement):
         if mouseButton not in mouseButtons:
             raise ValueError("Mouse button given not recognized")
 
-        eventButtonDown = getattr(
-            Quartz, "kCGEvent%sDown" % mouseButtons[mouseButton]
-        )
-        eventButtonUp = getattr(
-            Quartz, "kCGEvent%sUp" % mouseButtons[mouseButton]
-        )
+        eventButtonDown = getattr(Quartz, "kCGEvent%sDown" % mouseButtons[mouseButton])
+        eventButtonUp = getattr(Quartz, "kCGEvent%sUp" % mouseButtons[mouseButton])
         eventButtonDragged = getattr(
             Quartz, "kCGEvent%sDragged" % mouseButtons[mouseButton]
         )
@@ -425,16 +404,10 @@ class BaseAXUIElement(a11y.AXUIElement):
             buttonUp, Quartz.kCGMouseEventClickState, int(clickCount)
         )
         # Queue the events
-        self._queueEvent(
-            Quartz.CGEventPost, (Quartz.kCGSessionEventTap, buttonDown)
-        )
+        self._queueEvent(Quartz.CGEventPost, (Quartz.kCGSessionEventTap, buttonDown))
         if dest_coord:
-            self._queueEvent(
-                Quartz.CGEventPost, (Quartz.kCGHIDEventTap, buttonDragged)
-            )
-        self._queueEvent(
-            Quartz.CGEventPost, (Quartz.kCGSessionEventTap, buttonUp)
-        )
+            self._queueEvent(Quartz.CGEventPost, (Quartz.kCGHIDEventTap, buttonDragged))
+        self._queueEvent(Quartz.CGEventPost, (Quartz.kCGSessionEventTap, buttonUp))
 
     def _leftMouseDragged(self, stopCoord, strCoord, speed):
         """Private method to handle generic mouse left button dragging and
@@ -454,10 +427,7 @@ class BaseAXUIElement(a11y.AXUIElement):
 
         # Press left button down
         pressLeftButton = Quartz.CGEventCreateMouseEvent(
-            None,
-            Quartz.kCGEventLeftMouseDown,
-            strCoord,
-            Quartz.kCGMouseButtonLeft,
+            None, Quartz.kCGEventLeftMouseDown, strCoord, Quartz.kCGMouseButtonLeft
         )
         # Queue the events
         Quartz.CGEventPost(Quartz.CoreGraphics.kCGHIDEventTap, pressLeftButton)
@@ -489,18 +459,13 @@ class BaseAXUIElement(a11y.AXUIElement):
                     currcoord,
                     Quartz.kCGMouseButtonLeft,
                 )
-                Quartz.CGEventPost(
-                    Quartz.CoreGraphics.kCGHIDEventTap, dragLeftButton
-                )
+                Quartz.CGEventPost(Quartz.CoreGraphics.kCGHIDEventTap, dragLeftButton)
                 # Wait for reponse of system
                 time.sleep(speed)
         else:
             raise ValueError("Not support vertical moving")
         upLeftButton = Quartz.CGEventCreateMouseEvent(
-            None,
-            Quartz.kCGEventLeftMouseUp,
-            stopCoord,
-            Quartz.kCGMouseButtonLeft,
+            None, Quartz.kCGEventLeftMouseUp, stopCoord, Quartz.kCGMouseButtonLeft
         )
         # Wait for reponse of system, a plus icon appears
         time.sleep(5)
@@ -719,9 +684,7 @@ class BaseAXUIElement(a11y.AXUIElement):
             try:
                 menuitem = menuitem.AXChildren[int(item)]
             except ValueError:
-                menuitem = menuitem.findFirst(
-                    AXRole="AXMenu*Item", AXTitle=item
-                )
+                menuitem = menuitem.findFirst(AXRole="AXMenu*Item", AXTitle=item)
         return menuitem
 
     def _activate(self):

@@ -1,16 +1,14 @@
+import pytest
 from atomacos import (
-    a11y,
-    notification,
     NativeUIElement,
+    a11y,
     getAppRefByPid,
     getFrontmostApp,
+    notification,
 )
-import pytest
 
 
-@pytest.mark.skipif(
-    not a11y.axenabled(), reason="Accessibility Permission Needed"
-)
+@pytest.mark.skipif(not a11y.axenabled(), reason="Accessibility Permission Needed")
 class TestAXUIElement:
     def test_init(self):
         NativeUIElement()
@@ -38,9 +36,7 @@ class TestAXUIElement:
         assert "AXRaise" in sut
 
     @pytest.mark.slow
-    @pytest.mark.skipif(
-        not a11y.axenabled(), reason="Accessibility Permission Needed"
-    )
+    @pytest.mark.skipif(not a11y.axenabled(), reason="Accessibility Permission Needed")
     def test_perform_ax_action(self, frontmost_app):
         main_window = frontmost_app.AXMainWindow
         main_window.Raise()
@@ -117,9 +113,7 @@ class TestAXUIElement:
             position.x + size.width / 2.0,
             position.y + size.height / 2.0,
         )
-        element_at_position = system_ref.get_element_at_position(
-            center_x, center_y
-        )
+        element_at_position = system_ref.get_element_at_position(center_x, center_y)
         assert element_at_position == front_title_ui
 
     def test_set_string(self, finder_app):
@@ -128,9 +122,7 @@ class TestAXUIElement:
         assert search.AXValue == "test"
 
 
-@pytest.mark.skipif(
-    not a11y.axenabled(), reason="Accessibility Permission Needed"
-)
+@pytest.mark.skipif(not a11y.axenabled(), reason="Accessibility Permission Needed")
 class TestObserver:
     def test_observer_init(self, front_title_ui):
         notification.Observer(front_title_ui)

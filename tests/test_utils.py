@@ -1,6 +1,5 @@
 import pytest
-
-from atomacos import errors, a11y
+from atomacos import a11y, errors
 
 
 class TestErrors:
@@ -35,10 +34,7 @@ class TestHelpers:
 
 class TestToPythonConversion:
     def test_convert_string(self, axconverter):
-        from CoreFoundation import (
-            CFStringCreateWithCString,
-            kCFStringEncodingASCII,
-        )
+        from CoreFoundation import CFStringCreateWithCString, kCFStringEncodingASCII
 
         sut = CFStringCreateWithCString(None, b"hello", kCFStringEncodingASCII)
         result = axconverter.convert_value(sut)

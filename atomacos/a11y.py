@@ -1,38 +1,35 @@
 import fnmatch
-
 import logging
+
 import AppKit
 from AppKit import NSURL
-
-from PyObjCTools import AppHelper
-
-
-from atomacos import converter
-from atomacos.errors import (
-    AXErrorUnsupported,
-    raise_ax_error,
-    AXErrorIllegalArgument,
-    AXErrorCannotComplete,
-    AXErrorAPIDisabled,
-    AXErrorNotImplemented,
-)
 from ApplicationServices import (
+    AXIsProcessTrusted,
+    AXUIElementCopyActionNames,
+    AXUIElementCopyAttributeNames,
+    AXUIElementCopyAttributeValue,
+    AXUIElementCopyElementAtPosition,
     AXUIElementCreateApplication,
     AXUIElementCreateSystemWide,
-    AXUIElementCopyAttributeValue,
-    AXUIElementCopyAttributeNames,
-    AXUIElementCopyActionNames,
-    AXUIElementCopyElementAtPosition,
     AXUIElementGetPid,
     AXUIElementIsAttributeSettable,
-    AXUIElementSetAttributeValue,
     AXUIElementPerformAction,
+    AXUIElementSetAttributeValue,
     AXUIElementSetMessagingTimeout,
-    kAXErrorSuccess,
     CFEqual,
     NSWorkspace,
-    AXIsProcessTrusted,
+    kAXErrorSuccess,
 )
+from atomacos import converter
+from atomacos.errors import (
+    AXErrorAPIDisabled,
+    AXErrorCannotComplete,
+    AXErrorIllegalArgument,
+    AXErrorNotImplemented,
+    AXErrorUnsupported,
+    raise_ax_error,
+)
+from PyObjCTools import AppHelper
 
 logger = logging.getLogger(__name__)
 
@@ -90,16 +87,12 @@ class AXUIElement(object):
             super(AXUIElement, self).__setattr__(key, value)
 
     def __dir__(self):
-        return (
-            self.ax_attributes + self.ax_actions + list(self.__dict__.keys())
-        )
+        return self.ax_attributes + self.ax_actions + list(self.__dict__.keys())
 
     def _get_ax_attribute(self, item):
         """Get the value of the the specified attribute"""
         if item in self.ax_attributes:
-            err, attrValue = AXUIElementCopyAttributeValue(
-                self.ref, item, None
-            )
+            err, attrValue = AXUIElementCopyAttributeValue(self.ref, item, None)
             return self.converter.convert_value(attrValue)
         else:
             raise AttributeError(
@@ -195,10 +188,7 @@ class AXUIElement(object):
         apps = ra.runningApplicationsWithBundleIdentifier_(bundle_id)
         if len(apps) == 0:
             raise ValueError(
-                (
-                    "Specified bundle ID not found in "
-                    "running apps: %s" % bundle_id
-                )
+                ("Specified bundle ID not found in " "running apps: %s" % bundle_id)
             )
         pid = apps[0].processIdentifier()
         return cls.from_pid(pid)
@@ -307,9 +297,7 @@ class AXUIElement(object):
         # On 10.6, this returns a tuple - first element bool result, second is
         # a number. Let's use the bool result.
         if not r[0]:
-            raise RuntimeError(
-                "Error launching specified application. %s" % str(r)
-            )
+            raise RuntimeError("Error launching specified application. %s" % str(r))
 
     @staticmethod
     def launch_app_by_bundle_path(bundle_path, arguments=None):
@@ -322,9 +310,7 @@ class AXUIElement(object):
 
         bundleUrl = NSURL.fileURLWithPath_(bundle_path)
         workspace = AppKit.NSWorkspace.sharedWorkspace()
-        configuration = {
-            AppKit.NSWorkspaceLaunchConfigurationArguments: arguments
-        }
+        configuration = {AppKit.NSWorkspaceLaunchConfigurationArguments: arguments}
 
         return workspace.launchApplicationAtURL_options_configuration_error_(
             bundleUrl,
@@ -359,9 +345,7 @@ class AXUIElement(object):
             try:
                 raise_ax_error(err, "The element reference is invalid")
             except AXErrorIllegalArgument:
-                raise ValueError(
-                    "Accessibility timeout values must be non-negative"
-                )
+                raise ValueError("Accessibility timeout values must be non-negative")
 
 
 def get_frontmost_pid():

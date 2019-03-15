@@ -1,8 +1,7 @@
 import time
 
-import pytest
-
 import atomacos
+import pytest
 from atomacos import converter
 
 
