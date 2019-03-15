@@ -5,6 +5,7 @@
 
    readme
    _generated/api/modules
+   contributing
 
 .. include:: readme.rst
 
