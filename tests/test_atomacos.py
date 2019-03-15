@@ -1,86 +1,11 @@
-from atomacos import errors, a11y, notification
+from atomacos import (
+    a11y,
+    notification,
+    NativeUIElement,
+    getAppRefByPid,
+    getFrontmostApp,
+)
 import pytest
-
-
-class TestErrors:
-    def test_error_message_in_exception(self):
-        try:
-            raise errors.AXErrorAPIDisabled("apple")
-        except errors.AXError as e:
-            assert "apple" in str(e)
-
-    def test_set_known_code(self):
-        with pytest.raises(errors.AXErrorAPIDisabled):
-            errors.raise_ax_error(-25211, "test")
-        with pytest.raises(errors.AXErrorInvalidUIElement):
-            errors.raise_ax_error(-25202, "test")
-        with pytest.raises(errors.AXErrorCannotComplete):
-            errors.raise_ax_error(-25204, "test")
-        with pytest.raises(errors.AXErrorNotImplemented):
-            errors.raise_ax_error(-25208, "test")
-
-
-class TestToPythonConversion:
-    def test_convert_string(self, axconverter):
-        from CoreFoundation import (
-            CFStringCreateWithCString,
-            kCFStringEncodingASCII,
-        )
-
-        sut = CFStringCreateWithCString(None, b"hello", kCFStringEncodingASCII)
-        result = axconverter.convert_value(sut)
-        assert isinstance(result, str)
-        assert result == "hello"
-
-        sut = CFStringCreateWithCString(None, b"world", kCFStringEncodingASCII)
-        result = axconverter.convert_value(sut)
-        assert isinstance(result, str)
-        assert result == "world"
-
-    def test_convert_boolean(self, axconverter):
-        from CoreFoundation import kCFBooleanTrue, kCFBooleanFalse
-
-        result1 = axconverter.convert_value(kCFBooleanTrue)
-        result2 = axconverter.convert_value(kCFBooleanFalse)
-
-        assert isinstance(result1, bool)
-        assert isinstance(result2, bool)
-        assert result1 is True
-        assert result2 is False
-
-    def test_convert_array(self, axconverter):
-        from CoreFoundation import CFArrayCreate, kCFTypeArrayCallBacks
-
-        array = CFArrayCreate(None, [1, 2, 3, 4], 4, kCFTypeArrayCallBacks)
-        result = axconverter.convert_value(array)
-        assert isinstance(result, list)
-        assert result == [1, 2, 3, 4]
-
-    def test_convert_number_int(self, axconverter):
-        from CoreFoundation import CFNumberCreate, kCFNumberIntType
-
-        num = CFNumberCreate(None, kCFNumberIntType, 1.5)
-        result = axconverter.convert_value(num)
-        assert result == 1
-        assert isinstance(result, int)
-
-    def test_convert_number_double(self, axconverter):
-        from CoreFoundation import CFNumberCreate, kCFNumberDoubleType
-
-        num = CFNumberCreate(None, kCFNumberDoubleType, 1.5)
-        result = axconverter.convert_value(num)
-        assert result == 1.5
-        assert isinstance(result, float)
-
-
-class TestHelpers:
-    def test_get_frontmost_pid(self):
-        pid = a11y.get_frontmost_pid()
-        assert isinstance(pid, int)
-        assert pid > 0
-
-    def test_axenabled(self):
-        assert isinstance(a11y.axenabled(), bool)
 
 
 @pytest.mark.skipif(
@@ -88,15 +13,15 @@ class TestHelpers:
 )
 class TestAXUIElement:
     def test_init(self):
-        a11y.AXUIElement()
+        NativeUIElement()
 
     def test_app_ref_from_pid(self):
         pid = a11y.get_frontmost_pid()
-        app_ref = a11y.AXUIElement.from_pid(pid)
+        app_ref = NativeUIElement.getAppRefByPid(pid)
         assert "Application" in str(app_ref.ref)
 
     def test_app_ref_from_system_object(self):
-        app_ref = a11y.AXUIElement.systemwide()
+        app_ref = NativeUIElement.getSystemObject()
         assert "System Wide" in str(app_ref.ref)
 
     def test_get_ax_attributes(self, frontmost_app):
@@ -130,28 +55,26 @@ class TestAXUIElement:
 
     def test_get_pid(self):
         pid = a11y.get_frontmost_pid()
-        app_ref = a11y.AXUIElement.from_pid(pid)
+        app_ref = getAppRefByPid(pid)
         assert app_ref.pid == pid
 
     def test_eq(self):
-        pid = a11y.get_frontmost_pid()
-        app_ref1 = a11y.AXUIElement.from_pid(pid)
-        app_ref2 = a11y.AXUIElement.from_pid(pid)
+        app_ref1 = getFrontmostApp()
+        app_ref2 = getAppRefByPid(app_ref1.pid)
         assert app_ref1 == app_ref2
 
     def test_ne(self):
-        pid = a11y.get_frontmost_pid()
-        app_ref1 = a11y.AXUIElement.from_pid(pid)
-        app_ref2 = a11y.AXUIElement.systemwide()
+        app_ref1 = getFrontmostApp()
+        app_ref2 = NativeUIElement.getSystemObject()
         assert app_ref1 != app_ref2
 
     def test_list_returns_pyobj(self, frontmost_app):
         window = frontmost_app.AXWindows[0]
-        assert isinstance(window, a11y.AXUIElement)
+        assert isinstance(window, NativeUIElement)
 
     def test_get_child_uielement(self, frontmost_app):
         window = frontmost_app.AXWindows[0]
-        assert isinstance(window, a11y.AXUIElement)
+        assert isinstance(window, NativeUIElement)
 
     def test_convert_ax_size(self, front_title_ui):
         size = front_title_ui.AXSize
@@ -198,6 +121,11 @@ class TestAXUIElement:
             center_x, center_y
         )
         assert element_at_position == front_title_ui
+
+    def test_set_string(self, finder_app):
+        search = finder_app.textFieldsR("*search*")[0]
+        search.setString("AXValue", "test")
+        assert search.AXValue == "test"
 
 
 @pytest.mark.skipif(

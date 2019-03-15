@@ -37,7 +37,7 @@ class NativeUIElement(WaitForMixin, SearchMethodsMixin, BaseAXUIElement):
 
     def setString(self, attribute, string):
         """Set the specified attribute to the specified string."""
-        return self._setString(attribute, string)
+        return self.__setattr__(attribute, str(string))
 
     def getElementAtPosition(self, coord):
         """Return the AXUIElement at the given coordinates.

@@ -6,6 +6,7 @@ from ApplicationServices import (
     kAXErrorIllegalArgument,
     kAXErrorActionUnsupported,
     kAXErrorSuccess,
+    kAXErrorNoValue,
 )
 
 
@@ -41,6 +42,10 @@ class AXErrorActionUnsupported(AXError):
     pass
 
 
+class AXErrorNoValue(AXError):
+    pass
+
+
 def raise_ax_error(code, message):
     """
     Raises an error with given message based on given error code.
@@ -55,6 +60,7 @@ def raise_ax_error(code, message):
         kAXErrorCannotComplete: AXErrorCannotComplete,
         kAXErrorNotImplemented: AXErrorNotImplemented,
         kAXErrorIllegalArgument: AXErrorIllegalArgument,
+        kAXErrorNoValue: AXErrorNoValue,
         kAXErrorActionUnsupported: AXErrorActionUnsupported,
     }
 

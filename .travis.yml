@@ -33,11 +33,6 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: bash scripts/deploy-prod.sh
-  - provider: releases
-    skip_cleanup: true
-    api_key: $GHTDOCS
-    file_glob: true
-    file: dist/*
   - provider: pages
     skip_cleanup: true
     github_token: $GHTDOCS
