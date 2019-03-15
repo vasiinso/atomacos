@@ -18,3 +18,4 @@ repos:
     rev: v4.3.13
     hooks:
       - id: isort
+        additional_dependencies: ["isort[pyproject]"]
