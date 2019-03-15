@@ -5,7 +5,6 @@ from ApplicationServices import (
     kAXErrorNotImplemented,
     kAXErrorIllegalArgument,
     kAXErrorActionUnsupported,
-    kAXErrorSuccess,
     kAXErrorNoValue,
 )
 
@@ -46,7 +45,7 @@ class AXErrorNoValue(AXError):
     pass
 
 
-def error_from_code(code):
+def AXErrorFactory(code):
     return {
         kAXErrorAPIDisabled: AXErrorAPIDisabled,
         kAXErrorInvalidUIElement: AXErrorInvalidUIElement,
@@ -63,7 +62,6 @@ def raise_ax_error(code, message):
     Raises an error with given message based on given error code.
     Defaults to AXErrorUnsupported for unknown codes.
     """
-    if code == kAXErrorSuccess:
-        return
+    error_message = "%s (AX Error %s)" % (message, code)
 
-    raise error_from_code(code)("%s (AX Error %s)" % (message, code))
+    raise AXErrorFactory(code)(error_message)
