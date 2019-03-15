@@ -3,14 +3,15 @@ import signal
 
 import objc
 from ApplicationServices import (
-    AXObserverAddNotification,
     AXObserverCreate,
     AXObserverGetRunLoopSource,
-    AXObserverRemoveNotification,
     NSDefaultRunLoopMode,
-    kAXErrorSuccess,
 )
-from atomacos import errors
+from atomacos._objc_ax import (
+    PAXObserverAddNotification,
+    PAXObserverCreate,
+    PAXObserverRemoveNotification,
+)
 from CoreFoundation import CFRunLoopAddSource, CFRunLoopGetCurrent
 from PyObjCTools import AppHelper
 
@@ -80,15 +81,11 @@ class Observer:
                 self.timedout = False
                 AppHelper.stopEventLoop()
 
-        err, observer = AXObserverCreate(self.ref.pid, _observer_callback, None)
-        if err != kAXErrorSuccess:
-            errors.raise_ax_error(err, "Could not create observer for notification")
+        observer = PAXObserverCreate(self.ref.pid, _observer_callback)
 
-        err = AXObserverAddNotification(
+        PAXObserverAddNotification(
             observer, self.ref.ref, notification_name, id(self.ref.ref)
         )
-        if err != kAXErrorSuccess:
-            errors.raise_ax_error(err, "Could not add notification to observer")
         # Add observer source to run loop
         CFRunLoopAddSource(
             CFRunLoopGetCurrent(),
@@ -102,8 +99,6 @@ class Observer:
         AppHelper.runConsoleEventLoop()
         MachSignals.signal(signal.SIGINT, oldSigIntHandler)
 
-        err = AXObserverRemoveNotification(observer, self.ref.ref, notification_name)
-        if err != kAXErrorSuccess:
-            errors.raise_ax_error(err, "Could not remove notification from observer")
+        PAXObserverRemoveNotification(observer, self.ref.ref, notification_name)
 
         return self.callback_result
