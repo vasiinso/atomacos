@@ -19,6 +19,8 @@ class TestErrors:
             errors.raise_ax_error(-25204, "test")
         with pytest.raises(errors.AXErrorNotImplemented):
             errors.raise_ax_error(-25208, "test")
+        with pytest.raises(errors.AXErrorNoValue):
+            errors.raise_ax_error(-25205, "test")
 
 
 class TestHelpers:
