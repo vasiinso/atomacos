@@ -45,7 +45,6 @@ dev = [
     "black",
     "pre-commit",
     "tox",
-    "bump2version"
 ]
 test = [
     "pytest",
