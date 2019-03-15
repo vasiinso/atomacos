@@ -49,8 +49,9 @@ class AXUIElement(object):
         _attributes = self.ax_attributes
         for element_describer in ("AXTitle", "AXValue", "AXRoleDescription"):
             if element_describer in _attributes:
-                title = getattr(self, element_describer)
-                break
+                title = self.__getattr__(element_describer)
+                if title:
+                    break
         else:
             title = ""
 
@@ -109,12 +110,6 @@ class AXUIElement(object):
         """
         Set the specified attribute to the specified value
         """
-        self._get_ax_attribute(name)
-
-        err, to_set = AXUIElementCopyAttributeValue(self.ref, name, None)
-        if err != kAXErrorSuccess:
-            raise_ax_error(err, "Error retrieving attribute to set")
-
         err, settable = AXUIElementIsAttributeSettable(self.ref, name, None)
         if err != kAXErrorSuccess:
             raise_ax_error(err, "Error querying attribute")
