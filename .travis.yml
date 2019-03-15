@@ -32,11 +32,12 @@ deploy:
   - provider: script
     skip_cleanup: true
     script: bash scripts/deploy-prod.sh
-    on:
-      tags: true
+  - provider: releases
+    skip_cleanup: true
+    api_key: $GHTDOCS
+    file_glob: true
+    file: dist/*
   - provider: pages
     skip_cleanup: true
     github_token: $GHTDOCS
     local_dir: .tox/docs_out
-    on:
-      branch: master
