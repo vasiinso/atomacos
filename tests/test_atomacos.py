@@ -1,4 +1,10 @@
-from atomacos import a11y, notification
+from atomacos import (
+    a11y,
+    notification,
+    NativeUIElement,
+    getAppRefByPid,
+    getFrontmostApp,
+)
 import pytest
 
 
@@ -7,15 +13,15 @@ import pytest
 )
 class TestAXUIElement:
     def test_init(self):
-        a11y.AXUIElement()
+        NativeUIElement()
 
     def test_app_ref_from_pid(self):
         pid = a11y.get_frontmost_pid()
-        app_ref = a11y.AXUIElement.from_pid(pid)
+        app_ref = NativeUIElement.getAppRefByPid(pid)
         assert "Application" in str(app_ref.ref)
 
     def test_app_ref_from_system_object(self):
-        app_ref = a11y.AXUIElement.systemwide()
+        app_ref = NativeUIElement.getSystemObject()
         assert "System Wide" in str(app_ref.ref)
 
     def test_get_ax_attributes(self, frontmost_app):
@@ -49,28 +55,26 @@ class TestAXUIElement:
 
     def test_get_pid(self):
         pid = a11y.get_frontmost_pid()
-        app_ref = a11y.AXUIElement.from_pid(pid)
+        app_ref = getAppRefByPid(pid)
         assert app_ref.pid == pid
 
     def test_eq(self):
-        pid = a11y.get_frontmost_pid()
-        app_ref1 = a11y.AXUIElement.from_pid(pid)
-        app_ref2 = a11y.AXUIElement.from_pid(pid)
+        app_ref1 = getFrontmostApp()
+        app_ref2 = getAppRefByPid(app_ref1.pid)
         assert app_ref1 == app_ref2
 
     def test_ne(self):
-        pid = a11y.get_frontmost_pid()
-        app_ref1 = a11y.AXUIElement.from_pid(pid)
-        app_ref2 = a11y.AXUIElement.systemwide()
+        app_ref1 = getFrontmostApp()
+        app_ref2 = NativeUIElement.getSystemObject()
         assert app_ref1 != app_ref2
 
     def test_list_returns_pyobj(self, frontmost_app):
         window = frontmost_app.AXWindows[0]
-        assert isinstance(window, a11y.AXUIElement)
+        assert isinstance(window, NativeUIElement)
 
     def test_get_child_uielement(self, frontmost_app):
         window = frontmost_app.AXWindows[0]
-        assert isinstance(window, a11y.AXUIElement)
+        assert isinstance(window, NativeUIElement)
 
     def test_convert_ax_size(self, front_title_ui):
         size = front_title_ui.AXSize
