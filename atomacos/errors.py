@@ -46,6 +46,18 @@ class AXErrorNoValue(AXError):
     pass
 
 
+def error_from_code(code):
+    return {
+        kAXErrorAPIDisabled: AXErrorAPIDisabled,
+        kAXErrorInvalidUIElement: AXErrorInvalidUIElement,
+        kAXErrorCannotComplete: AXErrorCannotComplete,
+        kAXErrorNotImplemented: AXErrorNotImplemented,
+        kAXErrorIllegalArgument: AXErrorIllegalArgument,
+        kAXErrorNoValue: AXErrorNoValue,
+        kAXErrorActionUnsupported: AXErrorActionUnsupported,
+    }.get(code, AXErrorUnsupported)
+
+
 def raise_ax_error(code, message):
     """
     Raises an error with given message based on given error code.
@@ -54,15 +66,4 @@ def raise_ax_error(code, message):
     if code == kAXErrorSuccess:
         return
 
-    CODE_TO_AXERROR = {
-        kAXErrorAPIDisabled: AXErrorAPIDisabled,
-        kAXErrorInvalidUIElement: AXErrorInvalidUIElement,
-        kAXErrorCannotComplete: AXErrorCannotComplete,
-        kAXErrorNotImplemented: AXErrorNotImplemented,
-        kAXErrorIllegalArgument: AXErrorIllegalArgument,
-        kAXErrorNoValue: AXErrorNoValue,
-        kAXErrorActionUnsupported: AXErrorActionUnsupported,
-    }
-
-    ErrorFromCode = CODE_TO_AXERROR.get(code, AXErrorUnsupported)
-    raise ErrorFromCode("%s (AX Error %s)" % (message, code))
+    raise error_from_code(code)("%s (AX Error %s)" % (message, code))
