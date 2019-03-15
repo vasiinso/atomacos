@@ -7,5 +7,6 @@ if [[ $TRAVIS_BRANCH = "master" ]]; then
         pip install python-semantic-release
         semantic-release version
         flit publish
+        semantic-release changelog --post
     fi
 fi
