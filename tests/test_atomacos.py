@@ -116,6 +116,10 @@ class TestAXUIElement:
         element_at_position = system_ref.get_element_at_position(center_x, center_y)
         assert element_at_position == front_title_ui
 
+    def test_get_empty_field(self, finder_app):
+        search = finder_app.textFieldsR("*search*")[0]
+        assert search.AXValue is None
+
     def test_set_string(self, finder_app):
         search = finder_app.textFieldsR("*search*")[0]
         search.setString("AXValue", "test")

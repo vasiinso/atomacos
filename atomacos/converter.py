@@ -19,8 +19,6 @@ class Converter:
         self.app_ref_class = axuielementclass
 
     def convert_value(self, value):
-        if value is None:
-            return value
         if CFGetTypeID(value) == CFStringGetTypeID():
             return str(value)
         if CFGetTypeID(value) == AXUIElementGetTypeID():

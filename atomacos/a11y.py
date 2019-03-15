@@ -26,6 +26,7 @@ from atomacos.errors import (
     AXErrorCannotComplete,
     AXErrorIllegalArgument,
     AXErrorNotImplemented,
+    AXErrorNoValue,
     AXErrorUnsupported,
     raise_ax_error,
 )
@@ -93,11 +94,15 @@ class AXUIElement(object):
         """Get the value of the the specified attribute"""
         if item in self.ax_attributes:
             err, attrValue = AXUIElementCopyAttributeValue(self.ref, item, None)
-            return self.converter.convert_value(attrValue)
-        else:
-            raise AttributeError(
-                "'%s' object has no attribute '%s'" % (type(self), item)
-            )
+            if err != kAXErrorSuccess:
+                try:
+                    raise_ax_error(err, "Unable to get attribute. %s")
+                except AXErrorNoValue:
+                    return None
+
+            else:
+                return self.converter.convert_value(attrValue)
+        raise AttributeError("'%s' object has no attribute '%s'" % (type(self), item))
 
     def _set_ax_attribute(self, name, value):
         """
