@@ -22,10 +22,7 @@ class Converter:
         if value is None:
             return value
         if CFGetTypeID(value) == CFStringGetTypeID():
-            try:
-                return str(value)
-            except UnicodeError:
-                return value.encode("utf-8")
+            return str(value)
         if CFGetTypeID(value) == AXUIElementGetTypeID():
             return self.convert_app_ref(value)
         if CFGetTypeID(value) == CFArrayGetTypeID():
