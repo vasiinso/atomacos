@@ -5,30 +5,31 @@ import AppKit
 from AppKit import NSURL
 from ApplicationServices import (
     AXIsProcessTrusted,
-    AXUIElementCopyActionNames,
-    AXUIElementCopyAttributeNames,
-    AXUIElementCopyAttributeValue,
-    AXUIElementCopyElementAtPosition,
     AXUIElementCreateApplication,
     AXUIElementCreateSystemWide,
-    AXUIElementGetPid,
-    AXUIElementIsAttributeSettable,
-    AXUIElementPerformAction,
-    AXUIElementSetAttributeValue,
-    AXUIElementSetMessagingTimeout,
     CFEqual,
     NSWorkspace,
-    kAXErrorSuccess,
 )
 from atomacos import converter
+from atomacos._objc_ax import (
+    PAXUIElementCopyActionNames,
+    PAXUIElementCopyAttributeNames,
+    PAXUIElementCopyAttributeValue,
+    PAXUIElementCopyElementAtPosition,
+    PAXUIElementGetPid,
+    PAXUIElementIsAttributeSettable,
+    PAXUIElementPerformAction,
+    PAXUIElementSetAttributeValue,
+    PAXUIElementSetMessagingTimeout,
+)
 from atomacos.errors import (
+    AXError,
     AXErrorAPIDisabled,
     AXErrorCannotComplete,
     AXErrorIllegalArgument,
     AXErrorNotImplemented,
     AXErrorNoValue,
     AXErrorUnsupported,
-    raise_ax_error,
 )
 from PyObjCTools import AppHelper
 
@@ -93,70 +94,53 @@ class AXUIElement(object):
     def _get_ax_attribute(self, item):
         """Get the value of the the specified attribute"""
         if item in self.ax_attributes:
-            err, attrValue = AXUIElementCopyAttributeValue(self.ref, item, None)
-            if err != kAXErrorSuccess:
-                try:
-                    raise_ax_error(err, "Unable to get attribute. %s")
-                except AXErrorNoValue:
-                    return None
+            try:
+                attr_value = PAXUIElementCopyAttributeValue(self.ref, item)
+                return self.converter.convert_value(attr_value)
+            except AXErrorNoValue:
+                return None
 
-            else:
-                return self.converter.convert_value(attrValue)
         raise AttributeError("'%s' object has no attribute '%s'" % (type(self), item))
 
     def _set_ax_attribute(self, name, value):
         """
         Set the specified attribute to the specified value
         """
-        err, settable = AXUIElementIsAttributeSettable(self.ref, name, None)
-        if err != kAXErrorSuccess:
-            raise_ax_error(err, "Error querying attribute")
+        settable = PAXUIElementIsAttributeSettable(self.ref, name)
 
         if not settable:
             raise AXErrorUnsupported("Attribute is not settable")
 
-        err = AXUIElementSetAttributeValue(self.ref, name, value)
-
-        if err != kAXErrorSuccess:
-            raise_ax_error(err, "Error setting attribute value")
+        PAXUIElementSetAttributeValue(self.ref, name, value)
 
     @property
     def ax_attributes(self):
         """
         Get a list of attributes available on the AXUIElement
         """
-        err, attr = AXUIElementCopyAttributeNames(self.ref, None)
-
-        if err != kAXErrorSuccess:
-            logger.warning("Error retrieving attribute list. %s" % err)
+        try:
+            names = PAXUIElementCopyAttributeNames(self.ref)
+            return list(names)
+        except AXError:
             return []
-        else:
-            return list(attr)
 
     @property
     def ax_actions(self):
         """
         Get a list of actions available on the AXUIElement
         """
-        err, actions = AXUIElementCopyActionNames(self.ref, None)
-
-        if err != kAXErrorSuccess:
-            logger.warning("Error retrieving action names. %s" % err)
+        try:
+            names = PAXUIElementCopyActionNames(self.ref)
+            return list(names)
+        except AXError:
             return []
-        else:
-            return list(actions)
 
     def _perform_ax_actions(self, name):
-        err = AXUIElementPerformAction(self.ref, name)
-
-        if err != kAXErrorSuccess:
-            raise_ax_error(err, "Error performing requested action")
+        PAXUIElementPerformAction(self.ref, name)
 
     @property
     def pid(self):
-        error_code, pid = AXUIElementGetPid(self.ref, None)
-        if error_code != kAXErrorSuccess:
-            raise_ax_error(error_code, "Error retrieving PID")
+        pid = PAXUIElementGetPid(self.ref)
         return pid
 
     @classmethod
@@ -276,14 +260,12 @@ class AXUIElement(object):
                 "Operation not supported on null element references"
             )
 
-        err, res = AXUIElementCopyElementAtPosition(self.ref, x, y, None)
-        if err != kAXErrorSuccess:
-            try:
-                raise_ax_error(err, "Unable to get element at position")
-            except AXErrorIllegalArgument:
-                raise ValueError("Arguments must be two floats.")
+        try:
+            element = PAXUIElementCopyElementAtPosition(self.ref, x, y)
+        except AXErrorIllegalArgument:
+            raise ValueError("Arguments must be two floats.")
 
-        return self.__class__(res)
+        return self.__class__(element)
 
     @staticmethod
     def launch_app_by_bundle_id(bundle_id):
@@ -344,13 +326,10 @@ class AXUIElement(object):
                 "Operation not supported on null element references"
             )
 
-        err = AXUIElementSetMessagingTimeout(self.ref, timeout)
-
-        if err != kAXErrorSuccess:
-            try:
-                raise_ax_error(err, "The element reference is invalid")
-            except AXErrorIllegalArgument:
-                raise ValueError("Accessibility timeout values must be non-negative")
+        try:
+            PAXUIElementSetMessagingTimeout(self.ref, timeout)
+        except AXErrorIllegalArgument:
+            raise ValueError("Accessibility timeout values must be non-negative")
 
 
 def get_frontmost_pid():

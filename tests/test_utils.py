@@ -11,15 +11,15 @@ class TestErrors:
 
     def test_set_known_code(self):
         with pytest.raises(errors.AXErrorAPIDisabled):
-            errors.raise_ax_error(-25211, "test")
+            errors.check_ax_error(-25211, "test")
         with pytest.raises(errors.AXErrorInvalidUIElement):
-            errors.raise_ax_error(-25202, "test")
+            errors.check_ax_error(-25202, "test")
         with pytest.raises(errors.AXErrorCannotComplete):
-            errors.raise_ax_error(-25204, "test")
+            errors.check_ax_error(-25204, "test")
         with pytest.raises(errors.AXErrorNotImplemented):
-            errors.raise_ax_error(-25208, "test")
+            errors.check_ax_error(-25208, "test")
         with pytest.raises(errors.AXErrorNoValue):
-            errors.raise_ax_error(-25212, "test")
+            errors.check_ax_error(-25212, "test")
 
 
 class TestHelpers:
