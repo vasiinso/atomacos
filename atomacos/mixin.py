@@ -21,7 +21,7 @@ class SearchMethodsMixin(object):
         """Return a list of all children (recursively) that match
         the specified criteria.
         """
-        return self._findAllR(**kwargs)
+        return self._findAll(recursive=True, **kwargs)
 
     def _convenienceMatch(self, role, attr, match):
         """Method used by role based convenience functions to find a match"""

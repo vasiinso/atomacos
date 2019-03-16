@@ -21,7 +21,7 @@ def test_search_method_for_roles(monkeypatch):
 
 def test_search_method_for_roles_recursive(monkeypatch):
     sut = atomacos.NativeUIElement()
-    monkeypatch.setattr(sut, "_findAllR", lambda **kwargs: kwargs.items())
+    monkeypatch.setattr(sut, "_findAll", lambda **kwargs: kwargs.items())
 
     assert ("AXRole", "AXTextField") in sut.textFieldsR()
     assert ("AXRole", "AXButton") in sut.buttonsR()
@@ -56,7 +56,7 @@ def test_search_extra_attributes(monkeypatch):
 
 def test_search_extra_attributes_recursive(monkeypatch):
     sut = atomacos.NativeUIElement()
-    monkeypatch.setattr(sut, "_findAllR", lambda **kwargs: kwargs.items())
+    monkeypatch.setattr(sut, "_findAll", lambda **kwargs: kwargs.items())
 
     assert ("AXRoleDescription", 1) in sut.textFieldsR(1)
     assert ("AXTitle", 1) in sut.buttonsR(1)

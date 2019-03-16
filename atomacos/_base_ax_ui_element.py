@@ -481,19 +481,10 @@ class BaseAXUIElement(a11y.AXUIElement):
             if needle._match(**kwargs):
                 yield needle
 
-    def _findAll(self, **kwargs):
+    def _findAll(self, recursive=False, **kwargs):
         """Return a list of all children that match the specified criteria."""
         result = []
-        for item in self._generateFind(**kwargs):
-            result.append(item)
-        return result
-
-    def _findAllR(self, **kwargs):
-        """Return a list of all children (recursively) that match the specified
-        criteria.
-        """
-        result = []
-        for item in self._generateFind(recursive=True, **kwargs):
+        for item in self._generateFind(recursive=recursive, **kwargs):
             result.append(item)
         return result
 
