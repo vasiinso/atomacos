@@ -2,7 +2,6 @@ import fnmatch
 import logging
 
 import AppKit
-from AppKit import NSURL
 from ApplicationServices import (
     AXIsProcessTrusted,
     AXUIElementCreateApplication,
@@ -295,7 +294,7 @@ class AXUIElement(object):
         if arguments is None:
             arguments = []
 
-        bundleUrl = NSURL.fileURLWithPath_(bundle_path)
+        bundleUrl = AppKit.NSURL.fileURLWithPath_(bundle_path)
         workspace = AppKit.NSWorkspace.sharedWorkspace()
         configuration = {AppKit.NSWorkspaceLaunchConfigurationArguments: arguments}
 
