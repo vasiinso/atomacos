@@ -5,10 +5,10 @@ if [[ $TRAVIS_BRANCH = "master" ]]; then
         git config --global user.name "semantic-release (via TravisCI)"
         git config --global user.email "semantic-release@travis"
         pip install python-semantic-release
-        if semantic-release version | grep Bump; then
+        if semantic-release version --noop | grep bumped; then
             echo "Deploying"
-            flit publish
             semantic-release publish
+            flit publish
         else
             echo "Skipping"
         fi
