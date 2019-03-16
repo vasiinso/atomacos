@@ -27,110 +27,6 @@ class BaseAXUIElement(a11y.AXUIElement):
         """Get a list of the running applications."""
         return a11y.get_running_apps()
 
-    @classmethod
-    def getAppRefByPid(cls, pid):
-        """Get the top level element for the application specified by pid."""
-        return cls.from_pid(pid)
-
-    @classmethod
-    def getAppRefByBundleId(cls, bundleId):
-        """
-        Get the top level element for the application with the specified
-        bundle ID, such as com.vmware.fusion.
-        """
-        return cls.from_bundle_id(bundleId)
-
-    @classmethod
-    def getAppRefByLocalizedName(cls, name):
-        """Get the top level element for the application with the specified
-        localized name, such as VMware Fusion.
-
-        Wildcards are also allowed.
-        """
-        # Refresh the runningApplications list
-        return cls.from_localized_name(name)
-
-    @classmethod
-    def getFrontmostApp(cls):
-        """Get the current frontmost application.
-
-        Raise a ValueError exception if no GUI applications are found.
-        """
-        # Refresh the runningApplications list
-        return cls.frontmost()
-
-    @classmethod
-    def getAnyAppWithWindow(cls):
-        """Get a random app that has windows.
-
-        Raise a ValueError exception if no GUI applications are found.
-        """
-        # Refresh the runningApplications list
-        return cls.with_window()
-
-    @classmethod
-    def getSystemObject(cls):
-        """Get the top level system accessibility object."""
-        return cls.systemwide()
-
-    @classmethod
-    def setSystemWideTimeout(cls, timeout=0.0):
-        """Set the system-wide accessibility timeout.
-
-        Args:
-            timeout: non-negative float. 0 will reset to the system default.
-
-        Returns:
-            None
-
-        """
-        return cls.set_systemwide_timeout(timeout)
-
-    @staticmethod
-    def launchAppByBundleId(bundleID):
-        """Launch the application with the specified bundle ID"""
-        # NSWorkspaceLaunchAllowingClassicStartup does nothing on any
-        # modern system that doesn't have the classic environment installed.
-        # Encountered a bug when passing 0 for no options on 10.6 PyObjC.
-        a11y.AXUIElement.launch_app_by_bundle_id(bundleID)
-
-    @staticmethod
-    def launchAppByBundlePath(bundlePath, arguments=None):
-        """Launch app with a given bundle path.
-
-        Return True if succeed.
-        """
-        return a11y.AXUIElement.launch_app_by_bundle_path(bundlePath, arguments)
-
-    @staticmethod
-    def terminateAppByBundleId(bundleID):
-        """Terminate app with a given bundle ID.
-        Requires 10.6.
-
-        Return True if succeed.
-        """
-        return a11y.AXUIElement.terminate_app_by_bundle_id(bundleID)
-
-    @classmethod
-    def set_systemwide_timeout(cls, timeout=0.0):
-        """Set the system-wide accessibility timeout.
-
-        Optional: timeout (non-negative float; defaults to 0)
-                  A value of 0 will reset the timeout to the system default.
-        Returns: None.
-        """
-        return cls.systemwide().setTimeout(timeout)
-
-    def setTimeout(self, timeout=0.0):
-        """Set the accessibiltiy API timeout on the given reference.
-
-        Optional: timeout (non-negative float; defaults to 0)
-                  A value of 0 will reset the timeout to the system-wide
-                  value
-        Returns: None
-        """
-        self.set_timeout(timeout)
-
     def _postQueuedEvents(self, interval=0.01):
         """Private method to post queued events (e.g. Quartz events).
 
@@ -521,26 +417,6 @@ class BaseAXUIElement(a11y.AXUIElement):
 
         return Observer(self).set_notification(
             timeout, notification, callback, callbackArgs, callbackKwargs
-        )
-
-    def waitForFocusToMatchCriteria(self, timeout=10, **kwargs):
-        """Convenience method to wait for focused element to change
-        (to element matching kwargs criteria).
-
-        Returns: Element or None
-
-        """
-
-        def _matchFocused(retelem, **kwargs):
-            return retelem if retelem._match(**kwargs) else None
-
-        retelem = None
-        return self._waitFor(
-            timeout,
-            "AXFocusedUIElementChanged",
-            callback=_matchFocused,
-            args=(retelem,),
-            **kwargs
         )
 
     def _getActions(self):
