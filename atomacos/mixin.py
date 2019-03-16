@@ -11,7 +11,7 @@ class SearchMethodsMixin(object):
         """Search recursively for the first object that matches the
         criteria.
         """
-        return self._findFirstR(**kwargs)
+        return self._findFirst(recursive=True, **kwargs)
 
     def findAll(self, **kwargs):
         """Return a list of all children that match the specified criteria."""

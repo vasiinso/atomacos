@@ -471,7 +471,7 @@ class BaseAXUIElement(a11y.AXUIElement):
         """Perform _match but on another object, not self."""
         if obj is not None:
             # Need to check that the returned UI element wasn't destroyed first:
-            if self._findFirstR(**kwargs):
+            if self._findFirst(recursive=True, **kwargs):
                 return obj._match(**kwargs)
         return False
 
@@ -488,14 +488,9 @@ class BaseAXUIElement(a11y.AXUIElement):
             result.append(item)
         return result
 
-    def _findFirst(self, **kwargs):
+    def _findFirst(self, recursive=False, **kwargs):
         """Return the first object that matches the criteria."""
-        for item in self._generateFind(**kwargs):
-            return item
-
-    def _findFirstR(self, **kwargs):
-        """Search recursively for the first object that matches the criteria."""
-        for item in self._generateFind(recursive=True, **kwargs):
+        for item in self._generateFind(recursive=recursive, **kwargs):
             return item
 
     def _getApplication(self):
