@@ -4,7 +4,7 @@ from collections import deque
 
 import AppKit
 import Quartz
-from atomacos import AXKeyboard, AXKeyCodeConstants, a11y, errors
+from atomacos import AXKeyboard, AXKeyCodeConstants, a11y
 from atomacos.notification import Observer
 
 
@@ -429,28 +429,19 @@ class BaseAXUIElement(a11y.AXUIElement):
         """Perform the specified action."""
         self._performAction("AX%s" % action)
 
-    def _generateChildren(self):
+    def _generateChildren(self, target=None, recursive=False):
         """Generator which yields all AXChildren of the object."""
-        try:
-            children = self.AXChildren
-        except errors.AXError:
-            return
-        if children:
-            for child in children:
-                yield child
-
-    def _generateChildrenR(self, target=None):
-        """Generator which recursively yields all AXChildren of the object."""
         if target is None:
             target = self
 
-        if "AXChildren" in target.ax_attributes:
-            for child in target.AXChildren:
-                yield child
-                for c in self._generateChildrenR(child):
-                    yield c
-        else:
+        if "AXChildren" not in target.ax_attributes:
             return
+
+        for child in target.AXChildren:
+            yield child
+            if recursive:
+                for c in self._generateChildren(child, recursive):
+                    yield c
 
     def _match(self, **kwargs):
         """Method which indicates if the object matches specified criteria.
@@ -492,7 +483,7 @@ class BaseAXUIElement(a11y.AXUIElement):
 
     def _generateFindR(self, **kwargs):
         """Generator which yields matches on AXChildren and their children."""
-        for needle in self._generateChildrenR():
+        for needle in self._generateChildren(recursive=True):
             if needle._match(**kwargs):
                 yield needle
 
