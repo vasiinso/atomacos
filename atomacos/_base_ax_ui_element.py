@@ -475,15 +475,9 @@ class BaseAXUIElement(a11y.AXUIElement):
                 return obj._match(**kwargs)
         return False
 
-    def _generateFind(self, **kwargs):
+    def _generateFind(self, recursive=False, **kwargs):
         """Generator which yields matches on AXChildren."""
-        for needle in self._generateChildren():
-            if needle._match(**kwargs):
-                yield needle
-
-    def _generateFindR(self, **kwargs):
-        """Generator which yields matches on AXChildren and their children."""
-        for needle in self._generateChildren(recursive=True):
+        for needle in self._generateChildren(recursive=recursive):
             if needle._match(**kwargs):
                 yield needle
 
@@ -499,7 +493,7 @@ class BaseAXUIElement(a11y.AXUIElement):
         criteria.
         """
         result = []
-        for item in self._generateFindR(**kwargs):
+        for item in self._generateFind(recursive=True, **kwargs):
             result.append(item)
         return result
 
@@ -510,7 +504,7 @@ class BaseAXUIElement(a11y.AXUIElement):
 
     def _findFirstR(self, **kwargs):
         """Search recursively for the first object that matches the criteria."""
-        for item in self._generateFindR(**kwargs):
+        for item in self._generateFind(recursive=True, **kwargs):
             return item
 
     def _getApplication(self):
