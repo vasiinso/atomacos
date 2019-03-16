@@ -25,8 +25,10 @@ If you experience issues, please open a ticket in the [issue tracker][issues].
 
 ## Enabling Systemwide Accessibility
 Check the checkbox:
-`System Preferences > Universal Access > Enable access for assistive devices`
-`System Preferences > Security & Privacy > Privacy > Accessibility`
+```
+System Preferences > Universal Access > Enable access for assistive devices
+System Preferences > Security & Privacy > Privacy > Accessibility
+```
 
 Failure to enable this will result in `AXErrorAPIDisabled` exceptions during some module usage.
 
