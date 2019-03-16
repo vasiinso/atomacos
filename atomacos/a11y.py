@@ -88,7 +88,12 @@ class AXUIElement(object):
             super(AXUIElement, self).__setattr__(key, value)
 
     def __dir__(self):
-        return self.ax_attributes + self.ax_actions + list(self.__dict__.keys())
+        return (
+            self.ax_attributes
+            + self.ax_actions
+            + list(self.__dict__.keys())
+            + dir(super(AXUIElement, self))  # not working in python 2
+        )
 
     def _get_ax_attribute(self, item):
         """Get the value of the the specified attribute"""
