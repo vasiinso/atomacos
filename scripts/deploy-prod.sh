@@ -8,7 +8,7 @@ if [[ $TRAVIS_BRANCH = "master" ]]; then
         if semantic-release version | grep Bump; then
             echo "Deploying"
             flit publish
-            semantic-release changelog --post
+            semantic-release publish
         else
             echo "Skipping"
         fi
