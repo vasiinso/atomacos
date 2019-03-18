@@ -11,7 +11,7 @@ def test_wait_for_window_to_appear(finder_app):
     new_window.daemon = True
     new_window.start()
 
-    window_appeared = finder_app.waitForWindowToAppear("*Desktop*")
+    window_appeared = finder_app.waitForWindowToAppear("*")
     assert window_appeared
 
 
