@@ -145,7 +145,7 @@ class TestObserver:
 
         observer = notification.Observer(finder_app)
         result = observer.set_notification(
-            timeout=3,
+            timeout=10,
             notification_name=kAXWindowCreatedNotification,
             callbackFn=lambda *_, **__: -1,
         )
