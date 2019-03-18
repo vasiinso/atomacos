@@ -1,8 +1,18 @@
+import os
+import subprocess
 import time
 
 import atomacos
 import pytest
 from atomacos import converter
+
+
+def pytest_exception_interact(node, call, report):
+    if os.getenv("CI", False):
+        filename = "{}.png".format(node.name)
+        subprocess.call("screencapture .env/{}".format(filename), shell=True)
+        subprocess.call(".env/imgur.sh/imgur.sh .env/{}".format(filename), shell=True)
+        subprocess.call("rm .env/{}".format(filename), shell=True)
 
 
 def app_by_bid(bid):
