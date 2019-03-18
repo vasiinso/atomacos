@@ -1,5 +1,7 @@
 import logging
 import signal
+import threading
+import time
 
 import objc
 from ApplicationServices import (
@@ -60,7 +62,6 @@ class Observer:
             self.callbackKwargs = dict()
 
         self.callback_result = None
-        self.timedout = True
 
         @objc.callbackFor(AXObserverCreate)
         def _observer_callback(observer, element, notification, refcon):
@@ -73,13 +74,7 @@ class Observer:
                 if callback_result is None:
                     raise RuntimeError("Python callback failed.")
                 if callback_result in (-1, 1):
-                    self.timedout = False
-                    AppHelper.stopEventLoop()
-
-                self.callback_result = callback_result
-            else:
-                self.timedout = False
-                AppHelper.stopEventLoop()
+                    self.callback_result = callback_result
 
         observer = PAXObserverCreate(self.ref.pid, _observer_callback)
 
@@ -93,9 +88,19 @@ class Observer:
             NSDefaultRunLoopMode,
         )
 
+        def event_stopper():
+            end_time = time.time() + timeout
+            while time.time() < end_time:
+                if self.callback_result is not None:
+                    break
+            AppHelper.callAfter(AppHelper.stopEventLoop)
+
+        event_watcher = threading.Thread(target=event_stopper)
+        event_watcher.daemon = True
+        event_watcher.start()
+
         # Set the signal handlers prior to running the run loop
         oldSigIntHandler = MachSignals.signal(signal.SIGINT, _sigHandler)
-        AppHelper.callLater(timeout, AppHelper.stopEventLoop)
         AppHelper.runConsoleEventLoop()
         MachSignals.signal(signal.SIGINT, oldSigIntHandler)
 
