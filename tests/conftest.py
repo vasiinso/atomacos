@@ -6,7 +6,7 @@ from atomacos import converter
 
 
 def app_by_bid(bid):
-    running_apps = list(atomacos.NativeUIElement._getRunningApps())
+    running_apps = list(atomacos.NativeUIElement.getRunningApps())
     if not any([bid in str(app) for app in running_apps]):
         atomacos.launchAppByBundleId(bid)
     app = atomacos.NativeUIElement.from_bundle_id(bid)

@@ -16,17 +16,27 @@
 # St, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import time
+from collections import deque
 
-from atomacos._base_ax_ui_element import BaseAXUIElement
+from atomacos import a11y
 from atomacos.mixin import KeyboardMouseMixin, SearchMethodsMixin, WaitForMixin
 
 
 class NativeUIElement(
-    KeyboardMouseMixin, WaitForMixin, SearchMethodsMixin, BaseAXUIElement
+    KeyboardMouseMixin, WaitForMixin, SearchMethodsMixin, a11y.AXUIElement
 ):
     """NativeUIElement class - expose the accessibility API in the simplest,
     most natural way possible.
     """
+
+    def __init__(self, ref=None):
+        super(NativeUIElement, self).__init__(ref=ref)
+        self.eventList = deque()
+
+    @classmethod
+    def getRunningApps(cls):
+        """Get a list of the running applications."""
+        return a11y.get_running_apps()
 
     @classmethod
     def getAppRefByPid(cls, pid):
@@ -164,7 +174,10 @@ class NativeUIElement(
         to get the AXParent until it reaches the top application level
         element.
         """
-        return self._getApplication()
+        app = self
+        while "AXParent" in app.ax_attributes:
+            app = app.AXParent
+        return app
 
     def menuItem(self, *args):
         """Return the specified menu item.
@@ -182,7 +195,7 @@ class NativeUIElement(
 
         app.menuitem(1, 'About TextEdit').Press()
         """
-        menuitem = self._getApplication().AXMenuBar
+        menuitem = self.getApplication().AXMenuBar
         return self._menuItem(menuitem, *args)
 
     def popUpItem(self, *args):
@@ -197,4 +210,24 @@ class NativeUIElement(
 
     def getLocalizedName(self):
         """Return the localized name of the application."""
-        return self._getLocalizedName()
+        return self.getApplication().AXTitle
+
+    def __getattr__(self, name):
+        """Handle attribute requests in several ways:
+
+        1. If it starts with AX, it is probably an a11y attribute. Pass
+           it to the handler in _a11y which will determine that for sure.
+        2. See if the attribute is an action which can be invoked on the
+           UIElement. If so, return a function that will invoke the attribute.
+        """
+        if "AX" + name in self.ax_actions:
+            action = super(NativeUIElement, self).__getattr__("AX" + name)
+
+            def performSpecifiedAction():
+                # activate the app before performing the specified action
+                self._activate()
+                return action()
+
+            return performSpecifiedAction
+        else:
+            return super(NativeUIElement, self).__getattr__(name)
