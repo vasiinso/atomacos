@@ -1,4 +1,32 @@
+from atomacos import AXCallbacks
+
+
 class SearchMethodsMixin(object):
+    def _generateChildren(self, target=None, recursive=False):
+        """Generator which yields all AXChildren of the object."""
+        if target is None:
+            target = self
+
+        if "AXChildren" not in target.ax_attributes:
+            return
+
+        for child in target.AXChildren:
+            yield child
+            if recursive:
+                for c in self._generateChildren(child, recursive):
+                    yield c
+
+    def _findAll(self, recursive=False, **kwargs):
+        """Return a list of all children that match the specified criteria."""
+        for needle in self._generateChildren(recursive=recursive):
+            if AXCallbacks.match(needle, **kwargs):
+                yield needle
+
+    def _findFirst(self, recursive=False, **kwargs):
+        """Return the first object that matches the criteria."""
+        for item in self._findAll(recursive=recursive, **kwargs):
+            return item
+
     def findFirst(self, **kwargs):
         """Return the first object that matches the criteria."""
         return self._findFirst(**kwargs)
