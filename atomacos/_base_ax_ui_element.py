@@ -1,10 +1,9 @@
-import fnmatch
 import time
 from collections import deque
 
 import AppKit
 import Quartz
-from atomacos import AXKeyboard, AXKeyCodeConstants, a11y
+from atomacos import AXCallbacks, AXKeyboard, AXKeyCodeConstants, a11y
 from atomacos.notification import Observer
 
 
@@ -372,7 +371,7 @@ class BaseAXUIElement(a11y.AXUIElement):
         """Wait for a particular UI event to occur; this can be built
         upon in NativeUIElement for specific convenience methods.
         """
-        callback = self._matchOther
+        callback = AXCallbacks.match
         retelem = None
         callbackArgs = None
         callbackKwargs = None
@@ -433,42 +432,10 @@ class BaseAXUIElement(a11y.AXUIElement):
                 for c in self._generateChildren(child, recursive):
                     yield c
 
-    def _match(self, **kwargs):
-        """Method which indicates if the object matches specified criteria.
-
-        Match accepts criteria as kwargs and looks them up on attributes.
-        Actual matching is performed with fnmatch, so shell-like wildcards
-        work within match strings. Examples:
-
-        obj._match(AXTitle='Terminal*')
-        obj._match(AXRole='TextField', AXRoleDescription='search text field')
-        """
-        for k in kwargs.keys():
-            try:
-                val = getattr(self, k)
-            except AttributeError:
-                return False
-            # Not all values may be strings (e.g. size, position)
-            if isinstance(val, str):
-                if not fnmatch.fnmatch(val, kwargs[k]):
-                    return False
-            else:
-                if val != kwargs[k]:
-                    return False
-        return True
-
-    def _matchOther(self, obj, **kwargs):
-        """Perform _match but on another object, not self."""
-        if obj is not None:
-            # Need to check that the returned UI element wasn't destroyed first:
-            if self._findFirst(recursive=True, **kwargs):
-                return obj._match(**kwargs)
-        return False
-
     def _findAll(self, recursive=False, **kwargs):
         """Return a list of all children that match the specified criteria."""
         for needle in self._generateChildren(recursive=recursive):
-            if needle._match(**kwargs):
+            if AXCallbacks.match(needle, **kwargs):
                 yield needle
 
     def _findFirst(self, recursive=False, **kwargs):

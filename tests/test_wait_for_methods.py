@@ -1,6 +1,20 @@
 import atomacos
 
 
+def test_wait_for_window_to_appear(finder_app):
+    import threading
+
+    def open_new_window():
+        finder_app.menuItem("File", "New Finder Window").Press()
+
+    new_window = threading.Thread(target=open_new_window)
+    new_window.daemon = True
+    new_window.start()
+
+    window_appeared = finder_app.waitForWindowToAppear("*Desktop*")
+    assert window_appeared
+
+
 def test_waitfor_notification_names(monkeypatch):
     sut = atomacos.NativeUIElement()
     monkeypatch.setattr(
