@@ -5,48 +5,96 @@ import Quartz
 from atomacos import AXKeyboard, AXKeyCodeConstants
 
 
-class KeyboardMouseMixin(object):
-    def sendKey(self, keychr):
-        """Send one character with no modifiers."""
-        return self._sendKey(keychr)
+class EventQueue(object):
+    def _postQueuedEvents(self, interval=0.01):
+        """Private method to post queued events (e.g. Quartz events).
 
-    def sendGlobalKey(self, keychr):
-        """Send one character without modifiers to the system.
-
-        It will not send an event directly to the application, system will
-        dispatch it to the window which has keyboard focus.
-
-        Parameters: keychr - Single keyboard character which will be sent.
+        Each event in queue is a tuple (event call, args to event call).
         """
-        return self._sendKey(keychr, globally=True)
+        while len(self.eventList) > 0:
+            (nextEvent, args) = self.eventList.popleft()
+            nextEvent(*args)
+            time.sleep(interval)
 
-    def sendKeys(self, keystr):
-        """Send a series of characters with no modifiers."""
-        return self._sendKeys(keystr)
+    def _clearEventQueue(self):
+        """Clear the event queue."""
+        if hasattr(self, "eventList"):
+            self.eventList.clear()
 
-    def pressModifiers(self, modifiers):
-        """Hold modifier keys (e.g. [Option])."""
-        return self._holdModifierKeys(modifiers)
+    def _queueEvent(self, event, args):
+        """Private method to queue events to run.
 
-    def releaseModifiers(self, modifiers):
-        """Release modifier keys (e.g. [Option])."""
-        return self._releaseModifierKeys(modifiers)
-
-    def sendKeyWithModifiers(self, keychr, modifiers):
-        """Send one character with modifiers pressed
-
-        Parameters: key character, modifiers (list) (e.g. [SHIFT] or
-                    [COMMAND, SHIFT] (assuming you've first used
-                    from pyatom.AXKeyCodeConstants import *))
+        Each event in queue is a tuple (event call, args to event call).
         """
-        return self._sendKeyWithModifiers(keychr, modifiers, False)
+        self.eventList.append((event, args))
 
-    def sendGlobalKeyWithModifiers(self, keychr, modifiers):
-        """Global send one character with modifiers pressed.
 
-        See sendKeyWithModifiers
+class Mouse(object):
+    def _queueMouseButton(
+        self, coord, mouseButton, modFlags, clickCount=1, dest_coord=None
+    ):
+        """Private method to handle generic mouse button clicking.
+
+        Parameters: coord (x, y) to click, mouseButton (e.g.,
+                    kCGMouseButtonLeft), modFlags set (int)
+        Optional: clickCount (default 1; set to 2 for double-click; 3 for
+                  triple-click on host)
+        Returns: None
         """
-        return self._sendKeyWithModifiers(keychr, modifiers, True)
+        # For now allow only left and right mouse buttons:
+        mouseButtons = {
+            Quartz.kCGMouseButtonLeft: "LeftMouse",
+            Quartz.kCGMouseButtonRight: "RightMouse",
+        }
+        if mouseButton not in mouseButtons:
+            raise ValueError("Mouse button given not recognized")
+
+        eventButtonDown = getattr(Quartz, "kCGEvent%sDown" % mouseButtons[mouseButton])
+        eventButtonUp = getattr(Quartz, "kCGEvent%sUp" % mouseButtons[mouseButton])
+        eventButtonDragged = getattr(
+            Quartz, "kCGEvent%sDragged" % mouseButtons[mouseButton]
+        )
+
+        # Press the button
+        buttonDown = Quartz.CGEventCreateMouseEvent(
+            None, eventButtonDown, coord, mouseButton
+        )
+        # Set modflags (default None) on button down:
+        Quartz.CGEventSetFlags(buttonDown, modFlags)
+
+        # Set the click count on button down:
+        Quartz.CGEventSetIntegerValueField(
+            buttonDown, Quartz.kCGMouseEventClickState, int(clickCount)
+        )
+
+        if dest_coord:
+            # Drag and release the button
+            buttonDragged = Quartz.CGEventCreateMouseEvent(
+                None, eventButtonDragged, dest_coord, mouseButton
+            )
+            # Set modflags on the button dragged:
+            Quartz.CGEventSetFlags(buttonDragged, modFlags)
+
+            buttonUp = Quartz.CGEventCreateMouseEvent(
+                None, eventButtonUp, dest_coord, mouseButton
+            )
+        else:
+            # Release the button
+            buttonUp = Quartz.CGEventCreateMouseEvent(
+                None, eventButtonUp, coord, mouseButton
+            )
+        # Set modflags on the button up:
+        Quartz.CGEventSetFlags(buttonUp, modFlags)
+
+        # Set the click count on button up:
+        Quartz.CGEventSetIntegerValueField(
+            buttonUp, Quartz.kCGMouseEventClickState, int(clickCount)
+        )
+        # Queue the events
+        self._queueEvent(Quartz.CGEventPost, (Quartz.kCGSessionEventTap, buttonDown))
+        if dest_coord:
+            self._queueEvent(Quartz.CGEventPost, (Quartz.kCGHIDEventTap, buttonDragged))
+        self._queueEvent(Quartz.CGEventPost, (Quartz.kCGSessionEventTap, buttonUp))
 
     def dragMouseButtonLeft(self, coord, dest_coord, interval=0.5):
         """Drag the left mouse button without modifiers pressed.
@@ -145,7 +193,57 @@ class KeyboardMouseMixin(object):
                     speed is mouse moving speed, 0 to unlimited
         Returns: None
         """
-        self._leftMouseDragged(stopCoord, strCoord, speed)
+        # Get current position as start point if strCoord not given
+        if strCoord == (0, 0):
+            loc = AppKit.NSEvent.mouseLocation()
+            strCoord = (loc.x, Quartz.CGDisplayPixelsHigh(0) - loc.y)
+
+        # Press left button down
+        pressLeftButton = Quartz.CGEventCreateMouseEvent(
+            None, Quartz.kCGEventLeftMouseDown, strCoord, Quartz.kCGMouseButtonLeft
+        )
+        # Queue the events
+        Quartz.CGEventPost(Quartz.CoreGraphics.kCGHIDEventTap, pressLeftButton)
+        # Wait for reponse of system, a fuzzy icon appears
+        time.sleep(5)
+        # Simulate mouse moving speed, k is slope
+        speed = round(1 / float(speed), 2)
+        xmoved = stopCoord[0] - strCoord[0]
+        ymoved = stopCoord[1] - strCoord[1]
+        if ymoved == 0:
+            raise ValueError("Not support horizontal moving")
+        else:
+            k = abs(ymoved / xmoved)
+
+        if xmoved != 0:
+            for xpos in range(int(abs(xmoved))):
+                if xmoved > 0 and ymoved > 0:
+                    currcoord = (strCoord[0] + xpos, strCoord[1] + xpos * k)
+                elif xmoved > 0 and ymoved < 0:
+                    currcoord = (strCoord[0] + xpos, strCoord[1] - xpos * k)
+                elif xmoved < 0 and ymoved < 0:
+                    currcoord = (strCoord[0] - xpos, strCoord[1] - xpos * k)
+                elif xmoved < 0 and ymoved > 0:
+                    currcoord = (strCoord[0] - xpos, strCoord[1] + xpos * k)
+                # Drag with left button
+                dragLeftButton = Quartz.CGEventCreateMouseEvent(
+                    None,
+                    Quartz.kCGEventLeftMouseDragged,
+                    currcoord,
+                    Quartz.kCGMouseButtonLeft,
+                )
+                Quartz.CGEventPost(Quartz.CoreGraphics.kCGHIDEventTap, dragLeftButton)
+                # Wait for reponse of system
+                time.sleep(speed)
+        else:
+            raise ValueError("Not support vertical moving")
+        upLeftButton = Quartz.CGEventCreateMouseEvent(
+            None, Quartz.kCGEventLeftMouseUp, stopCoord, Quartz.kCGMouseButtonLeft
+        )
+        # Wait for reponse of system, a plus icon appears
+        time.sleep(5)
+        # Up left button up
+        Quartz.CGEventPost(Quartz.CoreGraphics.kCGHIDEventTap, upLeftButton)
 
     def doubleClickMouse(self, coord):
         """Double-click primary mouse button.
@@ -189,28 +287,8 @@ class KeyboardMouseMixin(object):
         self._queueMouseButton(coord, Quartz.kCGMouseButtonLeft, modFlags, clickCount=3)
         self._postQueuedEvents()
 
-    def _postQueuedEvents(self, interval=0.01):
-        """Private method to post queued events (e.g. Quartz events).
 
-        Each event in queue is a tuple (event call, args to event call).
-        """
-        while len(self.eventList) > 0:
-            (nextEvent, args) = self.eventList.popleft()
-            nextEvent(*args)
-            time.sleep(interval)
-
-    def _clearEventQueue(self):
-        """Clear the event queue."""
-        if hasattr(self, "eventList"):
-            self.eventList.clear()
-
-    def _queueEvent(self, event, args):
-        """Private method to queue events to run.
-
-        Each event in queue is a tuple (event call, args to event call).
-        """
-        self.eventList.append((event, args))
-
+class Keyboard(object):
     def _addKeyToQueue(self, keychr, modFlags=0, globally=False):
         """Add keypress to queue.
 
@@ -258,6 +336,48 @@ class KeyboardMouseMixin(object):
         else:
             self._queueEvent(Quartz.CGEventPost, (0, keyDown))
             self._queueEvent(Quartz.CGEventPost, (0, keyUp))
+
+    def sendKey(self, keychr):
+        """Send one character with no modifiers."""
+        return self._sendKey(keychr)
+
+    def sendGlobalKey(self, keychr):
+        """Send one character without modifiers to the system.
+
+        It will not send an event directly to the application, system will
+        dispatch it to the window which has keyboard focus.
+
+        Parameters: keychr - Single keyboard character which will be sent.
+        """
+        return self._sendKey(keychr, globally=True)
+
+    def sendKeys(self, keystr):
+        """Send a series of characters with no modifiers."""
+        return self._sendKeys(keystr)
+
+    def pressModifiers(self, modifiers):
+        """Hold modifier keys (e.g. [Option])."""
+        return self._holdModifierKeys(modifiers)
+
+    def releaseModifiers(self, modifiers):
+        """Release modifier keys (e.g. [Option])."""
+        return self._releaseModifierKeys(modifiers)
+
+    def sendKeyWithModifiers(self, keychr, modifiers):
+        """Send one character with modifiers pressed
+
+        Parameters: key character, modifiers (list) (e.g. [SHIFT] or
+                    [COMMAND, SHIFT] (assuming you've first used
+                    from pyatom.AXKeyCodeConstants import *))
+        """
+        return self._sendKeyWithModifiers(keychr, modifiers, False)
+
+    def sendGlobalKeyWithModifiers(self, keychr, modifiers):
+        """Global send one character with modifiers pressed.
+
+        See sendKeyWithModifiers
+        """
+        return self._sendKeyWithModifiers(keychr, modifiers, True)
 
     def _sendKey(self, keychr, modFlags=0, globally=False):
         """Send one character with no modifiers.
@@ -401,131 +521,6 @@ class KeyboardMouseMixin(object):
         # Post the queued keypresses:
         self._postQueuedEvents()
 
-    def _queueMouseButton(
-        self, coord, mouseButton, modFlags, clickCount=1, dest_coord=None
-    ):
-        """Private method to handle generic mouse button clicking.
 
-        Parameters: coord (x, y) to click, mouseButton (e.g.,
-                    kCGMouseButtonLeft), modFlags set (int)
-        Optional: clickCount (default 1; set to 2 for double-click; 3 for
-                  triple-click on host)
-        Returns: None
-        """
-        # For now allow only left and right mouse buttons:
-        mouseButtons = {
-            Quartz.kCGMouseButtonLeft: "LeftMouse",
-            Quartz.kCGMouseButtonRight: "RightMouse",
-        }
-        if mouseButton not in mouseButtons:
-            raise ValueError("Mouse button given not recognized")
-
-        eventButtonDown = getattr(Quartz, "kCGEvent%sDown" % mouseButtons[mouseButton])
-        eventButtonUp = getattr(Quartz, "kCGEvent%sUp" % mouseButtons[mouseButton])
-        eventButtonDragged = getattr(
-            Quartz, "kCGEvent%sDragged" % mouseButtons[mouseButton]
-        )
-
-        # Press the button
-        buttonDown = Quartz.CGEventCreateMouseEvent(
-            None, eventButtonDown, coord, mouseButton
-        )
-        # Set modflags (default None) on button down:
-        Quartz.CGEventSetFlags(buttonDown, modFlags)
-
-        # Set the click count on button down:
-        Quartz.CGEventSetIntegerValueField(
-            buttonDown, Quartz.kCGMouseEventClickState, int(clickCount)
-        )
-
-        if dest_coord:
-            # Drag and release the button
-            buttonDragged = Quartz.CGEventCreateMouseEvent(
-                None, eventButtonDragged, dest_coord, mouseButton
-            )
-            # Set modflags on the button dragged:
-            Quartz.CGEventSetFlags(buttonDragged, modFlags)
-
-            buttonUp = Quartz.CGEventCreateMouseEvent(
-                None, eventButtonUp, dest_coord, mouseButton
-            )
-        else:
-            # Release the button
-            buttonUp = Quartz.CGEventCreateMouseEvent(
-                None, eventButtonUp, coord, mouseButton
-            )
-        # Set modflags on the button up:
-        Quartz.CGEventSetFlags(buttonUp, modFlags)
-
-        # Set the click count on button up:
-        Quartz.CGEventSetIntegerValueField(
-            buttonUp, Quartz.kCGMouseEventClickState, int(clickCount)
-        )
-        # Queue the events
-        self._queueEvent(Quartz.CGEventPost, (Quartz.kCGSessionEventTap, buttonDown))
-        if dest_coord:
-            self._queueEvent(Quartz.CGEventPost, (Quartz.kCGHIDEventTap, buttonDragged))
-        self._queueEvent(Quartz.CGEventPost, (Quartz.kCGSessionEventTap, buttonUp))
-
-    def _leftMouseDragged(self, stopCoord, strCoord, speed):
-        """Private method to handle generic mouse left button dragging and
-        dropping.
-
-        Parameters: stopCoord(x,y) drop point
-        Optional: strCoord (x, y) drag point, default (0,0) get current
-                  mouse position
-                  speed (int) 1 to unlimit, simulate mouse moving
-                  action from some special requirement
-        Returns: None
-        """
-        # Get current position as start point if strCoord not given
-        if strCoord == (0, 0):
-            loc = AppKit.NSEvent.mouseLocation()
-            strCoord = (loc.x, Quartz.CGDisplayPixelsHigh(0) - loc.y)
-
-        # Press left button down
-        pressLeftButton = Quartz.CGEventCreateMouseEvent(
-            None, Quartz.kCGEventLeftMouseDown, strCoord, Quartz.kCGMouseButtonLeft
-        )
-        # Queue the events
-        Quartz.CGEventPost(Quartz.CoreGraphics.kCGHIDEventTap, pressLeftButton)
-        # Wait for reponse of system, a fuzzy icon appears
-        time.sleep(5)
-        # Simulate mouse moving speed, k is slope
-        speed = round(1 / float(speed), 2)
-        xmoved = stopCoord[0] - strCoord[0]
-        ymoved = stopCoord[1] - strCoord[1]
-        if ymoved == 0:
-            raise ValueError("Not support horizontal moving")
-        else:
-            k = abs(ymoved / xmoved)
-
-        if xmoved != 0:
-            for xpos in range(int(abs(xmoved))):
-                if xmoved > 0 and ymoved > 0:
-                    currcoord = (strCoord[0] + xpos, strCoord[1] + xpos * k)
-                elif xmoved > 0 and ymoved < 0:
-                    currcoord = (strCoord[0] + xpos, strCoord[1] - xpos * k)
-                elif xmoved < 0 and ymoved < 0:
-                    currcoord = (strCoord[0] - xpos, strCoord[1] - xpos * k)
-                elif xmoved < 0 and ymoved > 0:
-                    currcoord = (strCoord[0] - xpos, strCoord[1] + xpos * k)
-                # Drag with left button
-                dragLeftButton = Quartz.CGEventCreateMouseEvent(
-                    None,
-                    Quartz.kCGEventLeftMouseDragged,
-                    currcoord,
-                    Quartz.kCGMouseButtonLeft,
-                )
-                Quartz.CGEventPost(Quartz.CoreGraphics.kCGHIDEventTap, dragLeftButton)
-                # Wait for reponse of system
-                time.sleep(speed)
-        else:
-            raise ValueError("Not support vertical moving")
-        upLeftButton = Quartz.CGEventCreateMouseEvent(
-            None, Quartz.kCGEventLeftMouseUp, stopCoord, Quartz.kCGMouseButtonLeft
-        )
-        # Wait for reponse of system, a plus icon appears
-        time.sleep(5)
-        # Up left button up
-        Quartz.CGEventPost(Quartz.CoreGraphics.kCGHIDEventTap, upLeftButton)
+class KeyboardMouseMixin(Mouse, Keyboard, EventQueue):
+    pass
