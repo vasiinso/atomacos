@@ -193,7 +193,7 @@ class NativeUIElement(
 
     def getBundleId(self):
         """Return the bundle ID of the application."""
-        return self._getBundleId()
+        return self.bundle_id
 
     def getLocalizedName(self):
         """Return the localized name of the application."""

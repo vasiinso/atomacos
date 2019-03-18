@@ -526,12 +526,6 @@ class BaseAXUIElement(a11y.AXUIElement):
         # to use the int instead of the symbolic names
         app.activateWithOptions_(3)
 
-    def _getBundleId(self):
-        """Return the bundle ID of the application."""
-        ra = AppKit.NSRunningApplication
-        app = ra.runningApplicationWithProcessIdentifier_(self.pid)
-        return app.bundleIdentifier()
-
     def _getLocalizedName(self):
         """Return the localized name of the application."""
         return self._getApplication().AXTitle

@@ -143,6 +143,13 @@ class AXUIElement(object):
         PAXUIElementPerformAction(self.ref, name)
 
     @property
+    def bundle_id(self):
+        """Return the bundle ID of the application."""
+        ra = AppKit.NSRunningApplication
+        app = ra.runningApplicationWithProcessIdentifier_(self.pid)
+        return app.bundleIdentifier()
+
+    @property
     def pid(self):
         pid = PAXUIElementGetPid(self.ref)
         return pid
