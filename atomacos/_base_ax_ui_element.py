@@ -419,16 +419,6 @@ class BaseAXUIElement(a11y.AXUIElement):
             timeout, notification, callback, callbackArgs, callbackKwargs
         )
 
-    def _getActions(self):
-        """Retrieve a list of actions supported by the object."""
-        actions = self.ax_actions
-        # strip leading AX from actions - help distinguish them from attributes
-        return [action[2:] for action in actions]
-
-    def _performAction(self, action):
-        """Perform the specified action."""
-        self._performAction("AX%s" % action)
-
     def _generateChildren(self, target=None, recursive=False):
         """Generator which yields all AXChildren of the object."""
         if target is None:

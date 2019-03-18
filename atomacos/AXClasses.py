@@ -138,7 +138,9 @@ class NativeUIElement(
 
     def getActions(self):
         """Return a list of the actions available on the element."""
-        return self._getActions()
+        actions = self.ax_actions
+        # strip leading AX from actions - help distinguish them from attributes
+        return [action[2:] for action in actions]
 
     def setString(self, attribute, string):
         """Set the specified attribute to the specified string."""
