@@ -3,14 +3,10 @@ import signal
 import threading
 import time
 
-import objc
-from ApplicationServices import (
-    AXObserverCreate,
-    AXObserverGetRunLoopSource,
-    NSDefaultRunLoopMode,
-)
+from ApplicationServices import AXObserverGetRunLoopSource, NSDefaultRunLoopMode
 from atomacos._macos import (
     PAXObserverAddNotification,
+    PAXObserverCallback,
     PAXObserverCreate,
     PAXObserverRemoveNotification,
 )
@@ -63,8 +59,8 @@ class Observer:
 
         self.callback_result = None
 
-        @objc.callbackFor(AXObserverCreate)
-        def _observer_callback(observer, element, notification, refcon):
+        @PAXObserverCallback
+        def _callback(observer, element, notification, refcon):
             if self.callbackFn is not None:
                 ret_element = self.ref.__class__(element)
                 if ret_element is None:
@@ -76,7 +72,7 @@ class Observer:
                 if callback_result in (-1, 1):
                     self.callback_result = callback_result
 
-        observer = PAXObserverCreate(self.ref.pid, _observer_callback)
+        observer = PAXObserverCreate(self.ref.pid, _callback)
 
         PAXObserverAddNotification(
             observer, self.ref.ref, notification_name, id(self.ref.ref)

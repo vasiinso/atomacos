@@ -16,6 +16,9 @@ from ApplicationServices import (
     AXUIElementSetMessagingTimeout,
 )
 from atomacos import errors
+from objc import callbackFor
+
+PAXObserverCallback = callbackFor(AXObserverCreate)
 
 
 def PAXObserverCreate(application, callback):
