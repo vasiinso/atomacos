@@ -17,7 +17,6 @@
 
 import time
 
-from atomacos import a11y
 from atomacos._base_ax_ui_element import BaseAXUIElement
 from atomacos.mixin import KeyboardMouseMixin, SearchMethodsMixin, WaitForMixin
 
@@ -94,7 +93,7 @@ class NativeUIElement(
         # NSWorkspaceLaunchAllowingClassicStartup does nothing on any
         # modern system that doesn't have the classic environment installed.
         # Encountered a bug when passing 0 for no options on 10.6 PyObjC.
-        a11y.AXUIElement.launch_app_by_bundle_id(bundleID)
+        NativeUIElement.launch_app_by_bundle_id(bundleID)
 
     @staticmethod
     def launchAppByBundlePath(bundlePath, arguments=None):
@@ -102,7 +101,7 @@ class NativeUIElement(
 
         Return True if succeed.
         """
-        return a11y.AXUIElement.launch_app_by_bundle_path(bundlePath, arguments)
+        return NativeUIElement.launch_app_by_bundle_path(bundlePath, arguments)
 
     @staticmethod
     def terminateAppByBundleId(bundleID):
@@ -111,7 +110,7 @@ class NativeUIElement(
 
         Return True if succeed.
         """
-        return a11y.AXUIElement.terminate_app_by_bundle_id(bundleID)
+        return NativeUIElement.terminate_app_by_bundle_id(bundleID)
 
     @classmethod
     def set_systemwide_timeout(cls, timeout=0.0):
