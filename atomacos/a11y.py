@@ -10,7 +10,7 @@ from ApplicationServices import (
     NSWorkspace,
 )
 from atomacos import converter
-from atomacos._objc_ax import (
+from atomacos._macos import (
     PAXUIElementCopyActionNames,
     PAXUIElementCopyAttributeNames,
     PAXUIElementCopyAttributeValue,

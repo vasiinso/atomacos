@@ -7,7 +7,7 @@ from ApplicationServices import (
     AXObserverGetRunLoopSource,
     NSDefaultRunLoopMode,
 )
-from atomacos._objc_ax import (
+from atomacos._macos import (
     PAXObserverAddNotification,
     PAXObserverCreate,
     PAXObserverRemoveNotification,
