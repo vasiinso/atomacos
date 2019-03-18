@@ -331,8 +331,8 @@ class Keyboard(object):
 
         # Post the event to the given app
         if not globally:
-            self._queueEvent(Quartz.CGEventPostToPid, (self._getPid(), keyDown))
-            self._queueEvent(Quartz.CGEventPostToPid, (self._getPid(), keyUp))
+            self._queueEvent(Quartz.CGEventPostToPid, (self.pid, keyDown))
+            self._queueEvent(Quartz.CGEventPostToPid, (self.pid, keyUp))
         else:
             self._queueEvent(Quartz.CGEventPost, (0, keyDown))
             self._queueEvent(Quartz.CGEventPost, (0, keyUp))
