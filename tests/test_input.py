@@ -26,10 +26,22 @@ def test_drag_folders(finder_app):
     subprocess.call("mkdir {}".format(test_path), shell=True)
 
     finder_app.sendKeyWithModifiers("g", modifiers=[COMMAND, SHIFT])
-    time.sleep(1)
+
+    end_time = time.time() + 10
+    while (
+        not finder_app.findFirstR(AXRole="AXButton", AXTitle="Go")
+        and time.time() < end_time
+    ):
+        time.sleep(0.1)
+
     finder_app.sendKeys(test_path + "\n")
 
-    time.sleep(1)
+    while (
+        finder_app.findFirstR(AXRole="AXButton", AXTitle="Go")
+        and time.time() < end_time
+    ):
+        time.sleep(0.1)
+
     finder_app.sendKeyWithModifiers("n", modifiers=[COMMAND, SHIFT])
     finder_app.sendKeys("helloworld\n")
 
