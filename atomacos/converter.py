@@ -20,7 +20,10 @@ class Converter:
 
     def convert_value(self, value):
         if CFGetTypeID(value) == CFStringGetTypeID():
-            return str(value)
+            try:
+                return str(value)
+            except UnicodeEncodeError:
+                return unicode(value)  # noqa: F821 for python 2
         if CFGetTypeID(value) == AXUIElementGetTypeID():
             return self.convert_app_ref(value)
         if CFGetTypeID(value) == CFArrayGetTypeID():

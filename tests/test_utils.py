@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytest
 from atomacos import a11y, errors
 
@@ -45,6 +46,15 @@ class TestToPythonConversion:
         result = axconverter.convert_value(sut)
         assert isinstance(result, str)
         assert result == "world"
+
+    def test_convert_unicode(self, axconverter):
+        from future.utils import string_types
+        from CoreFoundation import CFStringCreateWithCharacters
+
+        sut = CFStringCreateWithCharacters(None, u"€10", 3)
+        result = axconverter.convert_value(sut)
+        print(result)
+        assert isinstance(result, string_types)
 
     def test_convert_boolean(self, axconverter):
         from CoreFoundation import kCFBooleanTrue, kCFBooleanFalse

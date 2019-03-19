@@ -47,7 +47,7 @@ class AXUIElement(object):
         _attributes = self.ax_attributes
         for element_describer in ("AXTitle", "AXValue", "AXRoleDescription"):
             if element_describer in _attributes:
-                title = self.__getattr__(element_describer)
+                title = str(self.__getattr__(element_describer))
                 if title:
                     break
         else:
@@ -102,6 +102,8 @@ class AXUIElement(object):
                 attr_value = PAXUIElementCopyAttributeValue(self.ref, item)
                 return self.converter.convert_value(attr_value)
             except AXErrorNoValue:
+                if item == "AXChildren":
+                    return []
                 return None
 
         raise AttributeError("'%s' object has no attribute '%s'" % (type(self), item))
