@@ -102,6 +102,8 @@ class AXUIElement(object):
                 attr_value = PAXUIElementCopyAttributeValue(self.ref, item)
                 return self.converter.convert_value(attr_value)
             except AXErrorNoValue:
+                if item == "AXChildren":
+                    return []
                 return None
 
         raise AttributeError("'%s' object has no attribute '%s'" % (type(self), item))
