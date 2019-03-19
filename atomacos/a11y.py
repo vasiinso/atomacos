@@ -47,7 +47,7 @@ class AXUIElement(object):
         _attributes = self.ax_attributes
         for element_describer in ("AXTitle", "AXValue", "AXRoleDescription"):
             if element_describer in _attributes:
-                title = self.__getattr__(element_describer)
+                title = str(self.__getattr__(element_describer))
                 if title:
                     break
         else:
