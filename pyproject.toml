@@ -14,7 +14,8 @@ requires = [
     "pyobjc-framework-Quartz>=3.0.4",
     "pyobjc-framework-ApplicationServices>=3.0.4",
     "pyobjc-framework-CoreText>=3.0.4",
-    "pyautogui",
+    "pyscreeze<0.1.20",
+    "pyautogui<0.9.42",
     "future",
 ]
 classifiers = [
