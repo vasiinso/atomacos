@@ -58,6 +58,7 @@ def automator_app():
 def finder_app():
     bid = "com.apple.finder"
     app = app_by_bid(bid)
+    app.activate()
     yield app
     app.terminateAppByBundleId(bid)
 
