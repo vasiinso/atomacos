@@ -1,6 +1,6 @@
 """Automated Testing on macOS"""
 # flake8: noqa: F401
-__version__ = "0.4.1"
+__version__ = "0.5.0"
 
 from atomacos import a11y, errors
 from atomacos.AXClasses import NativeUIElement
