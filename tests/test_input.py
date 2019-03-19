@@ -27,9 +27,7 @@ def test_drag_folders(finder_app):
 
     finder_app.sendKeyWithModifiers("g", modifiers=[COMMAND, SHIFT])
     time.sleep(1)
-    box = finder_app.findFirstR(AXPlaceholderValue="Enter a path")
-    box.sendKeys(test_path)
-    finder_app.buttonsR("Go")[0].Press()
+    finder_app.sendKeys(test_path + "\n")
 
     time.sleep(1)
     finder_app.sendKeyWithModifiers("n", modifiers=[COMMAND, SHIFT])
