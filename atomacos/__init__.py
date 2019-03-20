@@ -4,8 +4,6 @@ __version__ = "1.0.2"
 
 from atomacos import a11y, errors
 from atomacos.AXClasses import NativeUIElement
-from atomacos.Clipboard import Clipboard
-from atomacos.Prefs import Prefs
 
 Error = errors.AXError
 ErrorAPIDisabled = errors.AXErrorAPIDisabled
