@@ -57,7 +57,11 @@ class TestAXUIElement:
     def test_eq(self):
         app_ref1 = getFrontmostApp()
         app_ref2 = getAppRefByPid(app_ref1.pid)
+        app_ref3 = NativeUIElement()
         assert app_ref1 == app_ref2
+        assert app_ref1 != app_ref3
+        assert app_ref3 == app_ref3
+        assert app_ref3 != 3
 
     def test_ne(self):
         app_ref1 = getFrontmostApp()
