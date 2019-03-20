@@ -9,7 +9,7 @@ def calculate_center(size, position):
     return center
 
 
-def test_click_and_enter(finder_app):
+def test_types(finder_app):
     fields = finder_app.textFieldsR("*search*")
     field = fields[0]
     center_position = calculate_center(field.AXSize, field.AXPosition)
@@ -17,6 +17,28 @@ def test_click_and_enter(finder_app):
     field.sendKeys("hello")
     time.sleep(1)
     assert field.AXValue == "hello"
+    field.sendKey("!")
+    assert field.AXValue == "hello!"
+    field.sendKeyWithModifiers("a", [SHIFT])
+    assert field.AXValue == "hello!A"
+    field.sendGlobalKey("@")
+    assert field.AXValue == "hello!A@"
+    field.sendGlobalKeyWithModifiers("b", [SHIFT])
+    assert field.AXValue == "hello!A@B"
+
+
+def test_clicks(finder_app):
+    fields = finder_app.textFieldsR("*search*")
+    field = fields[0]
+    center_position = calculate_center(field.AXSize, field.AXPosition)
+    field.clickMouseButtonLeft(center_position)
+    field.sendKeys("hey there world")
+    field.doubleClickMouse(center_position)
+    selected_text = field.AXSelectedText
+    assert len(selected_text.split()) == 1
+    field.tripleClickMouse(center_position)
+    selected_text = field.AXSelectedText
+    assert len(selected_text.split()) > 1
 
 
 def test_drag_folders(finder_app):

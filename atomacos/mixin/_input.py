@@ -54,7 +54,7 @@ class Mouse(object):
         """
         kb = Keyboard()
         kb.pressModifiers(modifiers)
-        self.clickMouseButtonLeft(interval=interval, clicks=clicks)
+        self.clickMouseButtonLeft(coord, interval=interval, clicks=clicks)
         kb.releaseModifiers(modifiers)
 
     def clickMouseButtonRightWithMods(self, coord, modifiers, interval=None):
@@ -65,7 +65,7 @@ class Mouse(object):
         """
         kb = Keyboard()
         kb.pressModifiers(modifiers)
-        self.clickMouseButtonRight(interval=interval)
+        self.clickMouseButtonRight(coord, interval=interval)
         kb.releaseModifiers(modifiers)
 
     def leftMouseDragged(self, stopCoord, strCoord=(0, 0), speed=1):
@@ -77,7 +77,6 @@ class Mouse(object):
                     speed is mouse moving speed, 0 to unlimited
         Returns: None
         """
-        # Get current position as start point if strCoord not given
         if strCoord == (0, 0):
             strCoord = pyautogui.position()
         self.dragMouseButtonLeft(coord=strCoord, dest_coord=stopCoord, interval=speed)
@@ -88,7 +87,7 @@ class Mouse(object):
         Parameters: coordinates to click (assume primary is left button)
         Returns: None
         """
-        self.clickMouseButtonLeft(coord=coord, clicks=2)
+        pyautogui.doubleClick(*coord, button="left")
 
     def doubleMouseButtonLeftWithMods(self, coord, modifiers):
         """Click the left mouse button with modifiers pressed.
@@ -96,7 +95,10 @@ class Mouse(object):
         Parameters: coordinates to click; modifiers (list)
         Returns: None
         """
-        self.clickMouseButtonLeftWithMods(coord=coord, modifiers=modifiers, clicks=2)
+        kb = Keyboard()
+        kb.pressModifiers(modifiers)
+        pyautogui.doubleClick(*coord, button="left")
+        kb.releaseModifiers(modifiers)
 
     def tripleClickMouse(self, coord):
         """Triple-click primary mouse button.
@@ -104,14 +106,24 @@ class Mouse(object):
         Parameters: coordinates to click (assume primary is left button)
         Returns: None
         """
-        # Note above re: double-clicks applies to triple-clicks
-        self.clickMouseButtonLeft(coord=coord, clicks=3)
+        pyautogui.tripleClick(*coord, button="left")
 
 
 class Keyboard(object):
     def sendKey(self, keychr):
         """Send one character with no modifiers."""
         pyautogui.press(keychr)
+
+    def sendKeyWithModifiers(self, keychr, modifiers):
+        """Send one character with modifiers pressed
+
+        Parameters: key character, modifiers (list) (e.g. [SHIFT] or
+                    [COMMAND, SHIFT] (assuming you've first used
+                    from pyatom.AXKeyCodeConstants import *))
+        """
+        self.pressModifiers(modifiers)
+        self.sendKey(keychr)
+        self.releaseModifiers(modifiers)
 
     def sendGlobalKey(self, keychr):
         """Send one character without modifiers to the system.
@@ -122,6 +134,13 @@ class Keyboard(object):
         Parameters: keychr - Single keyboard character which will be sent.
         """
         self.sendKey(keychr)
+
+    def sendGlobalKeyWithModifiers(self, keychr, modifiers):
+        """Global send one character with modifiers pressed.
+
+        See sendKeyWithModifiers
+        """
+        self.sendKeyWithModifiers(keychr, modifiers)
 
     def sendKeys(self, keystr):
         """Send a series of characters with no modifiers."""
@@ -136,24 +155,6 @@ class Keyboard(object):
         """Release modifier keys (e.g. [Option])."""
         for modifier in modifiers:
             pyautogui.keyUp(modifier_map[modifier])
-
-    def sendKeyWithModifiers(self, keychr, modifiers):
-        """Send one character with modifiers pressed
-
-        Parameters: key character, modifiers (list) (e.g. [SHIFT] or
-                    [COMMAND, SHIFT] (assuming you've first used
-                    from pyatom.AXKeyCodeConstants import *))
-        """
-        self.pressModifiers(modifiers)
-        self.sendKeys(keychr)
-        self.releaseModifiers(modifiers)
-
-    def sendGlobalKeyWithModifiers(self, keychr, modifiers):
-        """Global send one character with modifiers pressed.
-
-        See sendKeyWithModifiers
-        """
-        self.sendKeyWithModifiers(keychr, modifiers)
 
 
 class KeyboardMouseMixin(Mouse, Keyboard):

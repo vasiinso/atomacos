@@ -18,16 +18,14 @@ def pytest_exception_interact(node, call, report):
         for app in atomacos.NativeUIElement.getRunningApps():
             pid = app.processIdentifier()
             app_ref = atomacos.NativeUIElement.from_pid(pid)
-            print("%s" % app_ref)
+            print("\n%s" % app_ref)
             for child in app_ref._generateChildren(recursive=True):
                 print("%s" % child)
                 for attribute in child.ax_attributes:
                     if attribute == "AXChildren":
                         continue
                     try:
-                        print(
-                            "%s: %s" % (attribute, child._get_ax_attribute(attribute))
-                        )
+                        print({attribute: child._get_ax_attribute(attribute)})
                     except atomacos.errors.AXError as e:
                         print("Issue getting %s: %s" % (attribute, e))
 
