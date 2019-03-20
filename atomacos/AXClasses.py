@@ -103,7 +103,7 @@ class NativeUIElement(
         # NSWorkspaceLaunchAllowingClassicStartup does nothing on any
         # modern system that doesn't have the classic environment installed.
         # Encountered a bug when passing 0 for no options on 10.6 PyObjC.
-        NativeUIElement.launch_app_by_bundle_id(bundleID)
+        a11y.launch_app_by_bundle_id(bundleID)
 
     @staticmethod
     def launchAppByBundlePath(bundlePath, arguments=None):
@@ -111,7 +111,7 @@ class NativeUIElement(
 
         Return True if succeed.
         """
-        return NativeUIElement.launch_app_by_bundle_path(bundlePath, arguments)
+        return a11y.launch_app_by_bundle_path(bundlePath, arguments)
 
     @staticmethod
     def terminateAppByBundleId(bundleID):
@@ -120,7 +120,7 @@ class NativeUIElement(
 
         Return True if succeed.
         """
-        return NativeUIElement.terminate_app_by_bundle_id(bundleID)
+        return a11y.terminate_app_by_bundle_id(bundleID)
 
     @classmethod
     def set_systemwide_timeout(cls, timeout=0.0):
