@@ -23,7 +23,7 @@ class Converter:
             try:
                 return str(value)
             except UnicodeEncodeError:
-                return unicode(value)  # noqa: F821 for python 2
+                return str(value.encode("utf-8"))
         if CFGetTypeID(value) == AXUIElementGetTypeID():
             return self.convert_app_ref(value)
         if CFGetTypeID(value) == CFArrayGetTypeID():
