@@ -136,7 +136,7 @@ class TestObserver:
         notification.Observer(front_title_ui)
 
     @pytest.mark.slow
-    def test_observer_set_notification(self, monkeypatch, finder_app):
+    def test_observer_wait_for(self, monkeypatch, finder_app):
         import threading
         from ApplicationServices import kAXWindowCreatedNotification
 
@@ -148,10 +148,10 @@ class TestObserver:
         new_window.start()
 
         observer = notification.Observer(finder_app)
-        result = observer.set_notification(
+        result = observer.wait_for(
             timeout=10,
-            notification_name=kAXWindowCreatedNotification,
-            callbackFn=lambda *_, **__: -1,
+            notification=kAXWindowCreatedNotification,
+            filter_=lambda _: True,
         )
 
-        assert result == -1
+        assert isinstance(result, NativeUIElement)

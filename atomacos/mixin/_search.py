@@ -18,9 +18,10 @@ class SearchMethodsMixin(object):
 
     def _findAll(self, recursive=False, **kwargs):
         """Return a list of all children that match the specified criteria."""
-        for needle in self._generateChildren(recursive=recursive):
-            if AXCallbacks.match(needle, **kwargs):
-                yield needle
+        return filter(
+            AXCallbacks.match_filter(**kwargs),
+            self._generateChildren(recursive=recursive),
+        )
 
     def _findFirst(self, recursive=False, **kwargs):
         """Return the first object that matches the criteria."""

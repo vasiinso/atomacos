@@ -3,57 +3,6 @@ from atomacos.notification import Observer
 
 
 class WaitForMixin(object):
-    def _waitFor(self, timeout, notification, **kwargs):
-        """Wait for a particular UI event to occur; this can be built
-        upon in NativeUIElement for specific convenience methods.
-        """
-        callback = AXCallbacks.match
-        retelem = None
-        callbackArgs = None
-        callbackKwargs = None
-
-        # Allow customization of the callback, though by default use the basic
-        # _match() method
-        if "callback" in kwargs:
-            callback = kwargs["callback"]
-            del kwargs["callback"]
-
-            # Deal with these only if callback is provided:
-            if "args" in kwargs:
-                if not isinstance(kwargs["args"], tuple):
-                    errStr = "Notification callback args not given as a tuple"
-                    raise TypeError(errStr)
-
-                # If args are given, notification will pass back the returned
-                # element in the first positional arg
-                callbackArgs = kwargs["args"]
-                del kwargs["args"]
-
-            if "kwargs" in kwargs:
-                if not isinstance(kwargs["kwargs"], dict):
-                    errStr = "Notification callback kwargs not given as a dict"
-                    raise TypeError(errStr)
-
-                callbackKwargs = kwargs["kwargs"]
-                del kwargs["kwargs"]
-            # If kwargs are not given as a dictionary but individually listed
-            # need to update the callbackKwargs dict with the remaining items in
-            # kwargs
-            if kwargs:
-                if callbackKwargs:
-                    callbackKwargs.update(kwargs)
-                else:
-                    callbackKwargs = kwargs
-        else:
-            if retelem:
-                callbackArgs = (retelem,)
-            # Pass the kwargs to the default callback
-            callbackKwargs = kwargs
-
-        return Observer(self).set_notification(
-            timeout, notification, callback, callbackArgs, callbackKwargs
-        )
-
     def waitFor(self, timeout, notification, **kwargs):
         """Generic wait for a UI event that matches the specified
         criteria to occur.
@@ -66,18 +15,18 @@ class WaitForMixin(object):
         destroyed, callback should not use it, otherwise the function will
         hang.
         """
-        return self._waitFor(timeout, notification, **kwargs)
+        return Observer(self).wait_for(
+            filter_=AXCallbacks.match_filter(**kwargs),
+            notification=notification,
+            timeout=timeout,
+        )
 
     def waitForCreation(self, timeout=10, notification="AXCreated"):
         """Convenience method to wait for creation of some UI element.
 
         Returns: The element created
         """
-        callback = AXCallbacks.returnElemCallback
-        retelem = None
-        args = (retelem,)
-
-        return self.waitFor(timeout, notification, callback=callback, args=args)
+        return self.waitFor(timeout, notification)
 
     def waitForWindowToAppear(self, winName, timeout=10):
         """Convenience method to wait for a window with the given name to
@@ -93,20 +42,11 @@ class WaitForMixin(object):
 
         Returns: Boolean
         """
-        callback = AXCallbacks.elemDisappearedCallback
-        retelem = None
-        args = (retelem, self)
-
         # For some reason for the AXUIElementDestroyed notification to fire,
         # we need to have a reference to it first
         win = self.findFirst(AXRole="AXWindow", AXTitle=winName)  # noqa: F841
         return self.waitFor(
-            timeout,
-            "AXUIElementDestroyed",
-            callback=callback,
-            args=args,
-            AXRole="AXWindow",
-            AXTitle=winName,
+            timeout, "AXUIElementDestroyed", AXRole="AXWindow", AXTitle=winName
         )
 
     def waitForSheetToAppear(self, timeout=10):
@@ -130,11 +70,7 @@ class WaitForMixin(object):
         # object's.  Unique identifiers considered include role and position
         # This seems to work best if you set the notification at the application
         # level
-        callback = AXCallbacks.returnElemCallback
-        retelem = None
-        return self.waitFor(
-            timeout, "AXValueChanged", callback=callback, args=(retelem,)
-        )
+        return self.waitFor(timeout, "AXValueChanged")
 
     def waitForFocusToChange(self, newFocusedElem, timeout=10):
         """Convenience method to wait for focused element to change (to new
@@ -163,15 +99,4 @@ class WaitForMixin(object):
         Returns: Element or None
 
         """
-
-        def _matchFocused(retelem, **kwargs):
-            return retelem if retelem._match(**kwargs) else None
-
-        retelem = None
-        return self._waitFor(
-            timeout,
-            "AXFocusedUIElementChanged",
-            callback=_matchFocused,
-            args=(retelem,),
-            **kwargs
-        )
+        return self.waitFor(timeout, "AXFocusedUIElementChanged", **kwargs)

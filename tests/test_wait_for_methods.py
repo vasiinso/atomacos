@@ -18,7 +18,7 @@ def test_wait_for_window_to_appear(finder_app):
 def test_waitfor_notification_names(monkeypatch):
     sut = atomacos.NativeUIElement()
     monkeypatch.setattr(
-        sut, "_waitFor", lambda timeout, notification, **kwargs: notification
+        sut, "waitFor", lambda timeout, notification, **kwargs: notification
     )
 
     assert sut.waitForCreation() == "AXCreated"
