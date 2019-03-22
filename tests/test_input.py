@@ -1,8 +1,6 @@
 import subprocess
 import time
 
-from atomacos.AXKeyCodeConstants import COMMAND, SHIFT
-
 
 def calculate_center(size, position):
     center = (position.x + size.width / 2, position.y + size.height / 2)
@@ -19,11 +17,11 @@ def test_types(finder_app):
     assert field.AXValue == "hello"
     field.sendKey("!")
     assert field.AXValue == "hello!"
-    field.sendKeyWithModifiers("a", [SHIFT])
+    field.sendKeyWithModifiers("a", ["shift"])
     assert field.AXValue == "hello!A"
     field.sendGlobalKey("@")
     assert field.AXValue == "hello!A@"
-    field.sendGlobalKeyWithModifiers("b", [SHIFT])
+    field.sendGlobalKeyWithModifiers("b", ["shift"])
     assert field.AXValue == "hello!A@B"
 
 
@@ -47,7 +45,7 @@ def test_drag_folders(finder_app):
     subprocess.call("rm -rf {}".format(test_path), shell=True)
     subprocess.call("mkdir {}".format(test_path), shell=True)
 
-    finder_app.sendKeyWithModifiers("g", modifiers=[COMMAND, SHIFT])
+    finder_app.sendKeyWithModifiers("g", modifiers=["command", "shift"])
 
     end_time = time.time() + 10
     while (
@@ -64,10 +62,10 @@ def test_drag_folders(finder_app):
     ):
         time.sleep(0.1)
 
-    finder_app.sendKeyWithModifiers("n", modifiers=[COMMAND, SHIFT])
+    finder_app.sendKeyWithModifiers("n", modifiers=["command", "shift"])
     finder_app.sendKeys("helloworld\n")
 
-    finder_app.sendKeyWithModifiers("n", modifiers=[COMMAND, SHIFT])
+    finder_app.sendKeyWithModifiers("n", modifiers=["command", "shift"])
     finder_app.sendKeys("helloworld2\n")
 
     file1 = finder_app.findFirstR(AXFilename="helloworld")

@@ -1,7 +1,4 @@
 import pyautogui
-from atomacos.AXKeyCodeConstants import COMMAND, CONTROL, OPTION, SHIFT
-
-modifier_map = {COMMAND: "command", CONTROL: "ctrl", OPTION: "option", SHIFT: "shift"}
 
 
 class Mouse(object):
@@ -47,9 +44,8 @@ class Mouse(object):
     def clickMouseButtonLeftWithMods(self, coord, modifiers, interval=None, clicks=1):
         """Click the left mouse button with modifiers pressed.
 
-        Parameters: coordinates to click; modifiers (list) (e.g. [SHIFT] or
-                    [COMMAND, SHIFT] (assuming you've first used
-                    from pyatom.AXKeyCodeConstants import *))
+        Parameters: coordinates to click; modifiers (list) (e.g. ["shift"] or
+                    ["command", "shift"])
         Returns: None
         """
         kb = Keyboard()
@@ -117,9 +113,8 @@ class Keyboard(object):
     def sendKeyWithModifiers(self, keychr, modifiers):
         """Send one character with modifiers pressed
 
-        Parameters: key character, modifiers (list) (e.g. [SHIFT] or
-                    [COMMAND, SHIFT] (assuming you've first used
-                    from pyatom.AXKeyCodeConstants import *))
+        Parameters: key character, modifiers (list) (e.g. ["shift"] or
+                    ["command", "shift"]
         """
         self.pressModifiers(modifiers)
         self.sendKey(keychr)
@@ -149,12 +144,12 @@ class Keyboard(object):
     def pressModifiers(self, modifiers):
         """Hold modifier keys (e.g. [Option])."""
         for modifier in modifiers:
-            pyautogui.keyDown(modifier_map[modifier])
+            pyautogui.keyDown(modifier)
 
     def releaseModifiers(self, modifiers):
         """Release modifier keys (e.g. [Option])."""
         for modifier in modifiers:
-            pyautogui.keyUp(modifier_map[modifier])
+            pyautogui.keyUp(modifier)
 
 
 class KeyboardMouseMixin(Mouse, Keyboard):
