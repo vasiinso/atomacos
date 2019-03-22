@@ -9,7 +9,7 @@ from ApplicationServices import (
     CFEqual,
     NSWorkspace,
 )
-from atomacos import converter
+from atomacos import _converter
 from atomacos._macos import (
     PAXUIElementCopyActionNames,
     PAXUIElementCopyAttributeNames,
@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 class AXUIElement(object):
     def __init__(self, ref=None):
         self.ref = ref
-        self.converter = converter.Converter(self.__class__)
+        self.converter = _converter.Converter(self.__class__)
 
     def __repr__(self):
         c = repr(self.__class__).partition("<class '")[-1].rpartition("'>")[0]

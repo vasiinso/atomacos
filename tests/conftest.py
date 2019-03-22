@@ -4,7 +4,7 @@ import time
 
 import atomacos
 import pytest
-from atomacos import converter
+from atomacos import _converter
 
 
 def pytest_exception_interact(node, call, report):
@@ -74,4 +74,4 @@ def front_title_ui(frontmost_app):
 
 @pytest.fixture
 def axconverter():
-    return converter.Converter(atomacos.NativeUIElement)
+    return _converter.Converter(atomacos.NativeUIElement)
