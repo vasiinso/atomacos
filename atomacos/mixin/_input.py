@@ -1,4 +1,4 @@
-import pyautogui
+from atomacos import keyboard, mouse
 
 
 class Mouse(object):
@@ -10,8 +10,8 @@ class Mouse(object):
                     interval to send event of btn down, drag and up
         Returns: None
         """
-        pyautogui.moveTo(*coord)
-        pyautogui.dragTo(*dest_coord, duration=interval, button="left")
+        mouse.moveTo(*coord)
+        mouse.dragTo(*dest_coord, duration=interval, button="left")
 
     def doubleClickDragMouseButtonLeft(self, coord, dest_coord, interval=0.5):
         """Double-click and drag the left mouse button without modifiers
@@ -22,8 +22,8 @@ class Mouse(object):
                     interval to send event of btn down, drag and up
         Returns: None
         """
-        pyautogui.click(*coord)
-        pyautogui.dragTo(*dest_coord, duration=interval, button="left")
+        mouse.click(*coord)
+        mouse.dragTo(*dest_coord, duration=interval, button="left")
 
     def clickMouseButtonLeft(self, coord, interval=0.0, clicks=1):
         """Click the left mouse button without modifiers pressed.
@@ -31,7 +31,7 @@ class Mouse(object):
         Parameters: coordinates to click on screen (tuple (x, y))
         Returns: None
         """
-        pyautogui.click(*coord, interval=interval, button="left", clicks=clicks)
+        mouse.click(*coord, interval=interval, button="left", clicks=clicks)
 
     def clickMouseButtonRight(self, coord, interval=0.0):
         """Click the right mouse button without modifiers pressed.
@@ -39,7 +39,7 @@ class Mouse(object):
         Parameters: coordinates to click on scren (tuple (x, y))
         Returns: None
         """
-        pyautogui.click(*coord, interval=interval, button="right")
+        mouse.click(*coord, interval=interval, button="right")
 
     def clickMouseButtonLeftWithMods(self, coord, modifiers, interval=None, clicks=1):
         """Click the left mouse button with modifiers pressed.
@@ -74,7 +74,7 @@ class Mouse(object):
         Returns: None
         """
         if strCoord == (0, 0):
-            strCoord = pyautogui.position()
+            strCoord = mouse.position()
         self.dragMouseButtonLeft(coord=strCoord, dest_coord=stopCoord, interval=speed)
 
     def doubleClickMouse(self, coord):
@@ -83,7 +83,7 @@ class Mouse(object):
         Parameters: coordinates to click (assume primary is left button)
         Returns: None
         """
-        pyautogui.doubleClick(*coord, button="left")
+        mouse.doubleClick(*coord, button="left")
 
     def doubleMouseButtonLeftWithMods(self, coord, modifiers):
         """Click the left mouse button with modifiers pressed.
@@ -93,7 +93,7 @@ class Mouse(object):
         """
         kb = Keyboard()
         kb.pressModifiers(modifiers)
-        pyautogui.doubleClick(*coord, button="left")
+        mouse.doubleClick(*coord, button="left")
         kb.releaseModifiers(modifiers)
 
     def tripleClickMouse(self, coord):
@@ -102,13 +102,13 @@ class Mouse(object):
         Parameters: coordinates to click (assume primary is left button)
         Returns: None
         """
-        pyautogui.tripleClick(*coord, button="left")
+        mouse.tripleClick(*coord, button="left")
 
 
 class Keyboard(object):
     def sendKey(self, keychr):
         """Send one character with no modifiers."""
-        pyautogui.press(keychr)
+        keyboard.press(keychr)
 
     def sendKeyWithModifiers(self, keychr, modifiers):
         """Send one character with modifiers pressed
@@ -139,17 +139,17 @@ class Keyboard(object):
 
     def sendKeys(self, keystr):
         """Send a series of characters with no modifiers."""
-        pyautogui.typewrite(keystr)
+        keyboard.typewrite(keystr)
 
     def pressModifiers(self, modifiers):
         """Hold modifier keys (e.g. [Option])."""
         for modifier in modifiers:
-            pyautogui.keyDown(modifier)
+            keyboard.keyDown(modifier)
 
     def releaseModifiers(self, modifiers):
         """Release modifier keys (e.g. [Option])."""
         for modifier in modifiers:
-            pyautogui.keyUp(modifier)
+            keyboard.keyUp(modifier)
 
 
 class KeyboardMouseMixin(Mouse, Keyboard):
