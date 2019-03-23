@@ -8,3 +8,7 @@ def test_uielement_repr_no_ref():
 
 def test_uielement_repr_finder(finder_app):
     assert "Finder" in repr(finder_app)
+
+
+def test_get_localized_name(finder_app):
+    assert finder_app.getLocalizedName() == "Finder"
