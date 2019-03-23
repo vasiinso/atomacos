@@ -137,6 +137,10 @@ class TestAXUIElement:
         search.setString("AXValue", "test")
         assert search.AXValue == "test"
 
+    def test_get_app_recursive(self, finder_app):
+        sut = finder_app.windowsR()[-1]
+        assert sut.getApplication() == finder_app.getApplication()
+
 
 @pytest.mark.skipif(not a11y.axenabled(), reason="Accessibility Permission Needed")
 class TestObserver:
