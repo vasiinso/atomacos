@@ -182,10 +182,6 @@ class AXUIElement(object):
         accessibility object.
         """
         app_ref = AXUIElementCreateSystemWide()
-
-        if app_ref is None:
-            raise AXErrorUnsupported("Error getting a11y object")
-
         return cls(ref=app_ref)
 
     @classmethod
