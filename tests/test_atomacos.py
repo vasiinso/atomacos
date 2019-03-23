@@ -2,7 +2,6 @@ import pytest
 from atomacos import (
     NativeUIElement,
     a11y,
-    errors,
     getAppRefByPid,
     getFrontmostApp,
     notification,
@@ -56,9 +55,8 @@ class TestAXUIElement:
         assert app_ref.pid == pid
 
     def test_get_bad_pid(self):
-        bad_pid = 102399
-        with pytest.raises(errors.AXErrorUnsupported):
-            getAppRefByPid(bad_pid)
+        bad_pid = 90909
+        assert "<No role!>" in str(getAppRefByPid(bad_pid))
 
     def test_eq(self):
         app_ref1 = getFrontmostApp()

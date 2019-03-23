@@ -148,9 +148,6 @@ class AXUIElement(object):
         """
         app_ref = AXUIElementCreateApplication(pid)
 
-        if app_ref is None:
-            raise AXErrorUnsupported("Error getting app ref")
-
         return cls(ref=app_ref)
 
     @classmethod
