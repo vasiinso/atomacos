@@ -126,19 +126,16 @@ class NativeUIElement(
     def set_systemwide_timeout(cls, timeout=0.0):
         """Set the system-wide accessibility timeout.
 
-        Optional: timeout (non-negative float; defaults to 0)
-                  A value of 0 will reset the timeout to the system default.
-        Returns: None.
+        Args:
+            timeout: A value of 0 will reset the timeout to the system default.
         """
         return cls.systemwide().setTimeout(timeout)
 
     def setTimeout(self, timeout=0.0):
         """Set the accessibiltiy API timeout on the given reference.
 
-        Optional: timeout (non-negative float; defaults to 0)
-                  A value of 0 will reset the timeout to the system-wide
-                  value
-        Returns: None
+        Args:
+            timeout: A value of 0 will reset the timeout to the systemwide value
         """
         self.set_timeout(timeout)
 
