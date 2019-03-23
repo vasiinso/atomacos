@@ -13,12 +13,13 @@ before_install:
   INTO "access" (service, client, client_type, allowed, prompt_count) VALUES("kTCCServiceAccessibility","/Users/travis/runner.rb",1,1,0)'
   || true
 - mkdir .env
-- git clone https://github.com/matthew-brett/multibuild .env/multibuild
-- git clone https://github.com/tremby/imgur.sh .env/imgur.sh
+- git clone --depth=1 https://github.com/matthew-brett/multibuild .env/multibuild
+- git clone --depth=1 https://github.com/tremby/imgur.sh .env/imgur.sh
 - chmod +x .env/imgur.sh/imgur.sh
 - source .env/multibuild/common_utils.sh
 - source .env/multibuild/travis_steps.sh
 - before_install
+- set +e # undo set -e from multibuild
 install:
 - python -m pip install -U pip tox flit
 script:
