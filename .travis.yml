@@ -22,15 +22,14 @@ before_install:
 - before_install
 - set +e # undo set -e from multibuild
 install:
-- python -m pip install -U pip tox flit
+- python -m pip install -U pip tox flit python-semantic-release
 script:
 - flit build
 - tox --installpkg dist/*.whl
+- bash scripts/build-docs-prod.sh
 after_failure:
 - screencapture .env/screen.png
 - ".env/imgur.sh/imgur.sh .env/screen.png"
-after_success:
-- bash scripts/build-docs-prod.sh
 deploy:
   - provider: script
     skip_cleanup: true
