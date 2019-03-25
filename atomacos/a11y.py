@@ -56,9 +56,6 @@ class AXUIElement(object):
         else:
             role = "<No role!>"
 
-        if len(title) > 20:
-            title = title[:20] + "...'"
-
         return "<%s %s %s>" % (c, role, title)
 
     def __eq__(self, other):
