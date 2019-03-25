@@ -7,7 +7,6 @@ from ApplicationServices import (
     AXUIElementCreateApplication,
     AXUIElementCreateSystemWide,
     CFEqual,
-    NSWorkspace,
 )
 from atomacos import _converter
 from atomacos._macos import (
@@ -114,16 +113,12 @@ class AXUIElement(object):
         Get the top level element for the application with the specified
         bundle ID, such as com.vmware.fusion.
         """
-        ra = AppKit.NSRunningApplication
-        # return value (apps) is always an array. if there is a match it will
-        # have an item, otherwise it won't.
-        apps = ra.runningApplicationsWithBundleIdentifier_(bundle_id)
-        if len(apps) == 0:
+        apps = _running_apps_with_bundle_id(bundle_id)
+        if not apps:
             raise ValueError(
-                ("Specified bundle ID not found in " "running apps: %s" % bundle_id)
+                "Specified bundle ID not found in " "running apps: %s" % bundle_id
             )
-        pid = apps[0].processIdentifier()
-        return cls.from_pid(pid)
+        return cls.from_pid(apps[0].processIdentifier())
 
     @classmethod
     def from_localized_name(cls, name):
@@ -301,7 +296,7 @@ def axenabled():
 
 def get_frontmost_pid():
     """Return the process ID of the application in the foreground"""
-    frontmost_app = NSWorkspace.sharedWorkspace().frontmostApplication()
+    frontmost_app = AppKit.NSWorkspace.sharedWorkspace().frontmostApplication()
     pid = frontmost_app.processIdentifier()
     return pid
 
@@ -348,9 +343,19 @@ def launch_app_by_bundle_path(bundle_path, arguments=None):
 
 
 def terminate_app_by_bundle_id(bundle_id):
+    apps = _running_apps_with_bundle_id(bundle_id)
+
+    if not apps:
+        return False
+
+    return apps[0].terminate()
+
+
+def _running_apps_with_bundle_id(bundle_id):
+    """
+    Returns an array of NSRunningApplications, or an empty array if
+    no applications match the bundle identifier.
+    """
     ra = AppKit.NSRunningApplication
-    appList = ra.runningApplicationsWithBundleIdentifier_(bundle_id)
-    if appList:
-        app = appList[0]
-        return app and app.terminate()
-    return False
+    app_list = ra.runningApplicationsWithBundleIdentifier_(bundle_id)
+    return app_list
