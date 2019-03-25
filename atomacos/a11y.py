@@ -213,15 +213,19 @@ class AXUIElement(object):
     @property
     def bundle_id(self):
         """Gets the AXUIElement's bundle identifier"""
-        ra = AppKit.NSRunningApplication
-        app = ra.runningApplicationWithProcessIdentifier_(self.pid)
-        return app.bundleIdentifier()
+        return self._running_app.bundleIdentifier()
 
     @property
     def pid(self):
         """Gets the AXUIElement's process ID"""
         pid = PAXUIElementGetPid(self.ref)
         return pid
+
+    @property
+    def _running_app(self):
+        ra = AppKit.NSRunningApplication
+        app = ra.runningApplicationWithProcessIdentifier_(self.pid)
+        return app
 
     def get_element_at_position(self, x, y):
         if self.ref is None:
@@ -255,12 +259,10 @@ class AXUIElement(object):
 
     def _activate(self):
         """Activates the application (bringing menus and windows forward)"""
-        ra = AppKit.NSRunningApplication
-        app = ra.runningApplicationWithProcessIdentifier_(self.pid)
         # NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps
         # == 3 - PyObjC in 10.6 does not expose these constants though so I have
         # to use the int instead of the symbolic names
-        app.activateWithOptions_(3)
+        self._running_app.activateWithOptions_(3)
 
     def _get_ax_attribute(self, item):
         """Gets the value of the the specified attribute"""
