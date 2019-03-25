@@ -10,17 +10,19 @@ class TestErrors:
         except errors.AXError as e:
             assert "apple" in str(e)
 
-    def test_set_known_code(self):
-        with pytest.raises(errors.AXErrorAPIDisabled):
-            errors.check_ax_error(-25211, "test")
+    def test_check_error_success(self):
+        errors.check_ax_error(errors.kAXErrorSuccess, {})
+
+    def test_check_error_raises(self):
         with pytest.raises(errors.AXErrorInvalidUIElement):
-            errors.check_ax_error(-25202, "test")
-        with pytest.raises(errors.AXErrorCannotComplete):
-            errors.check_ax_error(-25204, "test")
-        with pytest.raises(errors.AXErrorNotImplemented):
-            errors.check_ax_error(-25208, "test")
-        with pytest.raises(errors.AXErrorNoValue):
-            errors.check_ax_error(-25212, "test")
+            errors.check_ax_error(errors.kAXErrorInvalidUIElement, {})
+
+    def test_check_error_message(self):
+        error_messages = {errors.kAXErrorInvalidUIElement: "pass"}
+        try:
+            errors.check_ax_error(errors.kAXErrorInvalidUIElement, error_messages)
+        except errors.AXError as e:
+            assert "pass" in str(e)
 
 
 class TestHelpers:

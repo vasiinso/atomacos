@@ -1,6 +1,7 @@
 """
 Wrap objc calls to raise python exception
 """
+# flake8: noqa: B950
 from ApplicationServices import (
     AXObserverAddNotification,
     AXObserverCreate,
@@ -33,8 +34,12 @@ def PAXObserverCreate(application, callback):
     Returns: an AXObserverRef representing the observer object
 
     """
-    err, observer = AXObserverCreate(application, callback, None)
-    errors.check_ax_error(err, "Could not create observer for notification")
+    error_code, observer = AXObserverCreate(application, callback, None)
+    error_messages = {
+        errors.kAXErrorIllegalArgument: "One or more of the arguments is an illegal value",
+        errors.kAXErrorFailure: "There is some sort of system memory failure",
+    }
+    errors.check_ax_error(error_code, error_messages)
     return observer
 
 
@@ -50,8 +55,16 @@ def PAXObserverAddNotification(observer, element, notification, refcon):
         refcon: Application-defined data passed to the callback when it is called
 
     """
-    err = AXObserverAddNotification(observer, element, notification, refcon)
-    errors.check_ax_error(err, "Could not add notification to observer")
+    error_code = AXObserverAddNotification(observer, element, notification, refcon)
+    error_messages = {
+        errors.kAXErrorInvalidUIElementObserver: "The observer is not a valid AXObserverRef type.",
+        errors.kAXErrorIllegalArgument: "One or more of the arguments is an illegal value or the length of the notification name is greater than 1024.",
+        errors.kAXErrorNotificationUnsupported: "The accessibility object does not support notifications (note that the system-wide accessibility object does not support notifications).",
+        errors.kAXErrorNotificationAlreadyRegistered: "The notification has already been registered.",
+        errors.kAXErrorCannotComplete: "The function cannot complete because messaging has failed in some way.",
+        errors.kAXErrorFailure: "There is some sort of system memory failure.",
+    }
+    errors.check_ax_error(error_code, error_messages)
 
 
 def PAXObserverRemoveNotification(observer, element, notification):
@@ -66,8 +79,16 @@ def PAXObserverRemoveNotification(observer, element, notification):
             the list of observed notifications
 
     """
-    err = AXObserverRemoveNotification(observer, element, notification)
-    errors.check_ax_error(err, "Could not remove notification from observer")
+    error_code = AXObserverRemoveNotification(observer, element, notification)
+    error_messages = {
+        errors.kAXErrorInvalidUIElementObserver: "The observer is not a valid AXObserverRef type.",
+        errors.kAXErrorIllegalArgument: "One or more of the arguments is an illegal value or the length of the notification name is greater than 1024.",
+        errors.kAXErrorNotificationUnsupported: "The accessibility object does not support notifications (note that the system-wide accessibility object does not support notifications).",
+        errors.kAXErrorNotificationNotRegistered: "This observer has not registered for any notifications.",
+        errors.kAXErrorCannotComplete: "The function cannot complete because messaging has failed in some way.",
+        errors.kAXErrorFailure: "There is some sort of system memory failure.",
+    }
+    errors.check_ax_error(error_code, error_messages)
 
 
 def PAXUIElementCopyAttributeValue(element, attribute):
@@ -81,8 +102,16 @@ def PAXUIElementCopyAttributeValue(element, attribute):
     Returns: the value associated with the specified attribute
 
     """
-    err, attrValue = AXUIElementCopyAttributeValue(element, attribute, None)
-    errors.check_ax_error(err, "Unable to get attribute. %s" % attribute)
+    error_code, attrValue = AXUIElementCopyAttributeValue(element, attribute, None)
+    error_messages = {
+        errors.kAXErrorAttributeUnsupported: "The specified AXUIElementRef does not support the specified attribute.",
+        errors.kAXErrorNoValue: "The specified attribute does not have a value.",
+        errors.kAXErrorIllegalArgument: "One or more of the arguments is an illegal value.",
+        errors.kAXErrorInvalidUIElement: "The AXUIElementRef is invalid.",
+        errors.kAXErrorCannotComplete: "The function cannot complete because messaging has failed in some way.",
+        errors.kAXErrorNotImplemented: "The process does not fully support the accessibility API.",
+    }
+    errors.check_ax_error(error_code, error_messages)
     return attrValue
 
 
@@ -97,8 +126,16 @@ def PAXUIElementIsAttributeSettable(element, attribute):
     Returns: a Boolean value indicating whether the attribute is settable
 
     """
-    err, settable = AXUIElementIsAttributeSettable(element, attribute, None)
-    errors.check_ax_error(err, "Error querying attribute")
+    error_code, settable = AXUIElementIsAttributeSettable(element, attribute, None)
+    error_messages = {
+        errors.kAXErrorCannotComplete: "The function cannot complete because messaging has failed in some way (often due to a timeout).",
+        errors.kAXErrorIllegalArgument: "One or more of the arguments is an illegal value.",
+        errors.kAXErrorAttributeUnsupported: "The specified AXUIElementRef does not support the specified attribute.",
+        errors.kAXErrorNoValue: "The specified attribute does not have a value.",
+        errors.kAXErrorInvalidUIElement: "The AXUIElementRef is invalid.",
+        errors.kAXErrorNotImplemented: "The process does not fully support the accessibility API.",
+    }
+    errors.check_ax_error(error_code, error_messages)
     return settable
 
 
@@ -112,8 +149,15 @@ def PAXUIElementSetAttributeValue(element, attribute, value):
         value: The new value for the attribute
 
     """
-    err = AXUIElementSetAttributeValue(element, attribute, value)
-    errors.check_ax_error(err, "Error setting attribute value")
+    error_code = AXUIElementSetAttributeValue(element, attribute, value)
+    error_messages = {
+        errors.kAXErrorIllegalArgument: "The value is not recognized by the accessible application or one of the other arguments is an illegal value.",
+        errors.kAXErrorAttributeUnsupported: "The specified AXUIElementRef does not support the specified attribute.",
+        errors.kAXErrorInvalidUIElement: "The AXUIElementRef is invalid.",
+        errors.kAXErrorCannotComplete: "The function cannot complete because messaging has failed in some way.",
+        errors.kAXErrorNotImplemented: "The process does not fully support the accessibility API.",
+    }
+    errors.check_ax_error(error_code, error_messages)
 
 
 def PAXUIElementCopyAttributeNames(element):
@@ -126,8 +170,16 @@ def PAXUIElementCopyAttributeNames(element):
     Returns: an array containing the accessibility object's attribute names
 
     """
-    err, names = AXUIElementCopyAttributeNames(element, None)
-    errors.check_ax_error(err, "Error retrieving attribute list")
+    error_code, names = AXUIElementCopyAttributeNames(element, None)
+    error_messages = {
+        errors.kAXErrorAttributeUnsupported: "The specified AXUIElementRef does not support the specified attribute.",
+        errors.kAXErrorIllegalArgument: "One or both of the arguments is an illegal value.",
+        errors.kAXErrorInvalidUIElement: "The AXUIElementRef is invalid.",
+        errors.kAXErrorFailure: "There was a system memory failure.",
+        errors.kAXErrorCannotComplete: "The function cannot complete because messaging has failed in some way.",
+        errors.kAXErrorNotImplemented: "The process does not fully support the accessibility API.",
+    }
+    errors.check_ax_error(error_code, error_messages)
     return names
 
 
@@ -142,8 +194,15 @@ def PAXUIElementCopyActionNames(element):
         (empty if the accessibility object supports no actions)
 
     """
-    err, names = AXUIElementCopyActionNames(element, None)
-    errors.check_ax_error(err, "Error retrieving action names")
+    error_code, names = AXUIElementCopyActionNames(element, None)
+    error_messages = {
+        errors.kAXErrorIllegalArgument: "One or both of the arguments is an illegal value.",
+        errors.kAXErrorInvalidUIElement: "The AXUIElementRef is invalid.",
+        errors.kAXErrorFailure: "There was some sort of system memory failure.",
+        errors.kAXErrorCannotComplete: "The function cannot complete because messaging has failed in some way.",
+        errors.kAXErrorNotImplemented: "The process does not fully support the accessibility API.",
+    }
+    errors.check_ax_error(error_code, error_messages)
     return names
 
 
@@ -156,8 +215,15 @@ def PAXUIElementPerformAction(element, action):
         action: The action to be performed
 
     """
-    err = AXUIElementPerformAction(element, action)
-    errors.check_ax_error(err, "Error performing requested action")
+    error_code = AXUIElementPerformAction(element, action)
+    error_messages = {
+        errors.kAXErrorActionUnsupported: "The specified AXUIElementRef does not support the specified action (you will also receive this error if you pass in the system-wide accessibility object).",
+        errors.kAXErrorIllegalArgument: "One or more of the arguments is an illegal value.",
+        errors.kAXErrorInvalidUIElement: "The AXUIElementRef is invalid.",
+        errors.kAXErrorCannotComplete: "The function cannot complete because messaging has failed in some way or the application has not yet responded.",
+        errors.kAXErrorNotImplemented: "The process does not fully support the accessibility API.",
+    }
+    errors.check_ax_error(error_code, error_messages)
 
 
 def PAXUIElementGetPid(element):
@@ -170,8 +236,12 @@ def PAXUIElementGetPid(element):
     Returns: the process ID associated with the specified accessibility object
 
     """
-    err, pid = AXUIElementGetPid(element, None)
-    errors.check_ax_error(err, "Error retrieving PID")
+    error_code, pid = AXUIElementGetPid(element, None)
+    error_messages = {
+        errors.kAXErrorIllegalArgument: "One or more of the arguments is an illegal value.",
+        errors.kAXErrorInvalidUIElement: "The AXUIElementRef is invalid.",
+    }
+    errors.check_ax_error(error_code, error_messages)
     return pid
 
 
@@ -189,8 +259,15 @@ def PAXUIElementCopyElementAtPosition(application, x, y):
     Returns: the accessibility object at the position specified by x and y
 
     """
-    err, element = AXUIElementCopyElementAtPosition(application, x, y, None)
-    errors.check_ax_error(err, "Unable to get element at position")
+    error_code, element = AXUIElementCopyElementAtPosition(application, x, y, None)
+    error_messages = {
+        errors.kAXErrorNoValue: "There is no accessibility object at the specified position.",
+        errors.kAXErrorIllegalArgument: "One or more of the arguments is an illegal value.",
+        errors.kAXErrorInvalidUIElement: "The AXUIElementRef is invalid.",
+        errors.kAXErrorCannotComplete: "The function cannot complete because messaging has failed in some way.",
+        errors.kAXErrorNotImplemented: "The process does not fully support the accessibility API.",
+    }
+    errors.check_ax_error(error_code, error_messages)
     return element
 
 
@@ -203,5 +280,9 @@ def PAXUIElementSetMessagingTimeout(element, timeoutInSeconds):
         timeoutInSeconds: The number of seconds for the new timeout value
 
     """
-    err = AXUIElementSetMessagingTimeout(element, timeoutInSeconds)
-    errors.check_ax_error(err, "The element reference is invalid")
+    error_code = AXUIElementSetMessagingTimeout(element, timeoutInSeconds)
+    error_messages = {
+        errors.kAXErrorIllegalArgument: "One or more of the arguments is an illegal value (timeout values must be positive).",
+        errors.kAXErrorInvalidUIElement: "The AXUIElementRef is invalid.",
+    }
+    errors.check_ax_error(error_code, error_messages)

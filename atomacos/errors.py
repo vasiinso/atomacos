@@ -1,10 +1,15 @@
 from ApplicationServices import (
     kAXErrorActionUnsupported,
     kAXErrorAPIDisabled,
+    kAXErrorAttributeUnsupported,
     kAXErrorCannotComplete,
     kAXErrorFailure,
     kAXErrorIllegalArgument,
     kAXErrorInvalidUIElement,
+    kAXErrorInvalidUIElementObserver,
+    kAXErrorNotificationAlreadyRegistered,
+    kAXErrorNotificationNotRegistered,
+    kAXErrorNotificationUnsupported,
     kAXErrorNotImplemented,
     kAXErrorNoValue,
     kAXErrorSuccess,
@@ -51,6 +56,26 @@ class AXErrorFailure(AXError):
     pass
 
 
+class AXErrorInvalidUIElementObserver(AXError):
+    pass
+
+
+class AXErrorNotificationUnsupported(AXError):
+    pass
+
+
+class AXErrorNotificationAlreadyRegistered(AXError):
+    pass
+
+
+class AXErrorNotificationNotRegistered(AXError):
+    pass
+
+
+class AXErrorAttributeUnsupported(AXError):
+    pass
+
+
 def AXErrorFactory(code):
     return {
         kAXErrorAPIDisabled: AXErrorAPIDisabled,
@@ -60,6 +85,11 @@ def AXErrorFactory(code):
         kAXErrorIllegalArgument: AXErrorIllegalArgument,
         kAXErrorNoValue: AXErrorNoValue,
         kAXErrorFailure: AXErrorFailure,
+        kAXErrorInvalidUIElementObserver: AXErrorInvalidUIElementObserver,
+        kAXErrorNotificationUnsupported: AXErrorNotificationUnsupported,
+        kAXErrorNotificationAlreadyRegistered: AXErrorNotificationAlreadyRegistered,
+        kAXErrorNotificationNotRegistered: AXErrorNotificationNotRegistered,
+        kAXErrorAttributeUnsupported: AXErrorAttributeUnsupported,
         kAXErrorActionUnsupported: AXErrorActionUnsupported,
     }.get(code, AXErrorUnsupported)
 

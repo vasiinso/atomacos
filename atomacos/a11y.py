@@ -230,10 +230,7 @@ class AXUIElement(object):
                 "Operation not supported on null element references"
             )
 
-        try:
-            element = PAXUIElementCopyElementAtPosition(self.ref, x, y)
-        except AXErrorIllegalArgument:
-            raise ValueError("Arguments must be two floats.")
+        element = PAXUIElementCopyElementAtPosition(self.ref, x, y)
 
         return self.__class__(element)
 
@@ -244,15 +241,7 @@ class AXUIElement(object):
         Args:
             timeout: timeout in seconds
         """
-        if self.ref is None:
-            raise AXErrorUnsupported(
-                "Operation not supported on null element references"
-            )
-
-        try:
-            PAXUIElementSetMessagingTimeout(self.ref, timeout)
-        except AXErrorIllegalArgument:
-            raise ValueError("Accessibility timeout values must be non-negative")
+        PAXUIElementSetMessagingTimeout(self.ref, timeout)
 
     def _activate(self):
         """Activates the application (bringing menus and windows forward)"""
