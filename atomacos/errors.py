@@ -2,6 +2,7 @@ from ApplicationServices import (
     kAXErrorActionUnsupported,
     kAXErrorAPIDisabled,
     kAXErrorCannotComplete,
+    kAXErrorFailure,
     kAXErrorIllegalArgument,
     kAXErrorInvalidUIElement,
     kAXErrorNotImplemented,
@@ -46,6 +47,10 @@ class AXErrorNoValue(AXError):
     pass
 
 
+class AXErrorFailure(AXError):
+    pass
+
+
 def AXErrorFactory(code):
     return {
         kAXErrorAPIDisabled: AXErrorAPIDisabled,
@@ -54,17 +59,27 @@ def AXErrorFactory(code):
         kAXErrorNotImplemented: AXErrorNotImplemented,
         kAXErrorIllegalArgument: AXErrorIllegalArgument,
         kAXErrorNoValue: AXErrorNoValue,
+        kAXErrorFailure: AXErrorFailure,
         kAXErrorActionUnsupported: AXErrorActionUnsupported,
     }.get(code, AXErrorUnsupported)
 
 
-def check_ax_error(code, message):
+def check_ax_error(error_code, error_messages):
     """
+    Returns if code is kAXErrorSuccess.
     Raises an error with given message based on given error code.
     Defaults to AXErrorUnsupported for unknown codes.
+
+    Args:
+        error_code: the error code
+        error_messages: mapping from error code to error message
     """
-    if code == kAXErrorSuccess:
+    if error_code == kAXErrorSuccess:
         return
-    else:
-        error_message = "%s (AX Error %s)" % (message, code)
-        raise AXErrorFactory(code)(error_message)
+
+    try:
+        error_message = error_messages[error_code]
+    except KeyError:
+        error_message = "Unknown AX Error: %s" % error_code
+
+    raise AXErrorFactory(error_code)(error_message)
