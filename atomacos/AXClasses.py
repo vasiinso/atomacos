@@ -158,7 +158,7 @@ class NativeUIElement(
 
         If self is behind other windows, this function will return self.
         """
-        return self._getElementAtPosition(float(coord[0]), float(coord[1]))
+        return self.get_element_at_position(float(coord[0]), float(coord[1]))
 
     def activate(self):
         """Activate the application (bringing menus and windows forward)"""

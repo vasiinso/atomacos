@@ -125,7 +125,7 @@ class TestAXUIElement:
             position.x + size.width / 2.0,
             position.y + size.height / 2.0,
         )
-        element_at_position = system_ref.get_element_at_position(center_x, center_y)
+        element_at_position = system_ref.getElementAtPosition((center_x, center_y))
         assert element_at_position == front_title_ui
 
     def test_get_empty_field(self, finder_app):
