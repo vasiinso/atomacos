@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import pytest
-from atomacos import a11y, errors
+from atomacos import _a11y, errors
 
 
 class TestErrors:
@@ -27,12 +27,12 @@ class TestErrors:
 
 class TestHelpers:
     def test_get_frontmost_pid(self):
-        pid = a11y.get_frontmost_pid()
+        pid = _a11y.get_frontmost_pid()
         assert isinstance(pid, int)
         assert pid > 0
 
     def test_axenabled(self):
-        assert isinstance(a11y.axenabled(), bool)
+        assert isinstance(_a11y.axenabled(), bool)
 
 
 class TestToPythonConversion:

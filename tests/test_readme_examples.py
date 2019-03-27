@@ -1,6 +1,6 @@
 import pytest
 from atomacos import NativeUIElement
-from atomacos.a11y import axenabled
+from atomacos._a11y import axenabled
 
 
 @pytest.mark.skipif(not axenabled(), reason="Accessibility Permission Needed")

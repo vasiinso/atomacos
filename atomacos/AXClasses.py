@@ -18,12 +18,12 @@
 import time
 from collections import deque
 
-from atomacos import a11y
+from atomacos import _a11y
 from atomacos.mixin import KeyboardMouseMixin, SearchMethodsMixin, WaitForMixin
 
 
 class NativeUIElement(
-    KeyboardMouseMixin, WaitForMixin, SearchMethodsMixin, a11y.AXUIElement
+    KeyboardMouseMixin, WaitForMixin, SearchMethodsMixin, _a11y.AXUIElement
 ):
     """NativeUIElement class - expose the accessibility API in the simplest,
     most natural way possible.
@@ -36,7 +36,7 @@ class NativeUIElement(
     @classmethod
     def getRunningApps(cls):
         """Get a list of the running applications."""
-        return a11y.get_running_apps()
+        return _a11y.get_running_apps()
 
     @classmethod
     def getAppRefByPid(cls, pid):
@@ -103,7 +103,7 @@ class NativeUIElement(
         # NSWorkspaceLaunchAllowingClassicStartup does nothing on any
         # modern system that doesn't have the classic environment installed.
         # Encountered a bug when passing 0 for no options on 10.6 PyObjC.
-        a11y.launch_app_by_bundle_id(bundleID)
+        _a11y.launch_app_by_bundle_id(bundleID)
 
     @staticmethod
     def launchAppByBundlePath(bundlePath, arguments=None):
@@ -111,7 +111,7 @@ class NativeUIElement(
 
         Return True if succeed.
         """
-        return a11y.launch_app_by_bundle_path(bundlePath, arguments)
+        return _a11y.launch_app_by_bundle_path(bundlePath, arguments)
 
     @staticmethod
     def terminateAppByBundleId(bundleID):
@@ -120,7 +120,7 @@ class NativeUIElement(
 
         Return True if succeed.
         """
-        return a11y.terminate_app_by_bundle_id(bundleID)
+        return _a11y.terminate_app_by_bundle_id(bundleID)
 
     @classmethod
     def set_systemwide_timeout(cls, timeout=0.0):

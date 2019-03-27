@@ -2,7 +2,7 @@
 # flake8: noqa: F401
 __version__ = "2.2.0"
 
-from atomacos import a11y, errors, keyboard, mouse
+from atomacos import _a11y, errors, keyboard, mouse
 from atomacos.AXClasses import NativeUIElement
 
 Error = errors.AXError
