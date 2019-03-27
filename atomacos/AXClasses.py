@@ -19,7 +19,7 @@ import time
 from collections import deque
 
 from atomacos import _a11y
-from atomacos.mixin import KeyboardMouseMixin, SearchMethodsMixin, WaitForMixin
+from atomacos._mixin import KeyboardMouseMixin, SearchMethodsMixin, WaitForMixin
 
 
 class NativeUIElement(
