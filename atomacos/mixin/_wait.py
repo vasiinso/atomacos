@@ -1,5 +1,5 @@
 from atomacos import AXCallbacks
-from atomacos.notification import Observer
+from atomacos._notification import Observer
 
 
 class WaitForMixin(object):

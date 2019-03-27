@@ -2,9 +2,9 @@ import pytest
 from atomacos import (
     NativeUIElement,
     _a11y,
+    _notification,
     getAppRefByPid,
     getFrontmostApp,
-    notification,
 )
 
 
@@ -145,7 +145,7 @@ class TestAXUIElement:
 @pytest.mark.skipif(not _a11y.axenabled(), reason="Accessibility Permission Needed")
 class TestObserver:
     def test_observer_init(self, front_title_ui):
-        notification.Observer(front_title_ui)
+        _notification.Observer(front_title_ui)
 
     @pytest.mark.slow
     def test_observer_wait_for(self, monkeypatch, finder_app):
@@ -159,7 +159,7 @@ class TestObserver:
         new_window.daemon = True
         new_window.start()
 
-        observer = notification.Observer(finder_app)
+        observer = _notification.Observer(finder_app)
         result = observer.wait_for(
             timeout=10,
             notification=kAXWindowCreatedNotification,
