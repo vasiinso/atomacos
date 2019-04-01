@@ -28,10 +28,10 @@ before_install:
 - pyenv install 3.8-dev
 - pyenv local 2.7.15 3.4.9 3.5.6 3.6.8 3.7.2 3.8-dev
 install:
-- python -m pip install -U pip tox tox-pyenv flit python-semantic-release
+- python3.6 -m pip install -U pip tox tox-pyenv flit python-semantic-release
 script:
-- flit build
-- tox --installpkg dist/*.whl
+- python3.6 -m flit build
+- python3.6 -m tox --installpkg dist/*.whl
 - bash scripts/build-docs-prod.sh
 deploy:
   - provider: script
