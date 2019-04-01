@@ -14,8 +14,9 @@ def test_get_bad_localized_name():
 
 def test_launch_app_by_bundle_path():
     atomacos.launchAppByBundlePath("/Applications/Calculator.app")
-    automator = atomacos.getAppRefByLocalizedName("Calculator")
-    assert automator.pid != 0
+    calculator = atomacos.getAppRefByLocalizedName("Calculator")
+    assert calculator.pid != 0
+    calculator.terminateAppByBundleId(calculator.bundle_id)
 
 
 def test_set_systemwide_timeout():
