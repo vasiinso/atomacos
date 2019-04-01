@@ -5,6 +5,10 @@ osx_image:
 language: generic
 env:
   matrix:
+  - MB_PYTHON_VERSION=2.7 CONFIG_PATH=scripts/config.sh
+  - MB_PYTHON_VERSION=3.4 CONFIG_PATH=scripts/config.sh
+  - MB_PYTHON_VERSION=3.5 CONFIG_PATH=scripts/config.sh
+  - MB_PYTHON_VERSION=3.6 CONFIG_PATH=scripts/config.sh
   - MB_PYTHON_VERSION=3.7 CONFIG_PATH=scripts/config.sh
   global:
   - secure: JJrYOi06ZyptlzBoqzDrLwoBrAFazOiG/uWwRv788smg6I37ygA5mxs7qxjusWBN0s9unbt+AhN8Oy/qAoqVir9ScxmGYUVVNyBuShI3W7YM2p/KMmhRqeBt1tHeU8mRY9QaUB1pI/ddLFFuTXo4xCA9c+/WyydUSAfE6ijA0ZKwKsdwem+EcWuKLnms1B58ZptfP3x9OQEXmRoRK5sK4LaL1gx3QzRlV5W4MVogWBxx6QVMmVwA0PSTT+Ft40oIHDk8bPSYynF2gM60IFDFk6k1A6lmsmh8oXVJ3rgr1MyS/qSPRbP5+tRL+YR/ba8bYnuvVqiVq91U/9NzLmDP8ou3fmbXyiEG5rGCesasLM7uRC6gcWqxoewlh+OO5mmVQ4eCA0WpTltI6Li9CiB8wUQRGNt4cj6FvUAWf4FLFINp/fz4rmLPT0l503o1CIgFHmzfBPnYU3BIqUxvp5MOUOAbzjZ8YdlLTvDmrSjVNKG9ePfAegWmSK8ZYJ2kjaz++WdX89lzbKxOyg/3IL6vjSieXnSp6ajBaz80pHCCytYC4Y6lP1/bkUG1ZZGXp7YecavFn45rmeicNx+gMrsrx2wDNvPuHx75y0YChlYFob/GmuqhGndjk1xhjWE8T5f83KErkTiOORd7YN7dsunF5jO31g2ibUWBjc5XvSTEeCo=
