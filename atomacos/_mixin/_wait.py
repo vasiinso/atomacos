@@ -78,9 +78,8 @@ class WaitForMixin(object):
 
         Returns: Boolean
         """
-        return self.waitFor(
-            timeout,
-            "AXFocusedUIElementChanged",
+        return self.waitForFocusToMatchCriteria(
+            timeout=timeout,
             AXRole=newFocusedElem.AXRole,
             AXPosition=newFocusedElem.AXPosition,
         )

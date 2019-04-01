@@ -5,7 +5,6 @@ osx_image:
 language: generic
 env:
   matrix:
-  - MB_PYTHON_VERSION=2.7 CONFIG_PATH=scripts/config.sh
   - MB_PYTHON_VERSION=3.4 CONFIG_PATH=scripts/config.sh
   - MB_PYTHON_VERSION=3.5 CONFIG_PATH=scripts/config.sh
   - MB_PYTHON_VERSION=3.6 CONFIG_PATH=scripts/config.sh
