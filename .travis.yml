@@ -20,8 +20,10 @@ before_install:
 - pyenv install 3.5.6
 - pyenv install 3.6.8
 - pyenv install 3.7.2
-- pyenv install 3.8-dev
-- pyenv local 2.7.15 3.4.9 3.5.6 3.6.8 3.7.2 3.8-dev
+#- pyenv install 3.8-dev
+- eval "$(pyenv init -)"
+- pyenv rehash
+- pyenv local 2.7.15 3.4.9 3.5.6 3.6.8 3.7.2
 install:
 - python3.6 -m pip install -U pip tox tox-pyenv flit python-semantic-release
 script:
