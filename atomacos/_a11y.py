@@ -42,19 +42,12 @@ class AXUIElement(object):
     def __repr__(self):
         c = repr(self.__class__).partition("<class '")[-1].rpartition("'>")[0]
 
-        _attributes = self.ax_attributes
         for element_describer in ("AXTitle", "AXValue", "AXRoleDescription"):
-            if element_describer in _attributes:
-                title = str(self.__getattr__(element_describer))
-                if title:
-                    break
-        else:
-            title = ""
+            title = str(getattr(self, element_describer, ""))
+            if title:
+                break
 
-        if "AXRole" in _attributes:
-            role = self.AXRole
-        else:
-            role = "<No role!>"
+        role = getattr(self, "AXRole", "<No role!>")
 
         return "<%s %s %s>" % (c, role, title)
 
