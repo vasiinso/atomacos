@@ -17,6 +17,7 @@ requires = [
     "pygetwindow<0.0.5",
     "pyscreeze<0.1.20",
     "pyautogui<0.9.42",
+    "tenacity",
     "future",
 ]
 classifiers = [
