@@ -110,6 +110,9 @@ def check_ax_error(error_code, error_messages):
     try:
         error_message = error_messages[error_code]
     except KeyError:
-        error_message = "Unknown AX Error: %s" % error_code
+        if error_code == kAXErrorFailure:
+            error_message = "There is some sort of system memory failure"
+        else:
+            error_message = "Unknown AX Error: %s" % error_code
 
     raise AXErrorFactory(error_code)(error_message)
