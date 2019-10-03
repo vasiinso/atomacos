@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>atomacos: Automated Testing on macOS &#8212; atomacos  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="atomacos" href="_generated/api/modules.html" />
+    <link rel="prev" title="atomacos: Automated Testing on macOS" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="atomacos-automated-testing-on-macos">
+<h1>atomacos: Automated Testing on macOS<a class="headerlink" href="#atomacos-automated-testing-on-macos" title="Permalink to this headline">¶</a></h1>
+<a class="reference external image-reference" href="https://github.com/daveenguyen/atomacos/blob/master/LICENSE"><img alt="license" src="https://img.shields.io/github/license/daveenguyen/atomacos.svg?style=flat-square" /></a>
+<a class="reference external image-reference" href="https://pypi.org/project/atomacos/"><img alt="pypi" src="https://img.shields.io/pypi/v/atomacos.svg?style=flat-square" /></a>
+<a class="reference external image-reference" href="https://travis-ci.org/daveenguyen/atomacos"><img alt="Build Status" src="https://img.shields.io/travis/daveenguyen/atomacos/master.svg?style=flat-square" /></a>
+<a class="reference external image-reference" href="https://codecov.io/gh/daveenguyen/atomacos/"><img alt="codecov" src="https://img.shields.io/codecov/c/github/daveenguyen/atomacos/master.svg?style=flat-square" /></a>
+<a class="reference external image-reference" href="https://github.com/ambv/black"><img alt="style" src="https://img.shields.io/badge/code%20style-black-black.svg?style=flat-square" /></a>
+<p>This library is a fork of <a class="reference external" href="https://github.com/pyatom/pyatom">atomac</a>.
+It was created to provide a release with python 3 support because
+there has not been a release <a class="reference external" href="https://github.com/pyatom/pyatom/releases">since 2013</a></p>
+<p>Atomacos is a library to enable GUI testing of macOS applications via the Apple Accessibility API.
+Atomacos has direct access to the API via <a class="reference external" href="https://bitbucket.org/ronaldoussoren/pyobjc">pyobjc</a>. It’s fast and easy to use to write tests.</p>
+</div>
+<div class="section" id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>Requirements</p>
+<ul class="simple">
+<li><p>macOS</p></li>
+<li><p><a class="reference external" href="https://bitbucket.org/ronaldoussoren/pyobjc">pyobjc</a></p></li>
+<li><p>Systemwide Accesibility enabled</p></li>
+</ul>
+<p>On travis, it’s only on 10.11 because we are able to enable accessibility API.</p>
+<p>If you experience issues, please open a ticket in the <a class="reference external" href="https://github.com/daveenguyen/atomacos/issues">issue tracker</a>.</p>
+<div class="section" id="enabling-systemwide-accessibility">
+<h2>Enabling Systemwide Accessibility<a class="headerlink" href="#enabling-systemwide-accessibility" title="Permalink to this headline">¶</a></h2>
+<p>Check the checkbox:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="k">System</span> <span class="n">Preferences</span> <span class="o">&gt;</span> <span class="n">Universal</span> <span class="k">Access</span> <span class="o">&gt;</span> <span class="n">Enable</span> <span class="k">access</span> <span class="k">for</span> <span class="n">assistive</span> <span class="n">devices</span>
+<span class="k">System</span> <span class="n">Preferences</span> <span class="o">&gt;</span> <span class="k">Security</span> <span class="o">&amp;</span> <span class="n">Privacy</span> <span class="o">&gt;</span> <span class="n">Privacy</span> <span class="o">&gt;</span> <span class="n">Accessibility</span>
+</pre></div>
+</div>
+<p>Failure to enable this will result in <code class="docutils literal notranslate"><span class="pre">AXErrorAPIDisabled</span></code> exceptions during some module usage.</p>
+</div>
+<div class="section" id="installing">
+<h2>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h2>
+<p>For release</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install atomacos
+</pre></div>
+</div>
+<p>For pre-release</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install --pre atomacos
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="usage-examples">
+<h1>Usage Examples<a class="headerlink" href="#usage-examples" title="Permalink to this headline">¶</a></h1>
+<p>Once installed, you should be able to use it to launch an application:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">atomacos</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">atomacos</span><span class="o">.</span><span class="n">launchAppByBundleId</span><span class="p">(</span><span class="s1">&#39;com.apple.Automator&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This should launch Automator.</p>
+<p>Next, get a reference to the UI Element for the application itself:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">automator</span> <span class="o">=</span> <span class="n">atomacos</span><span class="o">.</span><span class="n">getAppRefByBundleId</span><span class="p">(</span><span class="s1">&#39;com.apple.Automator&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">automator</span>
+<span class="go">&lt;atomacos.AXClasses.NativeUIElement AXApplication Automator&gt;</span>
+</pre></div>
+</div>
+<p>Now, we can find objects in the accessibility hierarchy:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">window</span> <span class="o">=</span> <span class="n">automator</span><span class="o">.</span><span class="n">windows</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">window</span><span class="o">.</span><span class="n">AXTitle</span>
+<span class="go">u&#39;Untitled&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span> <span class="o">=</span> <span class="n">window</span><span class="o">.</span><span class="n">sheets</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Note that we retrieved an accessibility attribute from the Window object - <code class="docutils literal notranslate"><span class="pre">AXTitle</span></code>.
+Atomacos supports reading and writing of most attributes.
+Xcode’s included <code class="docutils literal notranslate"><span class="pre">Accessibility</span> <span class="pre">Inspector</span></code> can provide a quick way to find these attributes.</p>
+<p>There is a shortcut for getting the sheet object which
+bypasses accessing it through the Window object.
+Atomacos can search all objects in the hierarchy:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sheet</span> <span class="o">=</span> <span class="n">automator</span><span class="o">.</span><span class="n">sheetsR</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>There are search methods for most types of accessibility objects.
+Each search method, such as <code class="docutils literal notranslate"><span class="pre">windows</span></code>,
+has a corresponding recursive search function, such as <code class="docutils literal notranslate"><span class="pre">windowsR</span></code>.</p>
+<p>The recursive search finds items that aren’t just direct children, but children of children.
+These search methods can be given terms to identify specific elements.
+Note that <code class="docutils literal notranslate"><span class="pre">*</span></code> and <code class="docutils literal notranslate"><span class="pre">?</span></code> can be used as wildcard match characters in all search methods:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">close</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">buttons</span><span class="p">(</span><span class="s1">&#39;Close&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>There are methods to search for UI Elements that match any number of criteria.
+The criteria are accessibility attributes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">close</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">findFirst</span><span class="p">(</span><span class="n">AXRole</span><span class="o">=</span><span class="s1">&#39;AXButton&#39;</span><span class="p">,</span> <span class="n">AXTitle</span><span class="o">=</span><span class="s1">&#39;Close&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">findFirst</span></code> and <code class="docutils literal notranslate"><span class="pre">findFirstR</span></code> return the first item found to match the criteria or <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+<code class="docutils literal notranslate"><span class="pre">findAll</span></code> and <code class="docutils literal notranslate"><span class="pre">findAllR</span></code> return a list of all items that match the criteria or an empty list(<code class="docutils literal notranslate"><span class="pre">[]</span></code>).</p>
+<p>Objects are fairly versatile.
+You can get a list of supported attributes and actions on an object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">close</span><span class="o">.</span><span class="n">getAttributes</span><span class="p">()</span>
+<span class="go">[u&#39;AXRole&#39;, u&#39;AXRoleDescription&#39;, u&#39;AXHelp&#39;, u&#39;AXEnabled&#39;, u&#39;AXFocused&#39;,</span>
+<span class="go">u&#39;AXParent&#39;, u&#39;AXWindow&#39;, u&#39;AXTopLevelUIElement&#39;, u&#39;AXPosition&#39;, u&#39;AXSize&#39;,</span>
+<span class="go">u&#39;AXTitle&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">close</span><span class="o">.</span><span class="n">AXTitle</span>
+<span class="go">u&#39;Close&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">close</span><span class="o">.</span><span class="n">getActions</span><span class="p">()</span>
+<span class="go">[u&#39;Press&#39;]</span>
+</pre></div>
+</div>
+<p>Performing an action is as natural as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">close</span><span class="o">.</span><span class="n">Press</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Any action can be triggered this way.</p>
+</div>
+<div class="section" id="links">
+<h1>Links<a class="headerlink" href="#links" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/daveenguyen/atomacos/blob/master/LICENSE">License</a></p></li>
+<li><p><a class="reference external" href="https://github.com/daveenguyen/atomacos/issues">Issues</a></p></li>
+<li><p><a class="reference external" href="https://github.com/daveenguyen/atomacos">Source</a> Code</p></li>
+<li><p>Changes</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/daveenguyen/atomacos/commits">Commits</a> page has all changes to the project.</p></li>
+<li><p><a class="reference external" href="https://github.com/daveenguyen/atomacos/releases">Release</a> page will also outline changes</p></li>
+</ul>
+</li>
+<li><p>Thanks <a class="reference external" href="https://github.com/pyatom/pyatom">ATOMac</a> and <a class="reference external" href="https://bitbucket.org/ronaldoussoren/pyobjc">PyObjC</a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">atomacos</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">atomacos: Automated Testing on macOS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#getting-started">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#enabling-systemwide-accessibility">Enabling Systemwide Accessibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing">Installing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#usage-examples">Usage Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#links">Links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_generated/api/modules.html">atomacos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">atomacos: Automated Testing on macOS</a></li>
+      <li>Next: <a href="_generated/api/modules.html" title="next chapter">atomacos</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Davee Nguyen.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/readme.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

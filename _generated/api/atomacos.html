@@ -1,0 +1,438 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>atomacos package &#8212; atomacos  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Contributing" href="../../contributing.html" />
+    <link rel="prev" title="atomacos" href="modules.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-atomacos">
+<span id="atomacos-package"></span><h1>atomacos package<a class="headerlink" href="#module-atomacos" title="Permalink to this headline">¶</a></h1>
+<p>Automated Testing on macOS</p>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-atomacos.AXCallbacks">
+<span id="atomacos-axcallbacks-module"></span><h2>atomacos.AXCallbacks module<a class="headerlink" href="#module-atomacos.AXCallbacks" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="atomacos.AXCallbacks.match_filter">
+<code class="sig-prename descclassname">atomacos.AXCallbacks.</code><code class="sig-name descname">match_filter</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXCallbacks.match_filter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-atomacos.AXClasses">
+<span id="atomacos-axclasses-module"></span><h2>atomacos.AXClasses module<a class="headerlink" href="#module-atomacos.AXClasses" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="atomacos.AXClasses.NativeUIElement">
+<em class="property">class </em><code class="sig-prename descclassname">atomacos.AXClasses.</code><code class="sig-name descname">NativeUIElement</code><span class="sig-paren">(</span><em class="sig-param">ref=None</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos._mixin._input.KeyboardMouseMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos._mixin._wait.WaitForMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos._mixin._search.SearchMethodsMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos._a11y.AXUIElement</span></code></p>
+<p>NativeUIElement class - expose the accessibility API in the simplest,
+most natural way possible.</p>
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.activate">
+<code class="sig-name descname">activate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.activate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Activate the application (bringing menus and windows forward)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.getActions">
+<code class="sig-name descname">getActions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.getActions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of the actions available on the element.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.getAnyAppWithWindow">
+<em class="property">classmethod </em><code class="sig-name descname">getAnyAppWithWindow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.getAnyAppWithWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a random app that has windows.</p>
+<p>Raise a ValueError exception if no GUI applications are found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.getAppRefByBundleId">
+<em class="property">classmethod </em><code class="sig-name descname">getAppRefByBundleId</code><span class="sig-paren">(</span><em class="sig-param">bundleId</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.getAppRefByBundleId" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the top level element for the application with the specified
+bundle ID, such as com.vmware.fusion.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.getAppRefByLocalizedName">
+<em class="property">classmethod </em><code class="sig-name descname">getAppRefByLocalizedName</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.getAppRefByLocalizedName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the top level element for the application with the specified
+localized name, such as VMware Fusion.</p>
+<p>Wildcards are also allowed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.getAppRefByPid">
+<em class="property">classmethod </em><code class="sig-name descname">getAppRefByPid</code><span class="sig-paren">(</span><em class="sig-param">pid</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.getAppRefByPid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the top level element for the application specified by pid.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.getApplication">
+<code class="sig-name descname">getApplication</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.getApplication" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the base application UIElement.</p>
+<p>If the UIElement is a child of the application, it will try
+to get the AXParent until it reaches the top application level
+element.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.getAttributes">
+<code class="sig-name descname">getAttributes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.getAttributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of the attributes available on the element.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.getBundleId">
+<code class="sig-name descname">getBundleId</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.getBundleId" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the bundle ID of the application.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.getElementAtPosition">
+<code class="sig-name descname">getElementAtPosition</code><span class="sig-paren">(</span><em class="sig-param">coord</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.getElementAtPosition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the AXUIElement at the given coordinates.</p>
+<p>If self is behind other windows, this function will return self.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.getFrontmostApp">
+<em class="property">classmethod </em><code class="sig-name descname">getFrontmostApp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.getFrontmostApp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current frontmost application.</p>
+<p>Raise a ValueError exception if no GUI applications are found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.getLocalizedName">
+<code class="sig-name descname">getLocalizedName</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.getLocalizedName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the localized name of the application.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.getRunningApps">
+<em class="property">classmethod </em><code class="sig-name descname">getRunningApps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.getRunningApps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of the running applications.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.getSystemObject">
+<em class="property">classmethod </em><code class="sig-name descname">getSystemObject</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.getSystemObject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the top level system accessibility object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.launchAppByBundleId">
+<em class="property">static </em><code class="sig-name descname">launchAppByBundleId</code><span class="sig-paren">(</span><em class="sig-param">bundleID</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.launchAppByBundleId" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launch the application with the specified bundle ID</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.launchAppByBundlePath">
+<em class="property">static </em><code class="sig-name descname">launchAppByBundlePath</code><span class="sig-paren">(</span><em class="sig-param">bundlePath</em>, <em class="sig-param">arguments=None</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.launchAppByBundlePath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launch app with a given bundle path.</p>
+<p>Return True if succeed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.menuItem">
+<code class="sig-name descname">menuItem</code><span class="sig-paren">(</span><em class="sig-param">*args</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.menuItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the specified menu item.</p>
+<p>Example - refer to items by name:</p>
+<p>app.menuItem(‘File’, ‘New’).Press()
+app.menuItem(‘Edit’, ‘Insert’, ‘Line Break’).Press()</p>
+<p>Refer to items by index:</p>
+<p>app.menuitem(1, 0).Press()</p>
+<p>Refer to items by mix-n-match:</p>
+<p>app.menuitem(1, ‘About TextEdit’).Press()</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.popUpItem">
+<code class="sig-name descname">popUpItem</code><span class="sig-paren">(</span><em class="sig-param">*args</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.popUpItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the specified item in a pop up menu.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.setString">
+<code class="sig-name descname">setString</code><span class="sig-paren">(</span><em class="sig-param">attribute</em>, <em class="sig-param">string</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.setString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the specified attribute to the specified string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.setSystemWideTimeout">
+<em class="property">classmethod </em><code class="sig-name descname">setSystemWideTimeout</code><span class="sig-paren">(</span><em class="sig-param">timeout=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.setSystemWideTimeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the system-wide accessibility timeout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>timeout</strong> – non-negative float. 0 will reset to the system default.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.setTimeout">
+<code class="sig-name descname">setTimeout</code><span class="sig-paren">(</span><em class="sig-param">timeout=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.setTimeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the accessibiltiy API timeout on the given reference.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>timeout</strong> – A value of 0 will reset the timeout to the systemwide value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.set_systemwide_timeout">
+<em class="property">classmethod </em><code class="sig-name descname">set_systemwide_timeout</code><span class="sig-paren">(</span><em class="sig-param">timeout=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.set_systemwide_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the system-wide accessibility timeout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>timeout</strong> – A value of 0 will reset the timeout to the system default.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="atomacos.AXClasses.NativeUIElement.terminateAppByBundleId">
+<em class="property">static </em><code class="sig-name descname">terminateAppByBundleId</code><span class="sig-paren">(</span><em class="sig-param">bundleID</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.AXClasses.NativeUIElement.terminateAppByBundleId" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminate app with a given bundle ID.
+Requires 10.6.</p>
+<p>Return True if succeed.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-atomacos.errors">
+<span id="atomacos-errors-module"></span><h2>atomacos.errors module<a class="headerlink" href="#module-atomacos.errors" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="atomacos.errors.AXError">
+<em class="property">exception </em><code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">AXError</code><a class="headerlink" href="#atomacos.errors.AXError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="atomacos.errors.AXErrorAPIDisabled">
+<em class="property">exception </em><code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">AXErrorAPIDisabled</code><a class="headerlink" href="#atomacos.errors.AXErrorAPIDisabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#atomacos.errors.AXError" title="atomacos.errors.AXError"><code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos.errors.AXError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="atomacos.errors.AXErrorActionUnsupported">
+<em class="property">exception </em><code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">AXErrorActionUnsupported</code><a class="headerlink" href="#atomacos.errors.AXErrorActionUnsupported" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#atomacos.errors.AXError" title="atomacos.errors.AXError"><code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos.errors.AXError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="atomacos.errors.AXErrorAttributeUnsupported">
+<em class="property">exception </em><code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">AXErrorAttributeUnsupported</code><a class="headerlink" href="#atomacos.errors.AXErrorAttributeUnsupported" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#atomacos.errors.AXError" title="atomacos.errors.AXError"><code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos.errors.AXError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="atomacos.errors.AXErrorCannotComplete">
+<em class="property">exception </em><code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">AXErrorCannotComplete</code><a class="headerlink" href="#atomacos.errors.AXErrorCannotComplete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#atomacos.errors.AXError" title="atomacos.errors.AXError"><code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos.errors.AXError</span></code></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="atomacos.errors.AXErrorFactory">
+<code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">AXErrorFactory</code><span class="sig-paren">(</span><em class="sig-param">code</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.errors.AXErrorFactory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="atomacos.errors.AXErrorFailure">
+<em class="property">exception </em><code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">AXErrorFailure</code><a class="headerlink" href="#atomacos.errors.AXErrorFailure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#atomacos.errors.AXError" title="atomacos.errors.AXError"><code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos.errors.AXError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="atomacos.errors.AXErrorIllegalArgument">
+<em class="property">exception </em><code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">AXErrorIllegalArgument</code><a class="headerlink" href="#atomacos.errors.AXErrorIllegalArgument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#atomacos.errors.AXError" title="atomacos.errors.AXError"><code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos.errors.AXError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="atomacos.errors.AXErrorInvalidUIElement">
+<em class="property">exception </em><code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">AXErrorInvalidUIElement</code><a class="headerlink" href="#atomacos.errors.AXErrorInvalidUIElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#atomacos.errors.AXError" title="atomacos.errors.AXError"><code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos.errors.AXError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="atomacos.errors.AXErrorInvalidUIElementObserver">
+<em class="property">exception </em><code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">AXErrorInvalidUIElementObserver</code><a class="headerlink" href="#atomacos.errors.AXErrorInvalidUIElementObserver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#atomacos.errors.AXError" title="atomacos.errors.AXError"><code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos.errors.AXError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="atomacos.errors.AXErrorNoValue">
+<em class="property">exception </em><code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">AXErrorNoValue</code><a class="headerlink" href="#atomacos.errors.AXErrorNoValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#atomacos.errors.AXError" title="atomacos.errors.AXError"><code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos.errors.AXError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="atomacos.errors.AXErrorNotImplemented">
+<em class="property">exception </em><code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">AXErrorNotImplemented</code><a class="headerlink" href="#atomacos.errors.AXErrorNotImplemented" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#atomacos.errors.AXError" title="atomacos.errors.AXError"><code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos.errors.AXError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="atomacos.errors.AXErrorNotificationAlreadyRegistered">
+<em class="property">exception </em><code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">AXErrorNotificationAlreadyRegistered</code><a class="headerlink" href="#atomacos.errors.AXErrorNotificationAlreadyRegistered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#atomacos.errors.AXError" title="atomacos.errors.AXError"><code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos.errors.AXError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="atomacos.errors.AXErrorNotificationNotRegistered">
+<em class="property">exception </em><code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">AXErrorNotificationNotRegistered</code><a class="headerlink" href="#atomacos.errors.AXErrorNotificationNotRegistered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#atomacos.errors.AXError" title="atomacos.errors.AXError"><code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos.errors.AXError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="atomacos.errors.AXErrorNotificationUnsupported">
+<em class="property">exception </em><code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">AXErrorNotificationUnsupported</code><a class="headerlink" href="#atomacos.errors.AXErrorNotificationUnsupported" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#atomacos.errors.AXError" title="atomacos.errors.AXError"><code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos.errors.AXError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="atomacos.errors.AXErrorUnsupported">
+<em class="property">exception </em><code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">AXErrorUnsupported</code><a class="headerlink" href="#atomacos.errors.AXErrorUnsupported" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#atomacos.errors.AXError" title="atomacos.errors.AXError"><code class="xref py py-class docutils literal notranslate"><span class="pre">atomacos.errors.AXError</span></code></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="atomacos.errors.check_ax_error">
+<code class="sig-prename descclassname">atomacos.errors.</code><code class="sig-name descname">check_ax_error</code><span class="sig-paren">(</span><em class="sig-param">error_code</em>, <em class="sig-param">error_messages</em><span class="sig-paren">)</span><a class="headerlink" href="#atomacos.errors.check_ax_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if code is kAXErrorSuccess.
+Raises an error with given message based on given error code.
+Defaults to AXErrorUnsupported for unknown codes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>error_code</strong> – the error code</p></li>
+<li><p><strong>error_messages</strong> – mapping from error code to error message</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-atomacos.keyboard">
+<span id="atomacos-keyboard-module"></span><h2>atomacos.keyboard module<a class="headerlink" href="#module-atomacos.keyboard" title="Permalink to this headline">¶</a></h2>
+<p>keyboard api from pyautogui</p>
+</div>
+<div class="section" id="module-atomacos.mouse">
+<span id="atomacos-mouse-module"></span><h2>atomacos.mouse module<a class="headerlink" href="#module-atomacos.mouse" title="Permalink to this headline">¶</a></h2>
+<p>mouse api from pyautogui</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">atomacos</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">atomacos: Automated Testing on macOS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html#getting-started">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html#links">Links</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">atomacos</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">atomacos package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">atomacos</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">atomacos</a></li>
+      <li>Next: <a href="../../contributing.html" title="next chapter">Contributing</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Davee Nguyen.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/_generated/api/atomacos.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

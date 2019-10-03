@@ -1,0 +1,51 @@
+atomacos package
+================
+
+.. automodule:: atomacos
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+atomacos.AXCallbacks module
+---------------------------
+
+.. automodule:: atomacos.AXCallbacks
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+atomacos.AXClasses module
+-------------------------
+
+.. automodule:: atomacos.AXClasses
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+atomacos.errors module
+----------------------
+
+.. automodule:: atomacos.errors
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+atomacos.keyboard module
+------------------------
+
+.. automodule:: atomacos.keyboard
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+atomacos.mouse module
+---------------------
+
+.. automodule:: atomacos.mouse
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
