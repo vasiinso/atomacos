@@ -18,7 +18,6 @@ from ApplicationServices import (
 )
 from atomacos import errors
 from objc import callbackFor
-from tenacity import retry, retry_if_exception_type, stop_after_attempt
 
 PAXObserverCallback = callbackFor(AXObserverCreate)
 
@@ -92,11 +91,6 @@ def PAXObserverRemoveNotification(observer, element, notification):
     errors.check_ax_error(error_code, error_messages)
 
 
-@retry(
-    retry=retry_if_exception_type(errors.AXErrorFailure),
-    reraise=True,
-    stop=stop_after_attempt(5),
-)
 def PAXUIElementCopyAttributeValue(element, attribute):
     """
     Returns the value of an accessibility object's attribute
