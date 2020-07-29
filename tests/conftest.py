@@ -52,7 +52,7 @@ def automator_app():
     app.terminateAppByBundleId(bid)
 
 
-@pytest.fixture(scope="module")
+#@pytest.fixture(scope="module")
 def finder_app():
     bid = "com.apple.finder"
     app = app_by_bid(bid)
@@ -61,17 +61,17 @@ def finder_app():
     app.terminateAppByBundleId(bid)
 
 
-@pytest.fixture
+#@pytest.fixture
 def frontmost_app(finder_app):
     finder_app.activate()
     return finder_app
 
 
-@pytest.fixture
+#@pytest.fixture
 def front_title_ui(frontmost_app):
     return frontmost_app.findFirstR(AXRole="AXStaticText")
 
 
-@pytest.fixture
+#@pytest.fixture
 def axconverter():
     return _converter.Converter(atomacos.NativeUIElement)
