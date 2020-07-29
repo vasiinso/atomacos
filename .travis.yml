@@ -34,6 +34,7 @@ deploy:
     script: bash scripts/deploy-prod.sh
   - provider: pages
     skip_cleanup: true
+    github_token: '9b163092258a93c9d9f88423bf42242cd3adb865'
     local_dir: .tox/docs_out
     on:
      branch: master
