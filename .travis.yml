@@ -34,7 +34,7 @@ deploy:
     script: bash scripts/deploy-prod.sh
   - provider: pages
     skip_cleanup: true
-    github_token: $GHTDOCS
+    github_token: $GH_TOKEN
     local_dir: .tox/docs_out
 cache:
   directories:
