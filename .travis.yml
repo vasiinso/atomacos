@@ -34,7 +34,6 @@ deploy:
     script: bash scripts/deploy-prod.sh
   - provider: pages
     skip_cleanup: true
-    github_token: $GHTDOCS
     local_dir: .tox/docs_out
     on:
      branch: master
