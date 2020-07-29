@@ -36,6 +36,8 @@ deploy:
     skip_cleanup: true
     github_token: $GHTDOCS
     local_dir: .tox/docs_out
+    on:
+     branch: master
 cache:
   directories:
     - $HOME/Library/Caches/pip
