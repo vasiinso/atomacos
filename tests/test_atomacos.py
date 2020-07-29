@@ -8,7 +8,7 @@ from atomacos import (
 )
 
 
-@pytest.mark.skipif(not _a11y.axenabled(), reason="Accessibility Permission Needed")
+#@pytest.mark.skipif(not _a11y.axenabled(), reason="Accessibility Permission Needed")
 class TestAXUIElement:
     def test_init(self):
         NativeUIElement()
@@ -39,8 +39,8 @@ class TestAXUIElement:
         assert isinstance(sut, list)
         assert "AXRaise" in sut
 
-    @pytest.mark.slow
-    @pytest.mark.skipif(not _a11y.axenabled(), reason="Accessibility Permission Needed")
+    #@pytest.mark.slow
+    #@pytest.mark.skipif(not _a11y.axenabled(), reason="Accessibility Permission Needed")
     def test_perform_ax_action(self, frontmost_app):
         main_window = frontmost_app.AXMainWindow
         main_window.Raise()
@@ -142,12 +142,12 @@ class TestAXUIElement:
         assert sut.getApplication() == finder_app.getApplication()
 
 
-@pytest.mark.skipif(not _a11y.axenabled(), reason="Accessibility Permission Needed")
+#@pytest.mark.skipif(not _a11y.axenabled(), reason="Accessibility Permission Needed")
 class TestObserver:
     def test_observer_init(self, front_title_ui):
         _notification.Observer(front_title_ui)
 
-    @pytest.mark.slow
+    #@pytest.mark.slow
     def test_observer_wait_for(self, monkeypatch, finder_app):
         import threading
         from ApplicationServices import kAXWindowCreatedNotification
